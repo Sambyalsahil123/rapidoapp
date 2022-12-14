@@ -1,10 +1,10 @@
-const functions = require('firebase-functions')
+const functions = require("firebase-functions");
 
-const stripe = require('stripe')(functions.config().stripe.test_key)
+const stripe = require("stripe")(functions.config().stripe.test_key);
 
 exports.makeStripePayment = functions.https.onCall(async (data, context) => {
-  const { amount, currency } = data
-  console.log(amount, currency)
+  const { amount, currency } = data;
+  console.log(amount, currency);
   return new Promise(function (resolve, reject) {
     stripe.paymentIntents.create(
       {
@@ -13,16 +13,16 @@ exports.makeStripePayment = functions.https.onCall(async (data, context) => {
       },
       (err, paymentIntent) => {
         if (err) {
-          console.log(err)
-          resolve({ success: false })
+          console.log(err);
+          resolve({ success: false });
         }
         const result = {
           clientSecret: paymentIntent.client_secret,
           success: true,
-        }
-        console.log(result)
-        resolve(result)
-      },
-    )
-  })
-})
+        };
+        console.log(result);
+        resolve(result);
+      }
+    );
+  });
+});
