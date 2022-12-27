@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native';
 
 const dynamicStyles = (theme, colorScheme) => {
   return StyleSheet.create({
@@ -37,7 +37,7 @@ const dynamicStyles = (theme, colorScheme) => {
       alignItems: 'center',
       justifyContent: 'center',
     },
-  })
-}
+  });
+};
 
-export default dynamicStyles
+export default dynamicStyles;

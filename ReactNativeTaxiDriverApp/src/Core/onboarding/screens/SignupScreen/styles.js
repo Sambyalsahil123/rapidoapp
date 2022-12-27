@@ -1,11 +1,11 @@
-import { Dimensions, I18nManager, StyleSheet } from 'react-native'
+import { Dimensions, I18nManager, StyleSheet } from 'react-native';
 
-const { height } = Dimensions.get('window')
-const imageSize = height * 0.232
-const photoIconSize = imageSize * 0.27
+const { height } = Dimensions.get('window');
+const imageSize = height * 0.232;
+const photoIconSize = imageSize * 0.27;
 
 const dynamicStyles = (theme, colorScheme) => {
-  const colorSet = theme.colors[colorScheme]
+  const colorSet = theme.colors[colorScheme];
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -58,7 +58,18 @@ const dynamicStyles = (theme, colorScheme) => {
       borderRadius: 25,
       textAlign: I18nManager.isRTL ? 'right' : 'left',
     },
+    UploadDoc: {
+      height: 42,
+      borderWidth: 1,
+      borderColor: colorSet.grey3,
+      paddingLeft: 20,
+      color: colorSet.primaryText,
+      width: '80%',
+      alignSelf: 'center',
+      alignItems: 'center',
+      borderRadius: 25,
 
+    },
     signupContainer: {
       alignSelf: 'center',
       width: '65%',
@@ -67,9 +78,22 @@ const dynamicStyles = (theme, colorScheme) => {
       padding: 10,
       marginTop: 50,
     },
+    SubmitDoc: {
+      alignSelf: 'center',
+      width: '40%',
+      backgroundColor: '#4267B2',
+      borderRadius: 25,
+      padding: 10,
+      marginBottom: 50,
+
+    },
+    SubmitDocText: {
+      color: colorSet.primaryBackground,
+    },
     signupText: {
       color: colorSet.primaryBackground,
     },
+
     image: {
       width: '100%',
       height: '100%',
@@ -79,6 +103,7 @@ const dynamicStyles = (theme, colorScheme) => {
       flexDirection: 'row',
       width: '100%',
       justifyContent: 'center',
+      alignItems: 'center',
       alignItems: 'center',
     },
     imageContainer: {
@@ -143,7 +168,11 @@ const dynamicStyles = (theme, colorScheme) => {
       marginLeft: 10,
       transform: [{ scaleX: I18nManager.isRTL ? -1 : 1 }],
     },
-  })
-}
+    screen: {
+      flex: 1,
+      backgroundColor: '#f2f2fC',
+    },
+  });
+};
 
-export default dynamicStyles
+export default dynamicStyles;

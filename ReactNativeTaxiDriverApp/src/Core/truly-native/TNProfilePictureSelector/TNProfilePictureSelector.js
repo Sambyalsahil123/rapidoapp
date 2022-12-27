@@ -1,80 +1,80 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react';
 import {
   View,
   TouchableOpacity,
   ScrollView,
   TouchableHighlight,
   Platform,
-} from 'react-native'
-import ActionSheet from 'react-native-actionsheet'
-import ImageView from 'react-native-image-view'
-import * as ImagePicker from 'expo-image-picker'
-import FastImage from 'react-native-fast-image'
-import { useTheme, useTranslations } from 'dopenative'
-import dynamicStyles from './styles'
+} from 'react-native';
+import ActionSheet from 'react-native-actionsheet';
+import ImageView from 'react-native-image-view';
+import * as ImagePicker from 'expo-image-picker';
+import FastImage from 'react-native-fast-image';
+import { useTheme, useTranslations } from 'dopenative';
+import dynamicStyles from './styles';
 
-const Image = FastImage
+const Image = FastImage;
 
 const TNProfilePictureSelector = props => {
   const [profilePictureURL, setProfilePictureURL] = useState(
     props.profilePictureURL || '',
-  )
-  const originalProfilePictureURL = useRef(props.profilePictureURL || '')
+  );
+  const originalProfilePictureURL = useRef(props.profilePictureURL || '');
   if (originalProfilePictureURL.current !== (props.profilePictureURL || '')) {
-    originalProfilePictureURL.current = props.profilePictureURL || ''
-    setProfilePictureURL(props.profilePictureURL || '')
+    originalProfilePictureURL.current = props.profilePictureURL || '';
+    setProfilePictureURL(props.profilePictureURL || '');
   }
 
-  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null)
-  const [isImageViewerVisible, setIsImageViewerVisible] = useState(false)
-  const [tappedImage, setTappedImage] = useState([])
-  const actionSheet = useRef(null)
-  const { localized } = useTranslations()
-  const { theme, appearance } = useTheme()
-  const styles = dynamicStyles(theme, appearance)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(null);
+  const [isImageViewerVisible, setIsImageViewerVisible] = useState(false);
+  const [tappedImage, setTappedImage] = useState([]);
+  const actionSheet = useRef(null);
+  const { localized } = useTranslations();
+  const { theme, appearance } = useTheme();
+  const styles = dynamicStyles(theme, appearance);
 
   const handleProfilePictureClick = url => {
     if (url) {
-      const isAvatar = url.search('avatar')
+      const isAvatar = url.search('avatar');
       const image = [
         {
           source: {
             uri: url,
           },
         },
-      ]
+      ];
       if (isAvatar === -1) {
-        setTappedImage(image)
-        setIsImageViewerVisible(true)
+        setTappedImage(image);
+        setIsImageViewerVisible(true);
       } else {
-        showActionSheet()
+        showActionSheet();
       }
     } else {
-      showActionSheet()
+      showActionSheet();
     }
-  }
+  };
 
   const onImageError = () => {
-    console.log('Error loading profile photo at url ' + profilePictureURL)
+    console.log('Error loading profile photo at url ' + profilePictureURL);
     const defaultProfilePhotoURL =
-      'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
-    setProfilePictureURL(defaultProfilePhotoURL)
-  }
+      'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg';
+    setProfilePictureURL(defaultProfilePhotoURL);
+  };
 
   const getPermissionAsync = async () => {
     if (Platform.OS === 'ios') {
       let permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync(false)
+        await ImagePicker.requestMediaLibraryPermissionsAsync(false);
 
       if (permissionResult.granted === false) {
         alert(
           localized(
             'Sorry, we need camera roll permissions to make this work.',
           ),
-        )
+        );
       }
     }
-  }
+  };
 
   const onPressAddPhotoBtn = async () => {
     const options = {
@@ -88,24 +88,33 @@ const TNProfilePictureSelector = props => {
         skipBackup: true,
         path: 'images',
       },
-    }
+    };
 
-    await getPermissionAsync()
+    await getPermissionAsync();
+
+    // let result = await ImagePicker.launchCameraAsync({
+    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //   // mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //   // allowsEditing: true,
+    //   // aspect: [4, 3],
+    //   // quality: 1,
+    // })
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      // mediaTypes: ImagePicker.MediaTypeOptions.All,
       // allowsEditing: true,
       // aspect: [4, 3],
       // quality: 1,
-    })
+    });
 
-    console.log(result)
+    console.log(result);
 
     if (!result.cancelled) {
-      setProfilePictureURL(result.uri)
-      props.setProfilePictureFile(result)
+      setProfilePictureURL(result.uri);
+      props.setProfilePictureFile(result);
     }
-  }
+  };
 
   const closeButton = () => (
     <TouchableOpacity
@@ -113,25 +122,25 @@ const TNProfilePictureSelector = props => {
       onPress={() => setIsImageViewerVisible(false)}>
       <Image style={styles.closeIcon} source={theme.icons.close} />
     </TouchableOpacity>
-  )
+  );
 
   const showActionSheet = index => {
-    setSelectedPhotoIndex(index)
-    actionSheet.current.show()
-  }
+    setSelectedPhotoIndex(index);
+    actionSheet.current.show();
+  };
 
   const onActionDone = index => {
-    if (index == 0) {
-      onPressAddPhotoBtn()
+    if (index === 0) {
+      onPressAddPhotoBtn();
     }
-    if (index == 2) {
+    if (index === 2) {
       // Remove button
       if (profilePictureURL) {
-        setProfilePictureURL(null)
-        props.setProfilePictureFile(null)
+        setProfilePictureURL(null);
+        props.setProfilePictureFile(null);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -167,7 +176,7 @@ const TNProfilePictureSelector = props => {
           cancelButtonIndex={1}
           destructiveButtonIndex={2}
           onPress={index => {
-            onActionDone(index)
+            onActionDone(index);
           }}
         />
         <ImageView
@@ -178,7 +187,7 @@ const TNProfilePictureSelector = props => {
         />
       </ScrollView>
     </>
-  )
-}
+  );
+};
 
-export default TNProfilePictureSelector
+export default TNProfilePictureSelector;

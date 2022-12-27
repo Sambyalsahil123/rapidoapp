@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Alert,
   Image,
@@ -7,38 +7,38 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native'
-import Button from 'react-native-button'
+} from 'react-native';
+import Button from 'react-native-button';
 import appleAuth, {
   AppleButton,
-} from '@invertase/react-native-apple-authentication'
-import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogleSignInButton'
-import { useDispatch } from 'react-redux'
-import { useTheme, useTranslations } from 'dopenative'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
-import dynamicStyles from './styles'
-import { setUserData } from '../../redux/auth'
-import { localizedErrorMessage } from '../../api/ErrorCode'
-import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
-import { useAuth } from '../../hooks/useAuth'
+} from '@invertase/react-native-apple-authentication';
+import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogleSignInButton';
+import { useDispatch } from 'react-redux';
+import { useTheme, useTranslations } from 'dopenative';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import TNActivityIndicator from '../../../truly-native/TNActivityIndicator';
+import dynamicStyles from './styles';
+import { setUserData } from '../../redux/auth';
+import { localizedErrorMessage } from '../../api/ErrorCode';
+import { useOnboardingConfig } from '../../hooks/useOnboardingConfig';
+import { useAuth } from '../../hooks/useAuth';
 
 const LoginScreen = props => {
-  const { navigation } = props
-  const authManager = useAuth()
+  const { navigation } = props;
+  const authManager = useAuth();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const { localized } = useTranslations()
-  const { theme, appearance } = useTheme()
-  const { config } = useOnboardingConfig()
-  const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const styles = dynamicStyles(theme, appearance)
+  const { localized } = useTranslations();
+  const { theme, appearance } = useTheme();
+  const { config } = useOnboardingConfig();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const styles = dynamicStyles(theme, appearance);
 
   const onPressLogin = () => {
-    setLoading(true)
+    setLoading(true);
     authManager
       .loginWithEmailAndPassword(
         email && email.trim(),
@@ -47,15 +47,15 @@ const LoginScreen = props => {
       )
       .then(response => {
         if (response?.user) {
-          const user = response.user
-          dispatch(setUserData({ user }))
-          Keyboard.dismiss()
+          const user = response.user;
+          dispatch(setUserData({ user }));
+          Keyboard.dismiss();
           navigation.reset({
             index: 0,
             routes: [{ name: 'MainStack', params: { user } }],
-          })
+          });
         } else {
-          setLoading(false)
+          setLoading(false);
           Alert.alert(
             '',
             localizedErrorMessage(response.error, localized),
@@ -63,24 +63,24 @@ const LoginScreen = props => {
             {
               cancelable: false,
             },
-          )
+          );
         }
-      })
-  }
+      });
+  };
 
   const onFBButtonPress = () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithFacebook(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -88,24 +88,24 @@ const LoginScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   const onGoogleButtonPress = () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithGoogle(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -113,24 +113,24 @@ const LoginScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   const onAppleButtonPress = async () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithApple(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -138,24 +138,24 @@ const LoginScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   const onForgotPassword = async () => {
     navigation.push('ResetPassword', {
       isResetPassword: true,
-    })
-  }
+    });
+  };
 
   const appleButtonStyle = config.isAppleAuthEnabled
     ? {
-        dark: AppleButton?.Style?.WHITE,
-        light: AppleButton?.Style?.BLACK,
-        'no-preference': AppleButton?.Style?.WHITE,
-      }
-    : {}
+      dark: AppleButton?.Style?.WHITE,
+      light: AppleButton?.Style?.BLACK,
+      'no-preference': AppleButton?.Style?.WHITE,
+    }
+    : {};
 
   return (
     <View style={styles.container}>
@@ -240,7 +240,7 @@ const LoginScreen = props => {
         {loading && <TNActivityIndicator />}
       </KeyboardAwareScrollView>
     </View>
-  )
-}
+  );
+};
 
-export default LoginScreen
+export default LoginScreen;

@@ -1,6 +1,6 @@
 {
-  "name": "Instamobile",
-  "displayName": "Instamobile",
+  "name": "BegaDriver",
+  "displayName": "Bega Driver",
   "plugins": [
     "expo-tracking-transparency",
     "@react-native-google-signin/google-signin"
@@ -10,7 +10,7 @@
       "googleServicesFile": "./android/app/google-services.json"
     },
     "ios": {
-      "googleServicesFile": "./ios/Instamobile/GoogleService-Info.plist"
+      "googleServicesFile": "./ios/BegaDriver/GoogleService-Info.plist"
     }
   }
 }

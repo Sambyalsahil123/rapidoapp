@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Alert,
   Image,
@@ -7,103 +7,113 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native'
-import Button from 'react-native-button'
-import PhoneInput from 'react-native-phone-input'
+} from 'react-native';
+import Button from 'react-native-button';
+import axios from 'axios';
+import PhoneInput from 'react-native-phone-input';
 import {
   CodeField,
   Cursor,
   useBlurOnFulfill,
   useClearByFocusCell,
-} from 'react-native-confirmation-code-field'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useTheme, useTranslations } from 'dopenative'
+} from 'react-native-confirmation-code-field';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useTheme, useTranslations } from 'dopenative';
 import appleAuth, {
   AppleButton,
-} from '@invertase/react-native-apple-authentication'
-import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
-import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector'
-import CountriesModalPicker from '../../../truly-native/CountriesModalPicker/CountriesModalPicker'
-import { setUserData } from '../../redux/auth'
-import { useDispatch } from 'react-redux'
-import { localizedErrorMessage } from '../../api/ErrorCode'
-import TermsOfUseView from '../../components/TermsOfUseView'
-import dynamicStyles from './styles'
-import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogleSignInButton'
-import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
-import { useAuth } from '../../hooks/useAuth'
+} from '@invertase/react-native-apple-authentication';
+import TNActivityIndicator from '../../../truly-native/TNActivityIndicator';
+import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector';
+import CountriesModalPicker from '../../../truly-native/CountriesModalPicker/CountriesModalPicker';
+import { setUserData } from '../../redux/auth';
+import { useDispatch } from 'react-redux';
+import { localizedErrorMessage } from '../../api/ErrorCode';
+import TermsOfUseView from '../../components/TermsOfUseView';
+import dynamicStyles from './styles';
+import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogleSignInButton';
+import { useOnboardingConfig } from '../../hooks/useOnboardingConfig';
+import { useAuth } from '../../hooks/useAuth';
+import { OTPVerificationModal } from './OTPVerificationModal';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const codeInputCellCount = 6
+const codeInputCellCount = 6;
 
 const SmsAuthenticationScreen = props => {
-  const { navigation, route } = props
+  const { navigation, route } = props;
   const {
     isSigningUp,
     isConfirmSignUpCode,
     isConfirmResetPasswordCode,
     email,
     userInfo,
-  } = route.params
+  } = route.params;
 
-  const { localized } = useTranslations()
-  const { theme, appearance } = useTheme()
-  const authManager = useAuth()
-  const dispatch = useDispatch()
+  const { localized } = useTranslations();
+  const { theme, appearance } = useTheme();
+  const authManager = useAuth();
+  const dispatch = useDispatch();
 
-  const styles = dynamicStyles(theme, appearance)
-  const { config } = useOnboardingConfig()
+  const styles = dynamicStyles(theme, appearance);
+  const { config } = useOnboardingConfig();
 
-  const [inputFields, setInputFields] = useState({})
-  const [loading, setLoading] = useState(false)
+  const [inputFields, setInputFields] = useState({});
+  const [loading, setLoading] = useState(false);
   const [isPhoneVisible, setIsPhoneVisible] = useState(
     !isConfirmSignUpCode && !isConfirmResetPasswordCode,
-  )
-  const [phoneNumber, setPhoneNumber] = useState(false)
-  const [countriesPickerData, setCountriesPickerData] = useState(null)
-  const [verificationId, setVerificationId] = useState(null)
-  const [profilePictureFile, setProfilePictureFile] = useState(null)
-  const [countryModalVisible, setCountryModalVisible] = useState(false)
-  const [codeInputValue, setCodeInputValue] = useState('')
+  );
+  const [phoneNumber, setPhoneNumber] = useState(false);
+  const [countriesPickerData, setCountriesPickerData] = useState(null);
+  const [verificationId, setVerificationId] = useState(null);
+  const [profilePictureFile, setProfilePictureFile] = useState(null);
+  const [countryModalVisible, setCountryModalVisible] = useState(false);
+  const [codeInputValue, setCodeInputValue] = useState('');
+  const [verificationModal, setVerificationModal] = useState(false);
+
+
+
+
+
+
 
   const myCodeInput = useBlurOnFulfill({
     codeInputValue,
     value: codeInputValue,
     cellCount: codeInputCellCount,
-  })
+  });
   const [codeInputProps, getCellOnLayoutHandler] = useClearByFocusCell({
     codeInputValue,
     value: codeInputValue,
     setCodeInputValue,
     setValue: setCodeInputValue,
-  })
+  });
 
-  const phoneRef = useRef(null)
+  const phoneRef = useRef(null);
 
   useEffect(() => {
     if (codeInputValue?.trim()?.length === codeInputCellCount) {
-      onFinishCheckingCode(codeInputValue)
+      onFinishCheckingCode(codeInputValue);
     }
-  }, [codeInputValue])
+  }, [codeInputValue]);
 
   useEffect(() => {
     if (phoneRef && phoneRef.current) {
-      setCountriesPickerData(phoneRef.current.getPickerData())
+      setCountriesPickerData(phoneRef.current.getPickerData());
     }
-  }, [phoneRef])
+  }, [phoneRef]);
 
   const onFBButtonPress = () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithFacebook(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -111,24 +121,24 @@ const SmsAuthenticationScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   const onGoogleButtonPress = () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithGoogle(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -136,24 +146,24 @@ const SmsAuthenticationScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
   const onAppleButtonPress = async () => {
-    setLoading(true)
+    setLoading(true);
     authManager.loginOrSignUpWithApple(config).then(response => {
       if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        const user = response.user;
+        dispatch(setUserData({ user }));
+        Keyboard.dismiss();
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
-        })
+        });
       } else {
-        setLoading(false)
+        setLoading(false);
         Alert.alert(
           '',
           localizedErrorMessage(response.error, localized),
@@ -161,50 +171,86 @@ const SmsAuthenticationScreen = props => {
           {
             cancelable: false,
           },
-        )
+        );
       }
-    })
-  }
+    });
+  };
 
-  const signInWithPhoneNumber = userValidPhoneNumber => {
-    setLoading(true)
-    authManager.sendSMSToPhoneNumber(userValidPhoneNumber).then(response => {
-      setLoading(false)
-      const confirmationResult = response.confirmationResult
-      if (confirmationResult) {
-        // SMS sent. Prompt user to type the code from the message, then sign the
-        // user in with confirmationResult.confirm(code).
-        window.confirmationResult = confirmationResult
-        setVerificationId(confirmationResult.verificationId)
-        setIsPhoneVisible(false)
-      } else {
-        // Error; SMS not sent
-        Alert.alert(
-          '',
-          localizedErrorMessage(response.error, localized),
-          [{ text: localized('OK') }],
-          { cancelable: false },
-        )
-      }
-    })
-  }
+  const signInWithPhoneNumber = async (userValidPhoneNumber) => {
+    console.log("sendingSMS", userValidPhoneNumber);
+    setLoading(true);
+
+
+    // authManager.sendSMSToPhoneNumber(userValidPhoneNumber).then(response => {
+    //   console.log(response, "userValidPhoneNumber");
+
+    //   setLoading(false);
+    //   const confirmationResult = response.confirmationResult;
+    //   if (confirmationResult) {
+    //     // SMS sent. Prompt user to type the code from the message, then sign the
+    //     // user in with confirmationResult.confirm(code).
+    //     window.confirmationResult = confirmationResult;
+    //     setVerificationId(confirmationResult.verificationId);
+    //     setIsPhoneVisible(false);
+    //   } else {
+    //     // Error; SMS not sent
+    //     Alert.alert(
+    //       '',
+    //       localizedErrorMessage(response.error, localized),
+    //       [{ text: localized('OK') }],
+    //       { cancelable: false },
+    //     );
+    //   }
+    // });
+
+    const generatedOTP = Math.floor(1000 + Math.random() * 9000);
+
+    try {
+
+      console.log(generatedOTP, userValidPhoneNumber, 'sfdasdfasdasd', `${userValidPhoneNumber}`.slice(3, 13));
+      const response = await axios.post(
+        "https://www.fast2sms.com/dev/bulkV2",
+        {
+          variables_values: generatedOTP,
+          route: 'otp',
+          numbers: `${userValidPhoneNumber}`.slice(3, 13),
+        },
+        {
+          headers: {
+            authorization: "LoyxFDqUBuRn2IVhfAN4HWpPgkibO3KcrlsdJeQTGm790z8CtvmlYVW6voSe7bpKuLJ31RZdhIfH5MyF",
+            'Content-Type': 'application/json',
+          }
+        }
+
+      ).then(async (res) => {
+        setLoading(false);
+        await AsyncStorage.setItem('generated_otp', `${generatedOTP}`);
+        setVerificationModal(true);
+
+      });
+    } catch (error) {
+      console.error(error, 'this is inside the');
+    }
+
+
+  };
 
   const trimFields = fields => {
-    var trimmedFields = {}
+    var trimmedFields = {};
     Object.keys(fields).forEach(key => {
       if (fields[key]) {
-        trimmedFields[key] = fields[key].trim()
+        trimmedFields[key] = fields[key].trim();
       }
-    })
-    return trimmedFields
-  }
+    });
+    return trimmedFields;
+  };
 
   const signUpWithPhoneNumber = smsCode => {
     const userDetails = {
       ...trimFields(inputFields),
       phone: phoneNumber?.trim(),
       photoFile: profilePictureFile,
-    }
+    };
     authManager
       .registerWithPhoneNumber(
         userDetails,
@@ -213,37 +259,38 @@ const SmsAuthenticationScreen = props => {
         config.appIdentifier,
       )
       .then(response => {
-        setLoading(false)
+        setLoading(false);
         if (response.error) {
           Alert.alert(
             '',
             localizedErrorMessage(response.error, localized),
             [{ text: localized('OK') }],
             { cancelable: false },
-          )
+          );
         } else {
-          const user = response.user
-          dispatch(setUserData({ user }))
-          Keyboard.dismiss()
+          const user = response.user;
+          dispatch(setUserData({ user }));
+          Keyboard.dismiss();
           navigation.reset({
             index: 0,
             routes: [{ name: 'MainStack', params: { user } }],
-          })
+          });
         }
-      })
-  }
+      });
+  };
 
 
   const onPressSend = async () => {
     if (phoneRef.current.isValidNumber()) {
-      const userValidPhoneNumber = phoneRef.current.getValue()
-      setLoading(true)
-      setPhoneNumber(userValidPhoneNumber)
+      const userValidPhoneNumber = phoneRef.current.getValue();
+      setLoading(true);
+      setPhoneNumber(userValidPhoneNumber);
+
       if (isSigningUp) {
         const { error } = await authManager.validateUsernameFieldIfNeeded(
           trimFields(inputFields),
           config,
-        )
+        );
 
         if (error) {
           Alert.alert(
@@ -253,12 +300,12 @@ const SmsAuthenticationScreen = props => {
             {
               cancelable: false,
             },
-          )
-          return
+          );
+          return;
         }
       }
 
-      signInWithPhoneNumber(userValidPhoneNumber)
+      signInWithPhoneNumber(userValidPhoneNumber);
     } else {
       Alert.alert(
         '',
@@ -267,62 +314,63 @@ const SmsAuthenticationScreen = props => {
         {
           cancelable: false,
         },
-      )
+      );
     }
-  }
+  };
 
   const onPressFlag = () => {
-    setCountryModalVisible(true)
-  }
+    setCountryModalVisible(true);
+  };
 
   const onPressCancelContryModalPicker = () => {
-    setCountryModalVisible(false)
-  }
+    setCountryModalVisible(false);
+  };
 
   const onFinishCheckingCode = newCode => {
-    setLoading(true)
+    setLoading(true);
     if (isSigningUp) {
-      signUpWithPhoneNumber(newCode)
-      return
+      signUpWithPhoneNumber(newCode);
+      return;
     }
 
     if (!isSigningUp) {
       authManager.loginWithSMSCode(newCode, verificationId).then(response => {
         if (response.error) {
-          setLoading(false)
+          setLoading(false);
           Alert.alert(
             '',
             localizedErrorMessage(response.error, localized),
             [{ text: localized('OK') }],
             { cancelable: false },
-          )
+          );
         } else {
-          const user = response.user
-          dispatch(setUserData({ user }))
-          Keyboard.dismiss()
+          const user = response.user;
+          dispatch(setUserData({ user }));
+          Keyboard.dismiss();
           navigation.reset({
             index: 0,
             routes: [{ name: 'MainStack', params: { user } }],
-          })
+          });
         }
-      })
+      });
     }
-  }
+  };
 
   const onChangeInputFields = (text, key) => {
     setInputFields(prevFields => ({
       ...prevFields,
       [key]: text,
-    }))
-  }
+    }));
+  };
 
   const selectCountry = country => {
-    phoneRef.current.selectCountry(country.iso2)
-  }
+    phoneRef.current.selectCountry(country.iso2);
+  };
 
   const renderPhoneInput = () => {
     return (
       <>
+        {<OTPVerificationModal />}
         <PhoneInput
           style={styles.InputContainer}
           flagStyle={styles.flagStyle}
@@ -341,7 +389,7 @@ const SmsAuthenticationScreen = props => {
           <CountriesModalPicker
             data={countriesPickerData}
             onChange={country => {
-              selectCountry(country)
+              selectCountry(country);
             }}
             cancelText={localized('Cancel')}
             visible={countryModalVisible}
@@ -355,14 +403,14 @@ const SmsAuthenticationScreen = props => {
           {localized('Send code')}
         </Button>
       </>
-    )
-  }
+    );
+  };
 
   const renderCodeInputCell = ({ index, symbol, isFocused }) => {
-    let textChild = symbol
+    let textChild = symbol;
 
     if (isFocused) {
-      textChild = <Cursor />
+      textChild = <Cursor />;
     }
 
     return (
@@ -372,8 +420,8 @@ const SmsAuthenticationScreen = props => {
         onLayout={getCellOnLayoutHandler(index)}>
         {textChild}
       </Text>
-    )
-  }
+    );
+  };
 
   const renderCodeInput = () => {
     return (
@@ -389,8 +437,8 @@ const SmsAuthenticationScreen = props => {
           renderCell={renderCodeInputCell}
         />
       </View>
-    )
-  }
+    );
+  };
 
   const renderInputField = (field, index) => {
     return (
@@ -403,8 +451,8 @@ const SmsAuthenticationScreen = props => {
         value={inputFields[field.key]}
         underlineColorAndroid="transparent"
       />
-    )
-  }
+    );
+  };
 
   const renderAsSignUpState = () => {
     return (
@@ -433,17 +481,17 @@ const SmsAuthenticationScreen = props => {
           </>
         )}
       </>
-    )
-  }
+    );
+  };
 
   const renderAsLoginState = () => {
     const appleButtonStyle = config.isAppleAuthEnabled
       ? {
-          dark: AppleButton?.Style?.WHITE,
-          light: AppleButton?.Style?.BLACK,
-          'no-preference': AppleButton?.Style?.WHITE,
-        }
-      : {}
+        dark: AppleButton?.Style?.WHITE,
+        light: AppleButton?.Style?.BLACK,
+        'no-preference': AppleButton?.Style?.WHITE,
+      }
+      : {};
 
     return (
       <>
@@ -490,8 +538,8 @@ const SmsAuthenticationScreen = props => {
           {localized('Sign in with E-mail')}
         </Button>
       </>
-    )
-  }
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -513,7 +561,7 @@ const SmsAuthenticationScreen = props => {
       </KeyboardAwareScrollView>
       {loading && <TNActivityIndicator />}
     </View>
-  )
-}
+  );
+};
 
-export default SmsAuthenticationScreen
+export default SmsAuthenticationScreen;

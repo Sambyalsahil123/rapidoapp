@@ -91,7 +91,7 @@ const IMDrawerMenu = props => {
         </View>
         <View style={styles.footer}>
           <Text style={styles.textFooter}>
-            {localized('Made by Instamobile')}
+            {localized('Made by BegaDriver')}
           </Text>
         </View>
       </View>

@@ -63,7 +63,7 @@ NSString * const kEXCurrentAPNSTokenDefaultsKey = @"EXCurrentAPNSTokenDefaultsKe
 
   NSDictionary *initProps = [self prepareInitialProps];
 
-  UIView *rootView = [self.reactDelegate createRootViewWithBridge:bridge moduleName:@"Instamobile" initialProperties:initProps];
+  UIView *rootView = [self.reactDelegate createRootViewWithBridge:bridge moduleName:@"BegaDriver" initialProperties:initProps];
 
 
 

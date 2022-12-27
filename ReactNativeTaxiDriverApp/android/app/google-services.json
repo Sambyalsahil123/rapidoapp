@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1099201876026:android:4b016cc18c0171ff936503",
         "android_client_info": {
-          "package_name": "io.instamobile"
+          "package_name": "io.BegaDriver"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "1099201876026-7p9f7c1ukg55958ck45fc0bn0luilka4.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.instamobile.rn.ios"
+                "bundle_id": "io.BegaDriver.rn.ios"
               }
             }
           ]
@@ -45,7 +45,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1099201876026:android:c490ef3487a9c400936503",
         "android_client_info": {
-          "package_name": "io.instamobile.rn.android"
+          "package_name": "io.BegaDriver.rn.android"
         }
       },
       "oauth_client": [
@@ -70,7 +70,7 @@
               "client_id": "1099201876026-7p9f7c1ukg55958ck45fc0bn0luilka4.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "io.instamobile.rn.ios"
+                "bundle_id": "io.BegaDriver.rn.ios"
               }
             }
           ]

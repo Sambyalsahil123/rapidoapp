@@ -57,7 +57,7 @@ const lightColors = {
   red: '#ea0606',
 }
 
-const InstamobileTheme = {
+const BegaDriverTheme = {
   colors: {
     light: lightColors,
     'no-preference': lightColors,
@@ -116,4 +116,4 @@ const InstamobileTheme = {
   },
 }
 
-export default InstamobileTheme
+export default BegaDriverTheme

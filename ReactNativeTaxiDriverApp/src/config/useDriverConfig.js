@@ -1,14 +1,14 @@
-import React, { useContext } from 'react'
-import { useTheme, useTranslations } from 'dopenative'
+import React, { useContext } from 'react';
+import { useTheme, useTranslations } from 'dopenative';
 
-const regexForNames = /^[a-zA-Z]{2,25}$/
-const regexForPhoneNumber = /\d{9}$/
-
-export const ConfigContext = React.createContext({})
+const regexForNames = /^[a-zA-Z]{2,25}$/;
+const regexForPhoneNumber = /\d{9}$/;
+var regexForAadhar = /^[2-9]{1}[0-9]{3}\s{1}[0-9]{4}\s{1}[0-9]{4}$/;
+export const ConfigContext = React.createContext({});
 
 export const ConfigProvider = ({ children }) => {
-  const { theme } = useTheme()
-  const { localized } = useTranslations()
+  const { theme } = useTheme();
+  const { localized } = useTranslations();
   const config = {
     isSMSAuthEnabled: true,
     isGoogleAuthEnabled: true,
@@ -27,7 +27,7 @@ export const ConfigProvider = ({ children }) => {
       RESERVATIONS: 'reservations',
     },
     onboardingConfig: {
-      welcomeTitle: localized('Instataxi Driver'),
+      welcomeTitle: localized('Bega Driver'),
       welcomeCaption: localized('Make money by completing trips.'),
       walkthroughScreens: [
         {
@@ -87,6 +87,7 @@ export const ConfigProvider = ({ children }) => {
         placeholder: localized('Car License Plate'),
       },
     ],
+
     signupFields: [
       {
         displayName: localized('First Name'),
@@ -113,6 +114,7 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'E-mail Address',
         autoCapitalize: 'none',
       },
+
       {
         displayName: localized('Car Model'),
         type: 'ascii-capable',
@@ -129,6 +131,7 @@ export const ConfigProvider = ({ children }) => {
         key: 'carNumber',
         placeholder: localized('Car License Plate'),
       },
+
       {
         displayName: localized('Password'),
         type: 'default',
@@ -137,6 +140,16 @@ export const ConfigProvider = ({ children }) => {
         regex: regexForNames,
         key: 'password',
         placeholder: 'Password',
+        autoCapitalize: 'none',
+      },
+      {
+        displayName: localized('Aadhar Card'),
+        type: 'numeric',
+        secureTextEntry: false,
+        editable: true,
+        regex: regexForAadhar,
+        key: 'AadharCard',
+        placeholder: 'Aadhar Card',
         autoCapitalize: 'none',
       },
     ],
@@ -228,12 +241,12 @@ export const ConfigProvider = ({ children }) => {
             {
               ...(Platform.OS === 'ios'
                 ? {
-                    displayName: localized('Enable Face ID / Touch ID'),
-                    type: 'switch',
-                    editable: true,
-                    key: 'face_id_enabled',
-                    value: false,
-                  }
+                  displayName: localized('Enable Face ID / Touch ID'),
+                  type: 'switch',
+                  editable: true,
+                  key: 'face_id_enabled',
+                  value: false,
+                }
                 : {}),
             },
           ],
@@ -336,11 +349,11 @@ export const ConfigProvider = ({ children }) => {
     },
     displayCurrencyTitle: '$',
     currency: 'usd',
-  }
+  };
 
   return (
     <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>
-  )
-}
+  );
+};
 
-export const useConfig = () => useContext(ConfigContext)
+export const useConfig = () => useContext(ConfigContext);

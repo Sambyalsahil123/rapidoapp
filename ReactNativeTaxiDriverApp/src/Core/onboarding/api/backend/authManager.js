@@ -1,14 +1,14 @@
-import AsyncStorage from '@react-native-community/async-storage'
-import Geolocation from '@react-native-community/geolocation'
-import * as Location from 'expo-location'
-import { storageAPI } from '../../../media'
-import * as authAPI from './authClient'
-import { updateUser } from '../../../users'
+import AsyncStorage from '@react-native-community/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import * as Location from 'expo-location';
+import { storageAPI } from '../../../media';
+import * as authAPI from './authClient';
+import { updateUser } from '../../../users';
 
-const baseAPIURL = 'http://localhost:3000/api/'
+const baseAPIURL = 'http://localhost:3000/api/';
 
 const defaultProfilePhotoURL =
-  'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
+  'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg';
 
 /**
  * A method that logs the user into his account
@@ -29,23 +29,23 @@ const loginWithEmailAndPassword = (email, password) => {
     })
       .then(response => response.json())
       .then(json => {
-        console.log(json)
-        AsyncStorage.setItem('jwt_token', json?.token)
-        AsyncStorage.setItem('logged_in_user_id', json?.userData?.id)
+        console.log(json);
+        AsyncStorage.setItem('jwt_token', json?.token);
+        AsyncStorage.setItem('logged_in_user_id', json?.userData?.id);
         handleSuccessfulLogin(json.userData, false).then(res => {
           // Persisted login successful, push token stored, login credential persisted, so we log the user in.
           resolve({
             user: res.user,
-          })
-        })
+          });
+        });
       })
       .catch(error => {
-        alert(error)
-        console.error(error)
-        resolve({ error: JSON.stringify(error) })
-      })
-  })
-}
+        alert(error);
+        console.error(error);
+        resolve({ error: JSON.stringify(error) });
+      });
+  });
+};
 
 /**
  * A method that creates a new user using email and password
@@ -90,7 +90,7 @@ const createAccountWithEmailAndPassword = (userDetails, appConfig) => {
     signUpLocation,
     stripeCustomerID,
     photoFile,
-  } = userDetails
+  } = userDetails;
 
   return new Promise(function (resolve, _reject) {
     fetch(baseAPIURL + 'register', {
@@ -115,31 +115,31 @@ const createAccountWithEmailAndPassword = (userDetails, appConfig) => {
     })
       .then(response => response.json())
       .then(json => {
-        console.log(json)
+        console.log(json);
         // We've created the account, and now we are going to upload the profile picture if the user picked one
         if (!photoFile) {
           // No profile picture, we're done
-          loginWithEmailAndPassword(email, password).then(data => resolve(data))
-          return
+          loginWithEmailAndPassword(email, password).then(data => resolve(data));
+          return;
         } else {
           storageAPI.processAndUploadMediaFile(photoFile).then(response => {
             // Once upload finished, we update the profile photo field with the correct download URL
             updateUser(json.id, {
               profilePictureURL: response.downloadURL,
-            })
+            });
             loginWithEmailAndPassword(email, password).then(data =>
               resolve(data),
-            )
-          })
+            );
+          });
         }
       })
       .catch(error => {
-        alert(error)
-        console.error(error)
-        resolve({ error: JSON.stringify(error) })
-      })
-  })
-}
+        alert(error);
+        console.error(error);
+        resolve({ error: JSON.stringify(error) });
+      });
+  });
+};
 
 /**
  * Registers users using Facebook gateway
@@ -159,7 +159,7 @@ const createAccountWithEmailAndPassword = (userDetails, appConfig) => {
  **/
 const loginOrSignUpWithFacebook = appConfig => {
   return new Promise(function (resolve, _reject) {
-    resolve({ user: mockData })
+    resolve({ user: mockData });
     // morkData takes the format of:
     // const mockData = {
     //   id,
@@ -171,8 +171,8 @@ const loginOrSignUpWithFacebook = appConfig => {
     //   lastName,
     //   profilePictureURL,
     // };
-  })
-}
+  });
+};
 
 /**
  * A method that creates a new user using facebook gateway
@@ -193,7 +193,7 @@ const loginOrSignUpWithFacebook = appConfig => {
  **/
 const loginOrSignUpWithApple = () => {
   return new Promise(function (resolve, _reject) {
-    resolve({ user: mockData })
+    resolve({ user: mockData });
     // morkData takes the format of:
     // const mockData = {
     //   id,
@@ -205,8 +205,8 @@ const loginOrSignUpWithApple = () => {
     //   lastName,
     //   profilePictureURL,
     // };
-  })
-}
+  });
+};
 
 /**
  * Send out a password reset to the user's email
@@ -216,8 +216,8 @@ const loginOrSignUpWithApple = () => {
  * returns a promise that resolves to user data
  **/
 const sendPasswordResetEmail = email => {
-  return {}
-}
+  return {};
+};
 
 /**
  * Login using the SMS code
@@ -226,7 +226,7 @@ const sendPasswordResetEmail = email => {
  **/
 const loginWithSMSCode = () => {
   return new Promise(function (resolve, _reject) {
-    resolve({ user: mockData })
+    resolve({ user: mockData });
     // morkData takes the format of:
     // const mockData = {
     //   id,
@@ -238,8 +238,8 @@ const loginWithSMSCode = () => {
     //   lastName,
     //   profilePictureURL,
     // };
-  })
-}
+  });
+};
 
 /*
  ** Logout out of the app
@@ -247,13 +247,13 @@ const loginWithSMSCode = () => {
  ** returns a promise that resolves to user data
  */
 const logout = async user => {
-  await AsyncStorage.removeItem('jwt_token')
-  await AsyncStorage.removeItem('logged_in_user_id')
+  await AsyncStorage.removeItem('jwt_token');
+  await AsyncStorage.removeItem('logged_in_user_id');
   const userData = {
     isOnline: false,
-  }
-  updateUser(user.id, userData)
-}
+  };
+  updateUser(user.id, userData);
+};
 
 const retrievePersistedAuthUser = () => {
   return new Promise(resolve => {
@@ -263,38 +263,38 @@ const retrievePersistedAuthUser = () => {
           // Persisted login successful, push token stored, login credential persisted, so we log the user in.
           resolve({
             user: res.user,
-          })
-        })
+          });
+        });
       } else {
-        resolve(null)
+        resolve(null);
       }
-    })
-  })
-}
+    });
+  });
+};
 
 const handleSuccessfulLogin = (user, accountCreated) => {
   // After a successful login, we fetch & store the device token for push notifications, location, online status, etc.
   // we don't wait for fetching & updating the location or push token, for performance reasons (especially on Android)
-  fetchAndStoreExtraInfoUponLogin(user, accountCreated)
+  fetchAndStoreExtraInfoUponLogin(user, accountCreated);
   return new Promise(resolve => {
-    resolve({ user: { ...user } })
-  })
-}
+    resolve({ user: { ...user } });
+  });
+};
 
 const fetchAndStoreExtraInfoUponLogin = async (user, accountCreated) => {
-  authAPI.fetchAndStorePushTokenIfPossible(user)
+  authAPI.fetchAndStorePushTokenIfPossible(user);
 
   getCurrentLocation(Geolocation).then(async location => {
-    const latitude = location.coords.latitude
-    const longitude = location.coords.longitude
-    var locationData = {}
+    const latitude = location.coords.latitude;
+    const longitude = location.coords.longitude;
+    var locationData = {};
     if (location) {
       locationData = {
         location: {
           latitude: latitude,
           longitude: longitude,
         },
-      }
+      };
       if (accountCreated) {
         locationData = {
           ...locationData,
@@ -302,36 +302,36 @@ const fetchAndStoreExtraInfoUponLogin = async (user, accountCreated) => {
             latitude: latitude,
             longitude: longitude,
           },
-        }
+        };
       }
     }
 
     const userData = {
       ...locationData,
       isOnline: true,
-    }
+    };
 
-    updateUser(user.id || user.userID, userData)
-  })
-}
+    updateUser(user.id || user.userID, userData);
+  });
+};
 
 const getCurrentLocation = geolocation => {
   return new Promise(async resolve => {
-    let { status } = await Location.requestForegroundPermissionsAsync()
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      resolve({ coords: { latitude: '', longitude: '' } })
-      return
+      resolve({ coords: { latitude: '', longitude: '' } });
+      return;
     }
 
     geolocation.getCurrentPosition(
       location => {
-        console.log(location)
-        resolve(location)
+        console.log(location);
+        resolve(location);
       },
       error => {
-        console.log(error)
+        console.log(error);
       },
-    )
+    );
 
     // setRegion(location.coords);
     // onLocationChange(location.coords);
@@ -341,17 +341,17 @@ const getCurrentLocation = geolocation => {
     //     () => resolve({ coords: { latitude: "", longitude: "" } }),
     //     { enableHighAccuracy: false, timeout: 20000, maximumAge: 1000 }
     // );
-  })
-}
+  });
+};
 
 const validateUsernameFieldIfNeeded = (inputFields, appConfig) => {
   return new Promise((resolve, reject) => {
-    resolve({ success: true })
+    resolve({ success: true });
 
     // Error format:
     // resolve({ error: localized('Invalid username') });
-  })
-}
+  });
+};
 
 /**Deletes the user account
  *
@@ -360,7 +360,7 @@ const validateUsernameFieldIfNeeded = (inputFields, appConfig) => {
  */
 const deleteUser = (userID, callback) => {
   // calls the removeUser from the auth API
-}
+};
 
 const authManager = {
   loginWithEmailAndPassword,
@@ -373,6 +373,6 @@ const authManager = {
   retrievePersistedAuthUser,
   validateUsernameFieldIfNeeded,
   deleteUser,
-}
+};
 
-export default authManager
+export default authManager;
