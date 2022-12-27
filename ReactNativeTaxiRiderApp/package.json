@@ -11,7 +11,10 @@
     "test": "jest",
     "lint": "eslint .",
     "postinstall": "patch-package",
-    "prettier": "prettier --write '*.js' 'src/**/*.js'"
+    "prettier": "prettier --write '*.js' 'src/**/*.js'",
+    "prepare": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "generateApk": "cd android && ./gradlew assembleDebug",
+    "makeAPK": "yarn run prepare && yarn run generateApk"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "4.4.5",
