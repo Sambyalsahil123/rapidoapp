@@ -1,7 +1,7 @@
-const callID = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'
+const callID = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F';
 
 const pushKitEndpoint =
-  'https://us-central1-production-a9404.cloudfunctions.net/initiateChatCall'
-const iOSBundleID = 'io.BegaDriver.chat.rn.ios'
+  'https://us-central1-production-a9404.cloudfunctions.net/initiateChatCall';
+const iOSBundleID = 'com.company.begataxi.chat.rn.ios';
 
-export { callID, pushKitEndpoint, iOSBundleID }
+export { callID, pushKitEndpoint, iOSBundleID };

@@ -1,41 +1,41 @@
-import 'react-native-gesture-handler'
-import React, { useEffect } from 'react'
-import { LogBox, PermissionsAndroid, Platform } from 'react-native'
-import { StripeProvider } from '@stripe/stripe-react-native'
-import { Provider } from 'react-redux'
-import Geolocation from '@react-native-community/geolocation'
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
-import { enableScreens } from 'react-native-screens'
-import { extendTheme, DNProvider, TranslationProvider } from 'dopenative'
-import configureStore from './redux/store'
-import AppContent from './AppContent'
-import translations from './translations'
-import { ConfigProvider } from './config'
-import { AuthProvider } from './Core/onboarding/hooks/useAuth'
-import { ProfileAuthProvider } from './Core/profile/hooks/useProfileAuth'
-import { authManager } from './Core/onboarding/api'
-import BegaDriverTheme from './theme'
-import stripeConfig from './stripeConfig'
+import 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
+import { LogBox, PermissionsAndroid, Platform } from 'react-native';
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { Provider } from 'react-redux';
+import Geolocation from '@react-native-community/geolocation';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { enableScreens } from 'react-native-screens';
+import { extendTheme, DNProvider, TranslationProvider } from 'dopenative';
+import configureStore from './redux/store';
+import AppContent from './AppContent';
+import translations from './translations';
+import { ConfigProvider } from './config';
+import { AuthProvider } from './Core/onboarding/hooks/useAuth';
+import { ProfileAuthProvider } from './Core/profile/hooks/useProfileAuth';
+import { authManager } from './Core/onboarding/api';
+import BegaDriverTheme from './theme';
+import stripeConfig from './stripeConfig';
 
-navigator.geolocation = require('@react-native-community/geolocation')
-const store = configureStore()
+navigator.geolocation = require('@react-native-community/geolocation');
+const store = configureStore();
 
 const App = () => {
-  const theme = extendTheme(BegaDriverTheme)
+  const theme = extendTheme(BegaDriverTheme);
 
   useEffect(() => {
-    enableScreens()
-    LogBox.ignoreAllLogs(true)
-  }, [])
+    enableScreens();
+    LogBox.ignoreAllLogs(true);
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === 'android') {
-      androidPermissions()
+      androidPermissions();
     } else {
       // IOS
-      Geolocation.requestAuthorization()
+      Geolocation.requestAuthorization();
     }
-  }, [])
+  }, []);
 
   const androidPermissions = async () => {
     try {
@@ -50,18 +50,18 @@ const App = () => {
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
-      )
+      );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the location')
+        console.log('You can use the location');
       } else {
         console.log(
           'Location permission denied. The app cannot be used unless you enable location services.',
-        )
+        );
       }
     } catch (err) {
-      console.warn(err)
+      console.warn(err);
     }
-  }
+  };
 
   return (
     <Provider store={store}>
@@ -83,7 +83,7 @@ const App = () => {
         </DNProvider>
       </TranslationProvider>
     </Provider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

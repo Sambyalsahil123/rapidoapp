@@ -1,4 +1,4 @@
-package io.BegaDriver.launchapplication;
+package com.company.begataxi.launchapplication;
 
 import java.util.Arrays;
 import java.util.Collections;

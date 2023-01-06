@@ -34,6 +34,7 @@ import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogle
 import { useOnboardingConfig } from '../../hooks/useOnboardingConfig';
 import { useAuth } from '../../hooks/useAuth';
 import { OTPVerificationModal } from './OTPVerificationModal';
+import { FAST_2_SMS_KEY } from '../../utils/constants';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const codeInputCellCount = 6;
@@ -68,12 +69,6 @@ const SmsAuthenticationScreen = props => {
   const [countryModalVisible, setCountryModalVisible] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState('');
   const [verificationModal, setVerificationModal] = useState(false);
-
-
-
-
-
-
 
   const myCodeInput = useBlurOnFulfill({
     codeInputValue,
@@ -176,63 +171,35 @@ const SmsAuthenticationScreen = props => {
     });
   };
 
-  const signInWithPhoneNumber = async (userValidPhoneNumber) => {
-    console.log("sendingSMS", userValidPhoneNumber);
+  const signInWithPhoneNumber = async userValidPhoneNumber => {
     setLoading(true);
-
-
-    // authManager.sendSMSToPhoneNumber(userValidPhoneNumber).then(response => {
-    //   console.log(response, "userValidPhoneNumber");
-
-    //   setLoading(false);
-    //   const confirmationResult = response.confirmationResult;
-    //   if (confirmationResult) {
-    //     // SMS sent. Prompt user to type the code from the message, then sign the
-    //     // user in with confirmationResult.confirm(code).
-    //     window.confirmationResult = confirmationResult;
-    //     setVerificationId(confirmationResult.verificationId);
-    //     setIsPhoneVisible(false);
-    //   } else {
-    //     // Error; SMS not sent
-    //     Alert.alert(
-    //       '',
-    //       localizedErrorMessage(response.error, localized),
-    //       [{ text: localized('OK') }],
-    //       { cancelable: false },
-    //     );
-    //   }
-    // });
 
     const generatedOTP = Math.floor(1000 + Math.random() * 9000);
 
     try {
-
-      console.log(generatedOTP, userValidPhoneNumber, 'sfdasdfasdasd', `${userValidPhoneNumber}`.slice(3, 13));
-      const response = await axios.post(
-        "https://www.fast2sms.com/dev/bulkV2",
-        {
-          variables_values: generatedOTP,
-          route: 'otp',
-          numbers: `${userValidPhoneNumber}`.slice(3, 13),
-        },
-        {
-          headers: {
-            authorization: "LoyxFDqUBuRn2IVhfAN4HWpPgkibO3KcrlsdJeQTGm790z8CtvmlYVW6voSe7bpKuLJ31RZdhIfH5MyF",
-            'Content-Type': 'application/json',
-          }
-        }
-
-      ).then(async (res) => {
-        setLoading(false);
-        await AsyncStorage.setItem('generated_otp', `${generatedOTP}`);
-        setVerificationModal(true);
-
-      });
+      const response = await axios
+        .post(
+          'https://www.fast2sms.com/dev/bulkV2',
+          {
+            variables_values: generatedOTP,
+            route: 'otp',
+            numbers: `${userValidPhoneNumber}`.slice(3, 13),
+          },
+          {
+            headers: {
+              authorization: FAST_2_SMS_KEY,
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(async res => {
+          setLoading(false);
+          await AsyncStorage.setItem('generated_otp', `${generatedOTP}`);
+          setVerificationModal(true);
+        });
     } catch (error) {
       console.error(error, 'this is inside the');
     }
-
-
   };
 
   const trimFields = fields => {
@@ -278,7 +245,6 @@ const SmsAuthenticationScreen = props => {
         }
       });
   };
-
 
   const onPressSend = async () => {
     if (phoneRef.current.isValidNumber()) {
@@ -370,7 +336,7 @@ const SmsAuthenticationScreen = props => {
   const renderPhoneInput = () => {
     return (
       <>
-        {<OTPVerificationModal />}
+        {verificationModal && <OTPVerificationModal />}
         <PhoneInput
           style={styles.InputContainer}
           flagStyle={styles.flagStyle}

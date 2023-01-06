@@ -1,11 +1,11 @@
-import { Dimensions, I18nManager, StyleSheet } from 'react-native';
+import { Dimensions, I18nManager, StyleSheet } from 'react-native'
 
-const { height } = Dimensions.get('window');
-const imageSize = height * 0.232;
-const photoIconSize = imageSize * 0.27;
+const { height } = Dimensions.get('window')
+const imageSize = height * 0.232
+const photoIconSize = imageSize * 0.27
 
 const dynamicStyles = (theme, colorScheme) => {
-  const colorSet = theme.colors[colorScheme];
+  const colorSet = theme.colors[colorScheme]
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -68,7 +68,12 @@ const dynamicStyles = (theme, colorScheme) => {
       alignSelf: 'center',
       alignItems: 'center',
       borderRadius: 25,
-
+    },
+    UploadIcon: {
+      height: 20,
+      width: 20,
+      marginLeft: '50%',
+      marginTop: -20,
     },
     signupContainer: {
       alignSelf: 'center',
@@ -85,7 +90,6 @@ const dynamicStyles = (theme, colorScheme) => {
       borderRadius: 25,
       padding: 10,
       marginBottom: 50,
-
     },
     SubmitDocText: {
       color: colorSet.primaryBackground,
@@ -172,7 +176,7 @@ const dynamicStyles = (theme, colorScheme) => {
       flex: 1,
       backgroundColor: '#f2f2fC',
     },
-  });
-};
+  })
+}
 
-export default dynamicStyles;
+export default dynamicStyles

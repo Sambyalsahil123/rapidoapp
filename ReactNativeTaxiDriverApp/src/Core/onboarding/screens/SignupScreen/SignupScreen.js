@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Alert,
   Image,
@@ -6,135 +6,153 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View, Modal,
-} from 'react-native';
-import axios from 'axios';
-import Button from 'react-native-button';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useDispatch } from 'react-redux';
-import { useTheme, useTranslations } from 'dopenative';
-import dynamicStyles from './styles';
-import TNActivityIndicator from '../../../truly-native/TNActivityIndicator';
-import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector';
-import { setUserData } from '../../redux/auth';
-import { localizedErrorMessage } from '../../api/ErrorCode';
-import TermsOfUseView from '../../components/TermsOfUseView';
-import { useOnboardingConfig } from '../../hooks/useOnboardingConfig';
-import { useAuth } from '../../hooks/useAuth';
-import SignupOnBoard from './SignupOnboard';
-import SignupOnboardImg from './SignOnboardImg';
-import Img from './upload.png';
-
+  View,
+  Modal,
+} from 'react-native'
+import axios from 'axios'
+import Button from 'react-native-button'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { useDispatch } from 'react-redux'
+import { useTheme, useTranslations } from 'dopenative'
+import dynamicStyles from './styles'
+import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
+import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector'
+import { setUserData } from '../../redux/auth'
+import TermsOfUseView from '../../components/TermsOfUseView'
+import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
+import { useAuth } from '../../hooks/useAuth'
+import SignupOnBoard from './SignupOnboard'
+import SignupOnboardImg from './SignOnboardImg'
+import Img from './upload.png'
+import { OTPVerificationModal } from '../SmsAuthenticationScreen/OTPVerificationModal'
+import storage from '@react-native-firebase/storage'
 
 const SignupScreen = props => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const { navigation } = props;
-  const authManager = useAuth();
-  const dispatch = useDispatch();
-  const { config } = useOnboardingConfig();
-  const { localized } = useTranslations();
-  const { theme, appearance } = useTheme();
-  const styles = dynamicStyles(theme, appearance);
-  const [inputFields, setInputFields] = useState({});
-  const [profilePictureFile, setProfilePictureFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [aadhaarNumber, setAadhaarNumber] = useState('');
-  const [otp, setOTP] = useState('');
-  const [verificationResult, setVerificationResult] = useState(null);
 
+  const [modalVisible, setModalVisible] = useState(false)
+  const { navigation } = props
+  // const dispatch = useDispatch()
+  const { config } = useOnboardingConfig()
+  const { localized } = useTranslations()
+  const { theme, appearance } = useTheme()
+  const styles = dynamicStyles(theme, appearance)
+  const [inputFields, setInputFields] = useState({})
+  const [structuredData, setStructuredData] = useState({})
+  const [profilePictureFile, setProfilePictureFile] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [verificationModal, setVerificationModal] = useState(false)
+  const [documentUrls, setDocumentUrls] = useState({})
+  const [throwDocsErr, setThrowDocsErr] = useState(false)
+  const referenceCreator = storage()
+  const [driverDocuments, setDriverDocuments] = useState({
+    backImage: null,
+    frontImage: null,
+    rcImg: null,
+    vehicleInsuranceImg: null,
+  })
 
-  //////// for AadharValidation
-  const handleVerifyOTP = async () => {
-    try {
-      const response = await fetch('https://api.gov.in/verify-aadhaar-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          aadhaarNumber,
-          otp,
-        }),
-      });
-      const result = await response.json();
-      setVerificationResult(result);
-    } catch (error) {
-      console.error(error);
+  ////// UPLOAD IMAGES TO FIRESTORE
+
+  const uploadDocs = () => {
+    setLoading(true)
+    const allData = {
+      profilePhoto: profilePictureFile.uri,
+      User_Front_Image_Of_Driving_License: driverDocuments?.backImage,
+      User_Back_Image_Of_Driving_License: driverDocuments?.frontImage,
+      User_RC_Image: driverDocuments?.rcImg,
+      User_Vehicle_Insurance_Image: driverDocuments?.vehicleInsuranceImg,
     }
-  };
-  {/* <View>
-      <TextInput
-        placeholder="Enter your 12-digit Aadhaar number"
-        value={aadhaarNumber}
-        onChangeText={setAadhaarNumber}
-      />
-      <TextInput
-        placeholder="Enter the OTP"
-        value={otp}
-        onChangeText={setOTP}
-      />
-      <button onPress={handleVerifyOTP}>Verify OTP</button>
-      {verificationResult && (
-        <Text>Verification result: {verificationResult.message}</Text>
-      )}
-    </View> */}
+    if (Object.values(allData).every(Boolean)) {
+      setLoading(false)
+      uploadImage()
+    } else {
+      setLoading(false)
+      Alert.alert('', 'Please upload all required documents')
+    }
+  }
 
-
-  const ValidateAadhar = text => {
-    let reg = /^[2-9]{1}[0-9]{3}\s{1}[0-9]{4}\s{1}[0-9]{4}$/;
-    return reg.test(text) ? true : false;
-  };
-
-  const validateEmail = text => {
-    let reg =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return reg.test(String(text).toLowerCase()) ? true : false;
-  };
-
-
-  const validatePassword = text => {
-    let reg = /^(?=.*[A-Z])(?=.*[a-z])/;
-    return reg.test(String(text)) ? true : false;
-  };
+  const validateAadhar = text => {
+    const reg = new RegExp(
+      /(^[0-9]{4}[0-9]{4}[0-9]{4}$)|(^[0-9]{4}\s[0-9]{4}\s[0-9]{4}$)|(^[0-9]{4}-[0-9]{4}-[0-9]{4}$)/,
+    )
+    return reg.test(text) ? true : false
+  }
+  const validatePhoneNumber = text => {
+    let reg = /^(\+\d{1,3}[- ]?)?\d{10}$/
+    return reg.test(text) ? true : false
+  }
 
   const trimFields = fields => {
-    var trimmedFields = {};
+    var trimmedFields = {}
     Object.keys(fields).forEach(key => {
       if (fields[key]) {
-        trimmedFields[key] = fields[key].trim();
+        trimmedFields[key] = fields[key].trim()
       }
-    });
-    return trimmedFields;
-  };
+    })
+    return trimmedFields
+  }
 
-  const onRegister = async () => {
-    // verifyAadharCard();
-    const { error: usernameError } =
-      await authManager.validateUsernameFieldIfNeeded(inputFields, config);
-    if (usernameError) {
-      Alert.alert('', localized(usernameError), [{ text: localized('OK') }], {
-        cancelable: false,
-      });
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }));
-      return;
+  const uploadImage = async () => {
+    setLoading(true)
+    const allData = {
+      profilePhoto: profilePictureFile.uri,
+      User_Front_Image_Of_Driving_License: driverDocuments?.backImage,
+      User_Back_Image_Of_Driving_License: driverDocuments?.frontImage,
+      User_RC_Image: driverDocuments?.rcImg,
+      User_Vehicle_Insurance_Image: driverDocuments?.vehicleInsuranceImg,
     }
+    // this folder name is made up of first 3 letters of firstname and last 4 digit of phone number
+    const generatedFolderName = `${inputFields.firstName.slice(
+      0,
+      3,
+    )}${inputFields.phoneNumber.slice(-4)}`
 
-    if (!validateEmail(inputFields?.email?.trim())) {
+    const stateObj = {}
+    for (const [key, value] of Object.entries(allData)) {
+      if (value !== null) {
+        const reference = referenceCreator.ref(
+          `User Data/${generatedFolderName}/${key}`,
+        )
+
+        try {
+          await reference.putFile(value)
+          const url = await storage()
+            .ref(`User Data/${generatedFolderName}/${key}`)
+            .getDownloadURL()
+          stateObj[key] = url
+        } catch (error) {
+          setLoading(false)
+          Alert.alert('', 'Something went wrong, please try again')
+        }
+      }
+    }
+    setDocumentUrls(stateObj)
+    setThrowDocsErr(false)
+    setModalVisible(!modalVisible)
+    setLoading(false)
+  }
+
+  const checkFields = () => {
+    if (
+      !(
+        inputFields?.carModel &&
+        inputFields?.carPlate &&
+        inputFields?.lastName &&
+        inputFields?.firstName
+      )
+    ) {
       Alert.alert(
         '',
-        localized('Please enter a valid email address.'),
+        localized('All fields are required!'),
         [{ text: localized('OK') }],
         {
           cancelable: false,
         },
-      );
-      return;
+      )
+      return false
     }
 
-    if (!ValidateAadhar(inputFields?.AadharCard?.trim())) {
+    if (!validateAadhar(inputFields?.aadharCard?.trim())) {
       Alert.alert(
         '',
         localized('Please enter a valid  Aadhar Number.'),
@@ -142,97 +160,119 @@ const SignupScreen = props => {
         {
           cancelable: false,
         },
-      );
-      return;
+      )
+      return false
     }
-    if (!validatePassword(inputFields?.password?.trim())) {
+
+    if (!validatePhoneNumber(inputFields?.phoneNumber?.trim())) {
       Alert.alert(
         '',
-        localized('Please enter a valid password.'),
+        localized('Please enter a valid  Phone Number.'),
         [{ text: localized('OK') }],
         {
           cancelable: false,
         },
-      );
-      return;
+      )
+      return false
     }
-
-    if (inputFields?.password?.trim() == '') {
+    if (!profilePictureFile) {
       Alert.alert(
         '',
-        localized('Password cannot be empty.'),
+        localized('Please upload a Profile Picture'),
         [{ text: localized('OK') }],
         {
           cancelable: false,
         },
-      );
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }));
-      return;
+      )
+      return false
+    }
+    return true
+  }
+
+  const onRegister = async () => {
+    const areFiedsTrue = checkFields()
+
+    if (!areFiedsTrue) {
+      return
     }
 
-    if (inputFields?.password?.trim()?.length < 6) {
-      Alert.alert(
-        '',
-        localized(
-          'Password is too short. Please use at least 6 characters for security reasons.',
-        ),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      );
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }));
-      return;
-    }
-
-    setLoading(true);
+    setLoading(true)
 
     const userDetails = {
+      ////// SEND USER SIGUP DATA IN DB
+      photoFile: documentUrls.profilePhoto,
       ...trimFields(inputFields),
-      photoFile: profilePictureFile,
       appIdentifier: config.appIdentifier,
-    };
-    if (userDetails.username) {
-      userDetails.username = userDetails.username?.toLowerCase();
+      images: documentUrls,
     }
 
-    authManager
-      .createAccountWithEmailAndPassword(userDetails, config)
-      .then(response => {
-        const user = response.user;
-        if (user) {
-          dispatch(setUserData({ user }));
-          Keyboard.dismiss();
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MainStack', params: { user } }],
-          });
-        } else {
-          setLoading(false);
-          Alert.alert(
-            '',
-            localizedErrorMessage(response.error, localized),
-            [{ text: localized('OK') }],
-            {
-              cancelable: false,
-            },
-          );
-        }
-      });
-  };
+    if (userDetails.username) {
+      userDetails.username = userDetails.username?.toLowerCase()
+    }
+
+    const getUrlsOfDocument = Object.values(documentUrls)
+
+    if (
+      getUrlsOfDocument.includes(null) ||
+      getUrlsOfDocument.length < 5 ||
+      !profilePictureFile
+    ) {
+      setLoading(false)
+      setThrowDocsErr(true)
+      return
+    }
+
+    setStructuredData(userDetails)
+
+    // dispatch(setUserData({ user }))
+
+    const otpEndPoint =
+      'https://us-central1-bega-370917.cloudfunctions.net/sendOTP'
+
+    Keyboard.dismiss()
+
+    const setValues = () => {
+      setLoading(false)
+      setVerificationModal(true)
+    }
+    const phoneLength = inputFields.phoneNumber.length
+
+    const restructuredPhoneNumber = `${
+      phoneLength === 13
+        ? inputFields.phoneNumber
+        : '000' + inputFields.phoneNumber
+    }`.slice(3, 13)
+
+    try {
+      const response = await axios.post(otpEndPoint, {
+        phoneNumber: Number(restructuredPhoneNumber),
+      })
+
+      if (response.data.success) {
+        setLoading(false)
+
+        return setValues()
+      }
+
+      if (response?.data?.error) {
+        alert(response?.data?.error)
+        setLoading(false)
+      }
+
+      setLoading(false)
+    } catch (error) {
+      alert('something went wrong, please try again later')
+      setLoading(false)
+      return
+    }
+  }
 
   const onChangeInputFields = (text, key) => {
     setInputFields(prevFields => ({
       ...prevFields,
       [key]: text,
-    }));
-  };
+    }))
+  }
 
   const renderInputField = (field, index) => {
     return (
@@ -250,95 +290,164 @@ const SignupScreen = props => {
           autoCapitalize={field.autoCapitalize}
         />
       </>
-    );
-  };
+    )
+  }
 
   const renderSignupWithEmail = () => {
     return (
       <>
         {config.signupFields.map(renderInputField)}
+
         <View style={{ marginTop: 22 }}>
           <Modal
             animationType="slide"
             transparent={false}
             visible={modalVisible}
             onRequestClose={() => {
-              // alert('Modal has been closed.');
-              setModalVisible(!modalVisible);
+              setModalVisible(!modalVisible)
             }}>
+            <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <Image
+                style={styles.backArrowStyle}
+                source={theme.icons.backArrow}
+              />
+            </TouchableOpacity>
 
-            <Text placeholderTextColor="#aaaaaa" style={{ fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }}>Required Other Information</Text>
-            <Text placeholderTextColor="#aaaaaa" style={{ fontWeight: 'bold', textAlign: 'center', marginTop: 30 }}>Please upload Driving license image for verification.</Text>
-            <SignupOnBoard />
-            <Text placeholderTextColor="#aaaaaa" style={{ fontWeight: 'bold', textAlign: 'center' }}>Please upload RC image for verification.</Text>
-            {/* <SignupOnBoard /> */}
-            <SignupOnboardImg />
-            <Text placeholderTextColor="#aaaaaa" style={{ fontWeight: 'bold', textAlign: 'center' }}>Please upload Vehicle insurance image for verification.</Text>
-            {/* <SignupOnBoard /> */}
-            <SignupOnboardImg />
+            <Text
+              placeholderTextColor="#aaaaaa"
+              style={{
+                fontSize: 20,
+                fontWeight: '900',
+                textAlign: 'center',
+                marginTop: 40,
+              }}>
+              Required Other Information
+            </Text>
 
+            <Text
+              placeholderTextColor="#aaaaaa"
+              style={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginTop: 30,
+              }}>
+              Please upload Driving license image for verification.
+            </Text>
+            <SignupOnBoard
+              setImage={setDriverDocuments}
+              image={{
+                frontImage: driverDocuments.frontImage,
+                backImage: driverDocuments.backImage,
+              }}
+            />
+            <Text
+              placeholderTextColor="#aaaaaa"
+              style={{
+                fontWeight: 'bold',
+                textAlign: 'center',
+                marginTop: 30,
+              }}>
+              Please upload RC image for verification.
+            </Text>
 
+            <SignupOnboardImg
+              setSingleImg={rcImg =>
+                setDriverDocuments(prev => ({
+                  ...prev,
+                  rcImg,
+                }))
+              }
+              singleImg={{
+                img: driverDocuments.rcImg,
+              }}
+            />
+            <Text />
+            {loading && <TNActivityIndicator />}
+            <Text
+              placeholderTextColor="#aaaaaa"
+              style={{ fontWeight: 'bold', textAlign: 'center' }}>
+              Please upload VehicleInsuranceImg insurance image for
+              verification.
+            </Text>
+            <SignupOnboardImg
+              setSingleImg={vehicleInsuranceImg =>
+                setDriverDocuments(prev => ({
+                  ...prev,
+                  vehicleInsuranceImg,
+                }))
+              }
+              singleImg={{
+                img: driverDocuments.vehicleInsuranceImg,
+              }}
+            />
+            <Text />
 
             <Button
               containerStyle={styles.SubmitDoc}
               style={styles.SubmitDocText}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >{localized('Submit')}
+              onPress={() => uploadDocs()}>
+              {localized('Upload')}
             </Button>
           </Modal>
-          <TouchableOpacity style={styles.UploadDoc} onPress={() => setModalVisible(true)}>
-            <Text style={{ marginTop: 5 }}>Upload Documents     <Image style={{ height: 20, width: 20 }} source={Img} /></Text>
+
+          <TouchableOpacity
+            style={[
+              styles.UploadDoc,
+              throwDocsErr ? { borderWidth: 1, borderColor: 'red' } : '',
+            ]}
+            onPress={() => {
+              const areFieldsTrue = checkFields()
+              if (areFieldsTrue) {
+                setModalVisible(true)
+              }
+            }}>
+            <Text style={{ marginTop: 10, marginRight: 25 }}>
+              Upload Documents
+            </Text>
+            <Image style={styles.UploadIcon} source={Img} />
           </TouchableOpacity>
         </View>
-
-
-
-
-
         <Button
           containerStyle={styles.signupContainer}
           style={styles.signupText}
           onPress={() => onRegister()}>
-          {localized('Sign Up')}
+          {localized('Send OTP')}
         </Button>
       </>
-    );
-  };
+    )
+  }
 
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollView
-        style={{ flex: 1, width: '100%' }}
-        keyboardShouldPersistTaps="always">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image style={styles.backArrowStyle} source={theme.icons.backArrow} />
-        </TouchableOpacity>
-        <Text style={styles.title}>{localized('Create new account')}</Text>
-        <TNProfilePictureSelector
-          setProfilePictureFile={setProfilePictureFile}
-        />
-        {renderSignupWithEmail()}
-        {config.isSMSAuthEnabled && (
-          <>
-            <Text style={styles.orTextStyle}>{localized('OR')}</Text>
-            <Button
-              containerStyle={styles.PhoneNumberContainer}
-              onPress={() => navigation.navigate('Sms', { isSigningUp: true })}>
-              {localized('Sign up with phone number')}
-            </Button>
-          </>
-        )}
-        <TermsOfUseView
-          tosLink={config.tosLink}
-          privacyPolicyLink={config.privacyPolicyLink}
-          style={styles.tos}
-        />
-      </KeyboardAwareScrollView>
-      {loading && <TNActivityIndicator />}
-    </View>
-  );
-};
+    <>
+      {verificationModal && (
+        <OTPVerificationModal inputFields={structuredData} />
+      )}
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          style={{ flex: 1, width: '100%' }}
+          keyboardShouldPersistTaps="always">
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image
+              style={styles.backArrowStyle}
+              source={theme.icons.backArrow}
+            />
+          </TouchableOpacity>
+          <Text style={styles.title}>{localized('Create new account')}</Text>
 
-export default SignupScreen;
+          <TNProfilePictureSelector
+            setProfilePictureFile={setProfilePictureFile}
+          />
+          {renderSignupWithEmail()}
+          <TermsOfUseView
+            tosLink={config.tosLink}
+            privacyPolicyLink={config.privacyPolicyLink}
+            style={styles.tos}
+          />
+        </KeyboardAwareScrollView>
+        {loading && <TNActivityIndicator />}
+      </View>
+    </>
+  )
+}
+
+export default SignupScreen

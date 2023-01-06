@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
-import { useTheme, useTranslations } from 'dopenative';
+import React, { useContext } from 'react'
+import { useTheme, useTranslations } from 'dopenative'
 
-const regexForNames = /^[a-zA-Z]{2,25}$/;
-const regexForPhoneNumber = /\d{9}$/;
-var regexForAadhar = /^[2-9]{1}[0-9]{3}\s{1}[0-9]{4}\s{1}[0-9]{4}$/;
-export const ConfigContext = React.createContext({});
+const regexForNames = /^[a-zA-Z]{2,25}$/
+const regexForPhoneNumber = /^(\+\d{1,3}[- ]?)?\d{10}$/
+var regexForAadhar = /^[2-9]{1}[0-9]{3}\s{1}[0-9]{4}\s{1}[0-9]{4}$/
+
+export const ConfigContext = React.createContext({})
 
 export const ConfigProvider = ({ children }) => {
-  const { theme } = useTheme();
-  const { localized } = useTranslations();
+  const { theme } = useTheme()
+  const { localized } = useTranslations()
   const config = {
     isSMSAuthEnabled: true,
     isGoogleAuthEnabled: true,
@@ -75,7 +76,7 @@ export const ConfigProvider = ({ children }) => {
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carName',
+        key: 'carModel',
         placeholder: localized('Car Model'),
       },
       {
@@ -83,8 +84,16 @@ export const ConfigProvider = ({ children }) => {
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carNumber',
+        key: 'carPlate',
         placeholder: localized('Car License Plate'),
+      },
+      {
+        displayName: localized('Phone Number'),
+        type: 'phone-pad',
+        editable: true,
+        regex: regexForPhoneNumber,
+        key: 'phoneNumber',
+        placeholder: 'Phone Number',
       },
     ],
 
@@ -106,21 +115,11 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'Last Name',
       },
       {
-        displayName: localized('E-mail Address'),
-        type: 'ascii-capable',
-        editable: true,
-        regex: regexForNames,
-        key: 'email',
-        placeholder: 'E-mail Address',
-        autoCapitalize: 'none',
-      },
-
-      {
         displayName: localized('Car Model'),
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carName',
+        key: 'carModel',
         placeholder: localized('Car Model'),
       },
       {
@@ -128,19 +127,8 @@ export const ConfigProvider = ({ children }) => {
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carNumber',
+        key: 'carPlate',
         placeholder: localized('Car License Plate'),
-      },
-
-      {
-        displayName: localized('Password'),
-        type: 'default',
-        secureTextEntry: true,
-        editable: true,
-        regex: regexForNames,
-        key: 'password',
-        placeholder: 'Password',
-        autoCapitalize: 'none',
       },
       {
         displayName: localized('Aadhar Card'),
@@ -148,9 +136,17 @@ export const ConfigProvider = ({ children }) => {
         secureTextEntry: false,
         editable: true,
         regex: regexForAadhar,
-        key: 'AadharCard',
+        key: 'aadharCard',
         placeholder: 'Aadhar Card',
         autoCapitalize: 'none',
+      },
+      {
+        displayName: localized('Phone Number'),
+        type: 'phone-pad',
+        editable: true,
+        regex: regexForPhoneNumber,
+        key: 'phoneNumber',
+        placeholder: 'Phone Number',
       },
     ],
     editProfileFields: {
@@ -193,37 +189,37 @@ export const ConfigProvider = ({ children }) => {
               key: 'carNumber',
               placeholder: 'Your car number',
             },
-            {
-              displayName: localized('Car Type'),
-              type: 'select',
-              options: ['uber_x', 'comfort', 'uber_xl', 'none'],
-              displayOptions: ['TaxiX', 'Comfort', 'TaxiXL', 'None'],
-              editable: true,
-              key: 'carType',
-              value: 'None',
-            },
+            // {
+            //   displayName: localized('Car Type'),
+            //   type: 'select',
+            //   options: ['uber_x', 'comfort', 'uber_xl', 'none'],
+            //   displayOptions: ['TaxiX', 'Comfort', 'TaxiXL', 'None'],
+            //   editable: true,
+            //   key: 'carType',
+            //   value: 'None',
+            // },
           ],
         },
-        {
-          title: localized('PRIVATE DETAILS'),
-          fields: [
-            {
-              displayName: localized('E-mail Address'),
-              type: 'text',
-              editable: false,
-              key: 'email',
-              placeholder: 'Your email address',
-            },
-            {
-              displayName: localized('Phone Number'),
-              type: 'text',
-              editable: true,
-              regex: regexForPhoneNumber,
-              key: 'phone',
-              placeholder: 'Your phone number',
-            },
-          ],
-        },
+        // {
+        //   title: localized('PRIVATE DETAILS'),
+        //   fields: [
+        //     // {
+        //     //   displayName: localized('E-mail Address'),
+        //     //   type: 'text',
+        //     //   editable: false,
+        //     //   key: 'email',
+        //     //   placeholder: 'Your email address',
+        //     // },
+        //     // {
+        //     //   displayName: localized('Phone Number'),
+        //     //   type: 'numeric',
+        //     //   editable: true,
+        //     //   regex: regexForPhoneNumber,
+        //     //   key: 'phone',
+        //     //   placeholder: 'Your phone number',
+        //     // },
+        //   ],
+        // },
       ],
     },
     userSettingsFields: {
@@ -241,12 +237,12 @@ export const ConfigProvider = ({ children }) => {
             {
               ...(Platform.OS === 'ios'
                 ? {
-                  displayName: localized('Enable Face ID / Touch ID'),
-                  type: 'switch',
-                  editable: true,
-                  key: 'face_id_enabled',
-                  value: false,
-                }
+                    displayName: localized('Enable Face ID / Touch ID'),
+                    type: 'switch',
+                    editable: true,
+                    key: 'face_id_enabled',
+                    value: false,
+                  }
                 : {}),
             },
           ],
@@ -275,14 +271,14 @@ export const ConfigProvider = ({ children }) => {
               key: 'contacus',
               value: '142 Steiner Street, San Francisco, CA, 94115',
             },
-            {
-              displayName: localized('E-mail us'),
-              value: 'florian@instamobile.io',
-              type: 'text',
-              editable: false,
-              key: 'email',
-              placeholder: 'Your email address',
-            },
+            // {
+            //   displayName: localized('E-mail us'),
+            //   value: 'florian@instamobile.io',
+            //   type: 'text',
+            //   editable: false,
+            //   key: 'email',
+            //   placeholder: 'Your email address',
+            // },
           ],
         },
         {
@@ -349,11 +345,11 @@ export const ConfigProvider = ({ children }) => {
     },
     displayCurrencyTitle: '$',
     currency: 'usd',
-  };
+  }
 
   return (
     <ConfigContext.Provider value={config}>{children}</ConfigContext.Provider>
-  );
-};
+  )
+}
 
-export const useConfig = () => useContext(ConfigContext);
+export const useConfig = () => useContext(ConfigContext)

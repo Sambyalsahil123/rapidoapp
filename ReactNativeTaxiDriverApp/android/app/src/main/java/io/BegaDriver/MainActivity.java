@@ -1,4 +1,4 @@
-package io.BegaDriver;
+package com.company.begataxi;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

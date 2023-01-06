@@ -1,4 +1,4 @@
-package io.BegaDriver.newarchitecture.modules;
+package com.company.begataxi.newarchitecture.modules;
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactPackageTurboModuleManagerDelegate;

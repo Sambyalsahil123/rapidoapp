@@ -1,4 +1,4 @@
-package io.BegaDriver;
+package com.company.begataxi;
 
 import android.content.Intent;
 import android.os.Bundle;

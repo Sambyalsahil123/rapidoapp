@@ -155,7 +155,6 @@ const logout = user => {
   authAPI.logout()
 }
 
-
 const loginOrSignUpWithApple = appConfig => {
   return new Promise(async (resolve, _reject) => {
     try {
@@ -377,7 +376,6 @@ const registerWithPhoneNumber = (
   })
 }
 
-
 const handleSuccessfulLogin = (user, accountCreated) => {
   // After a successful login, we fetch & store the device token for push notifications, location, online status, etc.
   // we don't wait for fetching & updating the location or push token, for performance reasons (especially on Android)
@@ -455,6 +453,20 @@ const deleteUser = (userID, callback) => {
   authAPI.removeUser(userID).then(response => callback(response))
 }
 
+const retrieveUserByPhone = phone => {
+  return new Promise(resolve =>
+    authAPI.retrieveUserByPhone(phone).then(res => resolve({ res })),
+  )
+}
+
+const createUserWithPhoneNumber = inputDetails => {
+  return authAPI.createUserWithPhoneNumber(inputDetails)
+}
+
+// const createCustomToken = async userId => {
+//   return await authAPI.createCustomToken(userId)
+// }
+
 const authManager = {
   validateUsernameFieldIfNeeded,
   retrievePersistedAuthUser,
@@ -470,6 +482,9 @@ const authManager = {
   registerWithPhoneNumber,
   onVerification,
   loginOrSignUpWithGoogle,
+  retrieveUserByPhone,
+  createUserWithPhoneNumber,
+  // createCustomToken,
 }
 
 export default authManager

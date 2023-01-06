@@ -11,6 +11,7 @@ const TNActivityIndicator = memo(props => {
     <View style={styles.container}>
       <View style={styles.indicatorContainer}>
         <UIActivityIndicator
+    
           color="#f5f5f5"
           size={30}
           animationDuration={400}

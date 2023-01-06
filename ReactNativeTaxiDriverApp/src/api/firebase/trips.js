@@ -104,7 +104,7 @@ const subscribeTripHistory = (userId, callback) => {
     return
   }
   return tripRef
-    .where('passenger.id', '==', userId)
+    .where('passenger.id', '==', userId) 
     .where('status', '==', 'trip_completed')
     .onSnapshot(snapshot => {
       const data = snapshot?.docs.map(doc => doc.data())

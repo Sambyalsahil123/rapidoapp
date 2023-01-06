@@ -173,7 +173,6 @@ export const loginWithEmailAndPassword = async (email, password) => {
   })
 }
 
-
 const signInWithCredential = (credential, appIdentifier, socialAuthType) => {
   return new Promise((resolve, _reject) => {
     auth()
@@ -360,7 +359,10 @@ export const registerWithPhoneNumber = (
     location,
     signUpLocation,
   } = userDetails
-  const credential = auth.PhoneAuthProvider.credential(verificationID, smsCode)
+
+  // const credential = auth.PhoneAuthProvider.credential(verificationID, smsCode);
+
+  const createUser = auth.currentUser
   return new Promise(function (resolve, _reject) {
     auth()
       .signInWithCredential(credential)
@@ -410,7 +412,6 @@ export const registerWithPhoneNumber = (
   })
 }
 
-
 export const updateProfilePhoto = (userID, profilePictureURL) => {
   return new Promise((resolve, _reject) => {
     usersRef
@@ -436,7 +437,6 @@ export const fetchAndStorePushTokenIfPossible = async user => {
         badgeCount: 0,
       })
     }
-
   } catch (error) {
     console.log(error)
   }
@@ -470,4 +470,26 @@ export const removeUser = userID => {
 
 export const logout = () => {
   auth().signOut()
+}
+
+// export const createCustomToken = userId => {
+//   return auth()
+//     .createCustomToken(userId)
+//     .then(customToken => console.log(customToken, 'customToken3233243'))
+//     .catch(error => console.log(error, 'errrrorrrrrrrrrr'))
+// }
+
+export const createUserWithPhoneNumber = inputDetails => {
+  return new Promise(resolve =>
+    usersRef
+      .add(inputDetails)
+      .then(() => {
+        console.log(inputDetails, 'this is in console')
+        resolve({ res: inputDetails })
+      })
+      .catch(error => {
+        console.log(error, 'is there any errror when sending erequest')
+        resolve({ error })
+      }),
+  )
 }

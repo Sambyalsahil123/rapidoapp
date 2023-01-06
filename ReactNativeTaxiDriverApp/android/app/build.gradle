@@ -137,7 +137,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "io.BegaDriver"
+        applicationId "com.company.begataxi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -287,6 +287,8 @@ android {
 apply from: new File(["node", "--print", "require.resolve('react-native/package.json')"].execute().text.trim(), "../react.gradle")
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-analytics'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'

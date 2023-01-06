@@ -100,8 +100,8 @@ export const useChatChannels = () => {
   }
 
   const deduplicatedChannels = (oldChannels, newChannels, appendToBottom) => {
-    const oldList = oldChannels || [];
-    const newList = newChannels || [];
+    const oldList = oldChannels || []
+    const newList = newChannels || []
 
     const all = oldChannels
       ? appendToBottom
