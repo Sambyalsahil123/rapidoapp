@@ -12,24 +12,24 @@
 
 const Constants = {
   liveCollectionCountLimit: 50,
-}
+};
 
 exports.getList = async (
   docRef,
   collectionName,
   page,
   limit,
-  sortedByDate = false,
+  sortedByDate = false
 ) => {
   if (page === -1) {
     // Always return the full list of live data if page is -1
-    const liveCollection = docRef.collection(`${collectionName}_live`)
-    const snapshot = await liveCollection.get()
-    return snapshot?.docs?.map(doc => doc.data())
+    const liveCollection = docRef.collection(`${collectionName}_live`);
+    const snapshot = await liveCollection.get();
+    return snapshot?.docs?.map((doc) => doc.data());
   } else {
     const historicalCollection = docRef.collection(
-      `${collectionName}_historical`,
-    )
+      `${collectionName}_historical`
+    );
     const snapshot =
       sortedByDate === false
         ? await historicalCollection
@@ -37,144 +37,154 @@ exports.getList = async (
             .limit(limit)
             .get()
         : await historicalCollection
-            .orderBy('createdAt', 'desc')
+            .orderBy("createdAt", "desc")
             .offset(page * limit)
             .limit(limit)
-            .get()
-    return snapshot?.docs?.map(doc => doc.data())
+            .get();
+    return snapshot?.docs?.map((doc) => doc.data());
   }
-}
+};
 
 exports.add = async (docRef, collectionName, data, sortedByDate = false) => {
-  const liveCollection = docRef.collection(`${collectionName}_live`)
-  const historicalCollection = docRef.collection(`${collectionName}_historical`)
+  const liveCollection = docRef.collection(`${collectionName}_live`);
+  const historicalCollection = docRef.collection(
+    `${collectionName}_historical`
+  );
 
-  const liveData = await liveCollection.get()
-  const liveDataDocs = liveData?.docs
+  const liveData = await liveCollection.get();
+  const liveDataDocs = liveData?.docs;
 
   // if the data already exists in live collection
-  const res = await liveCollection.doc(data.id).get()
+  const res = await liveCollection.doc(data.id).get();
   if (res?.exists) {
     // we just update the data
-    await liveCollection.doc(data.id).set(data, { merge: true })
-    return
+    await liveCollection.doc(data.id).set(data, { merge: true });
+    return;
   }
 
   // if the data already exists in historical collection
-  const hRes = await historicalCollection.doc(data.id).get()
+  const hRes = await historicalCollection.doc(data.id).get();
   if (hRes?.exists) {
     // we just update the data
-    await historicalCollection.doc(data.id).set(data, { merge: true })
-    return
+    await historicalCollection.doc(data.id).set(data, { merge: true });
+    return;
   }
 
   if (sortedByDate === false) {
     // if we don't need to sort by date, we just add the data
     if (liveDataDocs?.length < Constants.liveCollectionCountLimit) {
       // Add the data to the live collection if live collection is not full already
-      const liveRef = liveCollection.doc(data.id)
-      await liveRef.set(data)
+      const liveRef = liveCollection.doc(data.id);
+      await liveRef.set(data);
     } else {
       // If the live collection is full, add the data to the historical collection
-      const historicalRef = historicalCollection.doc(data.id)
-      await historicalRef.set(data)
+      const historicalRef = historicalCollection.doc(data.id);
+      await historicalRef.set(data);
     }
   } else {
     // if need to sort by date, we add the new data to the live collection, and move the oldest data from the live collection to the historical collection (if live collection is full)
-    await liveCollection.doc(data.id).set(data, { merge: true })
+    await liveCollection.doc(data.id).set(data, { merge: true });
 
     if (liveDataDocs?.length >= Constants.liveCollectionCountLimit) {
       const entry = await liveCollection
-        .orderBy('createdAt', 'asc')
+        .orderBy("createdAt", "asc")
         .limit(1)
-        .get()
+        .get();
       if (entry?.docs?.length > 0) {
-        const entryData = entry.docs[0].data()
-        const doc = entry.docs[0]
-        await historicalCollection.doc(doc.id).set(entryData)
-        await liveCollection.doc(doc.id).delete()
+        const entryData = entry.docs[0].data();
+        const doc = entry.docs[0];
+        await historicalCollection.doc(doc.id).set(entryData);
+        await liveCollection.doc(doc.id).delete();
       }
     }
   }
-}
+};
 
 exports.get = async (docRef, collectionName, id) => {
-  const liveCollection = docRef.collection(`${collectionName}_live`)
+  const liveCollection = docRef.collection(`${collectionName}_live`);
   // We first check the live collection
-  const doc = await liveCollection.doc(id).get()
+  const doc = await liveCollection.doc(id).get();
   if (doc?.exists) {
-    console.log(JSON.stringify(doc.data()))
-    return doc.data()
+    console.log(JSON.stringify(doc.data()));
+    return doc.data();
   }
 
   // If we don't find the data in the live collection, we check for it in the historical collection
-  const historicalCollection = docRef.collection(`${collectionName}_historical`)
-  const hDoc = await historicalCollection.doc(id).get()
+  const historicalCollection = docRef.collection(
+    `${collectionName}_historical`
+  );
+  const hDoc = await historicalCollection.doc(id).get();
   if (hDoc?.exists) {
-    console.log(JSON.stringify(doc.data()))
-    return hDoc.data()
+    console.log(JSON.stringify(doc.data()));
+    return hDoc.data();
   }
-  return null
-}
+  return null;
+};
 
 exports.getCount = async (docRef, collectionName) => {
-  const liveCollection = docRef.collection(`${collectionName}_live`)
+  const liveCollection = docRef.collection(`${collectionName}_live`);
   // We first count the live collection
-  const snapshot = await liveCollection.get()
-  const liveCount = snapshot?.docs?.length || 0
+  const snapshot = await liveCollection.get();
+  const liveCount = snapshot?.docs?.length || 0;
 
   // Then we count the historical collection
-  const historicalCollection = docRef.collection(`${collectionName}_historical`)
-  const hSnapshot = await historicalCollection.get()
-  const historicalCount = hSnapshot?.docs?.length || 0
-  return liveCount + historicalCount || 0
-}
+  const historicalCollection = docRef.collection(
+    `${collectionName}_historical`
+  );
+  const hSnapshot = await historicalCollection.get();
+  const historicalCount = hSnapshot?.docs?.length || 0;
+  return liveCount + historicalCount || 0;
+};
 
 exports.getDoc = async (docRef, collectionName, id) => {
-  const liveCollection = docRef.collection(`${collectionName}_live`)
+  const liveCollection = docRef.collection(`${collectionName}_live`);
   // We first check the live collection
-  const doc = await liveCollection.doc(id).get()
+  const doc = await liveCollection.doc(id).get();
   if (doc?.exists) {
-    return doc
+    return doc;
   }
 
   // If we don't find the data in the live collection, we check for it in the historical collection
-  const historicalCollection = docRef.collection(`${collectionName}_historical`)
-  const hDoc = await historicalCollection.doc(id).get()
+  const historicalCollection = docRef.collection(
+    `${collectionName}_historical`
+  );
+  const hDoc = await historicalCollection.doc(id).get();
   if (hDoc?.exists) {
-    return hDoc
+    return hDoc;
   }
-  return null
-}
+  return null;
+};
 
 exports.remove = async (docRef, collectionName, id, sortedByDate = false) => {
-  const liveCollection = docRef.collection(`${collectionName}_live`)
-  const historicalCollection = docRef.collection(`${collectionName}_historical`)
+  const liveCollection = docRef.collection(`${collectionName}_live`);
+  const historicalCollection = docRef.collection(
+    `${collectionName}_historical`
+  );
 
   // We first check if the removed entry is in the historical collection
-  const doc = await historicalCollection.doc(id).get()
+  const doc = await historicalCollection.doc(id).get();
   if (doc.exists) {
     // if it does, we simply remove the entry from the historical collection, and that's it.
-    await historicalCollection.doc(id).delete()
+    await historicalCollection.doc(id).delete();
   } else {
     // the entry might be in the live collection, so let's check
-    const doc = await liveCollection.doc(id).get()
+    const doc = await liveCollection.doc(id).get();
     if (doc.exists) {
       // the entry is in the live collection, so we remove it and then move one of the entries from the historical collection to the live collection
-      await liveCollection.doc(id).delete()
+      await liveCollection.doc(id).delete();
 
       const entry =
         sortedByDate === false
           ? await historicalCollection.limit(1).get()
           : await historicalCollection
-              .orderBy('createdAt', 'desc')
+              .orderBy("createdAt", "desc")
               .limit(1)
-              .get()
+              .get();
       if (entry?.docs?.length > 0) {
-        const entryData = entry.docs[0].data()
-        const doc = entry.docs[0]
-        await liveCollection.doc(doc.id).set(entryData)
-        await historicalCollection.doc(doc.id).delete()
+        const entryData = entry.docs[0].data();
+        const doc = entry.docs[0];
+        await liveCollection.doc(doc.id).set(entryData);
+        await historicalCollection.doc(doc.id).delete();
       } else {
         // if there's no entry in the historical collection, we just remove the entry from the live collection, so nothing else needs to be done here
       }
@@ -183,36 +193,36 @@ exports.remove = async (docRef, collectionName, id, sortedByDate = false) => {
     }
   }
 
-  await liveCollection.doc(id).delete()
-  await historicalCollection.doc(id).delete()
-}
+  await liveCollection.doc(id).delete();
+  await historicalCollection.doc(id).delete();
+};
 
 exports.deleteCollection = async (db, collectionRef) => {
-  const query = collectionRef.limit(Constants.liveCollectionCountLimit)
-  await deleteQueryBatch(db, query)
-}
+  const query = collectionRef.limit(Constants.liveCollectionCountLimit);
+  await deleteQueryBatch(db, query);
+};
 
-const  deleteQueryBatch = async (db, query) => {
-  const snapshot = await query.get()
+const deleteQueryBatch = async (db, query) => {
+  const snapshot = await query.get();
 
-  const batchSize = snapshot.size
+  const batchSize = snapshot.size;
   if (batchSize === 0) {
     // When there are no documents left, we are done
-    return
+    return;
   }
 
   // Delete documents in a batch
-  const batch = db.batch()
+  const batch = db.batch();
   snapshot.docs.forEach((doc) => {
-    batch.delete(doc.ref)
-  })
-  await batch.commit()
+    batch.delete(doc.ref);
+  });
+  await batch.commit();
 
   // Recurse on the next process tick, to avoid
   // exploding the stack.
   process.nextTick(() => {
-    deleteQueryBatch(db, query)
-  })
-}
+    deleteQueryBatch(db, query);
+  });
+};
 
 // socialgraph/{id1}/inbounds_users/{id2}

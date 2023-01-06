@@ -1,0 +1,1 @@
+export const FAST_2_SMS_KEY = "LoyxFDqUBuRn2IVhfAN4HWpPgkibO3KcrlsdJeQTGm790z8CtvmlYVW6voSe7bpKuLJ31RZdhIfH5MyF";

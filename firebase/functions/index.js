@@ -36,9 +36,14 @@ exports.tripDispatch = trip.dispatch;
 
 const imageProcessing = require("./core/imageProcessing");
 exports.generateThumbnail = imageProcessing.generateThumbnail;
+
+
+
 // // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
+
+
+
+// https://firebase.google.com/docs/functions/write-firebase-functions
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //  response.send("Hello from Firebase!");
 // });

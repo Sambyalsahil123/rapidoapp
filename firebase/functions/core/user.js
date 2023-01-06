@@ -1,28 +1,28 @@
-const admin = require('firebase-admin')
+const admin = require("firebase-admin");
 
-const db = admin.firestore()
-const usersRef = db.collection('users')
+const db = admin.firestore();
+const usersRef = db.collection("users");
 
-exports.fetchUser = async userID => {
-  const userSnapshot = await usersRef.doc(userID).get()
+exports.fetchUser = async (userID) => {
+  const userSnapshot = await usersRef.doc(userID).get();
   if (userSnapshot) {
-    return userSnapshot.data()
+    return userSnapshot.data();
   }
-  return null
-}
+  return null;
+};
 
-exports.fetchUserByEmail = async email => {
-  const snapshot = await usersRef.where('email', '==', email).get()
+exports.fetchUserByEmail = async (email) => {
+  const snapshot = await usersRef.where("email", "==", email).get();
   if (snapshot?.docs?.length == 0) {
-    return null
+    return null;
   }
-  const user = snapshot.docs[0]
+  const user = snapshot.docs[0];
   if (user) {
-    return user.data()
+    return user.data();
   }
-  return null
-}
+  return null;
+};
 
 exports.updateUser = async (userID, data) => {
-  await usersRef.doc(userID).set(data, { merge: true })
-}
+  await usersRef.doc(userID).set(data, { merge: true });
+};
