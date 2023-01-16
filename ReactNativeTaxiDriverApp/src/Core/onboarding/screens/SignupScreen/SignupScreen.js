@@ -12,26 +12,24 @@ import {
 import axios from 'axios'
 import Button from 'react-native-button'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useDispatch } from 'react-redux'
 import { useTheme, useTranslations } from 'dopenative'
-import dynamicStyles from './styles'
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
 import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector'
-import { setUserData } from '../../redux/auth'
 import TermsOfUseView from '../../components/TermsOfUseView'
 import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
-import { useAuth } from '../../hooks/useAuth'
-import SignupOnBoard from './SignupOnboard'
-import SignupOnboardImg from './SignOnboardImg'
+import { SignupOnBoard, SignOnBoardImg, dynamicStyles } from '../SignupScreen'
 import Img from './upload.png'
 import { OTPVerificationModal } from '../SmsAuthenticationScreen/OTPVerificationModal'
 import storage from '@react-native-firebase/storage'
+import {
+  checkFields,
+  sendAadharForVerification,
+  trimFields,
+} from '../../utils/signup'
 
 const SignupScreen = props => {
-
   const [modalVisible, setModalVisible] = useState(false)
   const { navigation } = props
-  // const dispatch = useDispatch()
   const { config } = useOnboardingConfig()
   const { localized } = useTranslations()
   const { theme, appearance } = useTheme()
@@ -51,12 +49,12 @@ const SignupScreen = props => {
     vehicleInsuranceImg: null,
   })
 
-  ////// UPLOAD IMAGES TO FIRESTORE
+  //UPLOAD IMAGES TO FIRESTORE
 
   const uploadDocs = () => {
     setLoading(true)
     const allData = {
-      profilePhoto: profilePictureFile.uri,
+      profilePhoto: profilePictureFile?.uri,
       User_Front_Image_Of_Driving_License: driverDocuments?.backImage,
       User_Back_Image_Of_Driving_License: driverDocuments?.frontImage,
       User_RC_Image: driverDocuments?.rcImg,
@@ -69,27 +67,6 @@ const SignupScreen = props => {
       setLoading(false)
       Alert.alert('', 'Please upload all required documents')
     }
-  }
-
-  const validateAadhar = text => {
-    const reg = new RegExp(
-      /(^[0-9]{4}[0-9]{4}[0-9]{4}$)|(^[0-9]{4}\s[0-9]{4}\s[0-9]{4}$)|(^[0-9]{4}-[0-9]{4}-[0-9]{4}$)/,
-    )
-    return reg.test(text) ? true : false
-  }
-  const validatePhoneNumber = text => {
-    let reg = /^(\+\d{1,3}[- ]?)?\d{10}$/
-    return reg.test(text) ? true : false
-  }
-
-  const trimFields = fields => {
-    var trimmedFields = {}
-    Object.keys(fields).forEach(key => {
-      if (fields[key]) {
-        trimmedFields[key] = fields[key].trim()
-      }
-    })
-    return trimmedFields
   }
 
   const uploadImage = async () => {
@@ -111,13 +88,13 @@ const SignupScreen = props => {
     for (const [key, value] of Object.entries(allData)) {
       if (value !== null) {
         const reference = referenceCreator.ref(
-          `User Data/${generatedFolderName}/${key}`,
+          `Users Documents/${generatedFolderName}/${key}`,
         )
 
         try {
           await reference.putFile(value)
           const url = await storage()
-            .ref(`User Data/${generatedFolderName}/${key}`)
+            .ref(`Users Documents/${generatedFolderName}/${key}`)
             .getDownloadURL()
           stateObj[key] = url
         } catch (error) {
@@ -132,75 +109,17 @@ const SignupScreen = props => {
     setLoading(false)
   }
 
-  const checkFields = () => {
-    if (
-      !(
-        inputFields?.carModel &&
-        inputFields?.carPlate &&
-        inputFields?.lastName &&
-        inputFields?.firstName
-      )
-    ) {
-      Alert.alert(
-        '',
-        localized('All fields are required!'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      return false
-    }
-
-    if (!validateAadhar(inputFields?.aadharCard?.trim())) {
-      Alert.alert(
-        '',
-        localized('Please enter a valid  Aadhar Number.'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      return false
-    }
-
-    if (!validatePhoneNumber(inputFields?.phoneNumber?.trim())) {
-      Alert.alert(
-        '',
-        localized('Please enter a valid  Phone Number.'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      return false
-    }
-    if (!profilePictureFile) {
-      Alert.alert(
-        '',
-        localized('Please upload a Profile Picture'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      return false
-    }
-    return true
-  }
-
   const onRegister = async () => {
-    const areFiedsTrue = checkFields()
+    const areFiedsTrue = checkFields(inputFields, profilePictureFile, localized)
 
     if (!areFiedsTrue) {
       return
     }
-
     setLoading(true)
 
     const userDetails = {
       ////// SEND USER SIGUP DATA IN DB
-      photoFile: documentUrls.profilePhoto,
+      profilePictureURL: documentUrls.profilePhoto,
       ...trimFields(inputFields),
       appIdentifier: config.appIdentifier,
       images: documentUrls,
@@ -246,11 +165,11 @@ const SignupScreen = props => {
     try {
       const response = await axios.post(otpEndPoint, {
         phoneNumber: Number(restructuredPhoneNumber),
+        IsApproved: false,
       })
 
-      if (response.data.success) {
+      if (response?.data?.success) {
         setLoading(false)
-
         return setValues()
       }
 
@@ -258,7 +177,6 @@ const SignupScreen = props => {
         alert(response?.data?.error)
         setLoading(false)
       }
-
       setLoading(false)
     } catch (error) {
       alert('something went wrong, please try again later')
@@ -278,6 +196,7 @@ const SignupScreen = props => {
     return (
       <>
         <TextInput
+          maxLength={field.maxLength}
           key={index?.toString()}
           style={styles.InputContainer}
           placeholder={field.placeholder}
@@ -293,10 +212,10 @@ const SignupScreen = props => {
     )
   }
 
-  const renderSignupWithEmail = () => {
+  const renderSignWithPhoneNumber = () => {
     return (
       <>
-        {config.signupFields.map(renderInputField)}
+        {config?.signupFields?.map(renderInputField)}
 
         <View style={{ marginTop: 22 }}>
           <Modal
@@ -336,8 +255,8 @@ const SignupScreen = props => {
             <SignupOnBoard
               setImage={setDriverDocuments}
               image={{
-                frontImage: driverDocuments.frontImage,
-                backImage: driverDocuments.backImage,
+                frontImage: driverDocuments?.frontImage,
+                backImage: driverDocuments?.backImage,
               }}
             />
             <Text
@@ -350,7 +269,7 @@ const SignupScreen = props => {
               Please upload RC image for verification.
             </Text>
 
-            <SignupOnboardImg
+            <SignOnBoardImg
               setSingleImg={rcImg =>
                 setDriverDocuments(prev => ({
                   ...prev,
@@ -358,7 +277,7 @@ const SignupScreen = props => {
                 }))
               }
               singleImg={{
-                img: driverDocuments.rcImg,
+                img: driverDocuments?.rcImg,
               }}
             />
             <Text />
@@ -366,10 +285,9 @@ const SignupScreen = props => {
             <Text
               placeholderTextColor="#aaaaaa"
               style={{ fontWeight: 'bold', textAlign: 'center' }}>
-              Please upload VehicleInsuranceImg insurance image for
-              verification.
+              Please upload Vehicle insurance image for verification.
             </Text>
-            <SignupOnboardImg
+            <SignOnBoardImg
               setSingleImg={vehicleInsuranceImg =>
                 setDriverDocuments(prev => ({
                   ...prev,
@@ -377,7 +295,7 @@ const SignupScreen = props => {
                 }))
               }
               singleImg={{
-                img: driverDocuments.vehicleInsuranceImg,
+                img: driverDocuments?.vehicleInsuranceImg,
               }}
             />
             <Text />
@@ -396,7 +314,11 @@ const SignupScreen = props => {
               throwDocsErr ? { borderWidth: 1, borderColor: 'red' } : '',
             ]}
             onPress={() => {
-              const areFieldsTrue = checkFields()
+              const areFieldsTrue = checkFields(
+                inputFields,
+                profilePictureFile,
+                localized,
+              )
               if (areFieldsTrue) {
                 setModalVisible(true)
               }
@@ -437,7 +359,7 @@ const SignupScreen = props => {
           <TNProfilePictureSelector
             setProfilePictureFile={setProfilePictureFile}
           />
-          {renderSignupWithEmail()}
+          {renderSignWithPhoneNumber()}
           <TermsOfUseView
             tosLink={config.tosLink}
             privacyPolicyLink={config.privacyPolicyLink}

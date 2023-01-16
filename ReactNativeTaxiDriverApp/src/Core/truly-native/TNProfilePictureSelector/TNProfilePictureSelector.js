@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableHighlight,
   Platform,
-  Text,
 } from 'react-native'
 import ActionSheet from 'react-native-actionsheet'
 import ImageView from 'react-native-image-view'
@@ -13,7 +12,6 @@ import * as ImagePicker from 'expo-image-picker'
 import FastImage from 'react-native-fast-image'
 import { useTheme, useTranslations } from 'dopenative'
 import dynamicStyles from './styles'
-
 const Image = FastImage
 
 const TNProfilePictureSelector = props => {
@@ -21,7 +19,6 @@ const TNProfilePictureSelector = props => {
     props.profilePictureURL || '',
   )
   const originalProfilePictureURL = useRef(props.profilePictureURL || '')
-
   if (originalProfilePictureURL.current !== (props.profilePictureURL || '')) {
     originalProfilePictureURL.current = props.profilePictureURL || ''
     setProfilePictureURL(props.profilePictureURL || '')
@@ -34,6 +31,7 @@ const TNProfilePictureSelector = props => {
   const { localized } = useTranslations()
   const { theme, appearance } = useTheme()
   const styles = dynamicStyles(theme, appearance)
+  const [btnType, setBtnType] = useState(null)
 
   const handleProfilePictureClick = url => {
     if (url) {
@@ -78,7 +76,7 @@ const TNProfilePictureSelector = props => {
     }
   }
 
-  const onPressAddPhotoBtn = async () => {
+  const pickImage = async () => {
     const options = {
       title: localized('Select photo'),
       cancelButtonTitle: localized('Cancel'),
@@ -94,27 +92,54 @@ const TNProfilePictureSelector = props => {
 
     await getPermissionAsync()
 
-    // let result = await ImagePicker.launchCameraAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   // mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //   // allowsEditing: true,
-    //   // aspect: [4, 3],
-    //   // quality: 1,
-    // })
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // mediaTypes: ImagePicker.MediaTypeOptions.All,
-      // allowsEditing: true,
-      // aspect: [4, 3],
-      // quality: 1,
+      allowsEditing: true,
+      quality: 0.5,
     })
 
     console.log(result)
 
     if (!result.cancelled) {
-      setProfilePictureURL(result.uri)
-      props.setProfilePictureFile(result)
+      // setProfilePictureURL(result.uri)
+
+      // props.setProfilePictureFile(result)
+
+      switch (btnType) {
+        case 'img':
+          // setSingleImg(result?.uri)
+          setProfilePictureURL(result.uri)
+          props.setProfilePictureFile(result)
+
+          break
+        default:
+          break
+      }
+    }
+  }
+
+  const openCamera = async () => {
+    const { status } = await ImagePicker?.requestCameraPermissionsAsync()
+    if (status !== 'granted') {
+      alert('Sorry, we need camera permissions to make this work!')
+      return
+    }
+
+    let result = await ImagePicker?.launchCameraAsync({
+      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
+      allowsEditing: true,
+      quality: 0.5,
+    })
+
+    switch (btnType) {
+      case 'img':
+        // setSingleImg(result?.uri)
+        setProfilePictureURL(result.uri)
+        props.setProfilePictureFile(result)
+
+        break
+      default:
+        break
     }
   }
 
@@ -126,33 +151,53 @@ const TNProfilePictureSelector = props => {
     </TouchableOpacity>
   )
 
-  const showActionSheet = index => {
-    setSelectedPhotoIndex(index)
+  const showActionSheet = btnEvent => {
+    setSelectedPhotoIndex(btnEvent)
     actionSheet.current.show()
+    setBtnType(btnEvent)
   }
 
   const onActionDone = index => {
-    if (index === 0) {
-      onPressAddPhotoBtn()
+    if (index == 0) {
+      // onPressAddPhotoBtn()
+      pickImage()
     }
+    // if (index == 2) {
+    //   // Remove button
+    //   if (profilePictureURL) {
+    //     setProfilePictureURL(null)
+    //     props.setProfilePictureFile(null)
+    //   }
+    // }
 
-    if (index === 2) {
-      // Remove button
-      if (profilePictureURL) {
-        setProfilePictureURL(null)
-        props.setProfilePictureFile(null)
-      }
+    if (index == 1) {
+      openCamera()
     }
   }
 
-  const actionsheetOptions = profilePictureURL
-    ? [
-        localized('Change Profile Photo'),
-        localized('Cancel'),
-        localized('Remove Profile Photo'),
-      ]
-    : [localized('Set Profile Photo '), localized('Cancel')]
+  // const actionSheet = useRef(null)
 
+  // const showActionSheet = btnEvent => {
+  //   actionSheet?.current?.show()
+  //   setBtnType(btnEvent)
+  // }
+
+  // const onActionDone = index => {
+  //   if (index == 0) {
+  //     openCamera()
+  //   }
+  //   if (index == 1) {
+  //     pickImage()
+  //   }
+  // }
+
+  // const actionsheetOptions = profilePictureURL
+  //   ? [
+  //       localized('Change Profile Photo'),
+  //       localized('Cancel'),
+  //       localized('Remove Profile Photo'),
+  //     ]
+  //   : [localized('Set Profile Photo '), localized('Cancel')]
   return (
     <>
       <View style={styles.imageBlock}>
@@ -170,7 +215,11 @@ const TNProfilePictureSelector = props => {
             onError={onImageError}
           />
         </TouchableHighlight>
-        <TouchableOpacity onPress={showActionSheet} style={styles.addButton}>
+
+        <TouchableOpacity
+          name="img"
+          onPress={() => showActionSheet('img')}
+          style={styles.addButton}>
           <Image style={styles.cameraIcon} source={theme.icons.cameraFilled} />
         </TouchableOpacity>
       </View>
@@ -178,9 +227,9 @@ const TNProfilePictureSelector = props => {
         <ActionSheet
           ref={actionSheet}
           title={localized("Please check that the image aren't blurred.")}
-          options={actionsheetOptions}
-          cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          options={['Gallery', 'Camera', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
           onPress={index => {
             onActionDone(index)
           }}
@@ -191,15 +240,6 @@ const TNProfilePictureSelector = props => {
           onClose={() => setIsImageViewerVisible(false)}
           controls={{ close: closeButton }}
         />
-
-        {/* {profilePictureURL ? (
-          true
-        ) : (
-          <Text style={{ textAlign: 'center', color: 'red' }}>
-            {' '}
-            Please upload Profile picture{' '}
-          </Text>
-        )} */}
       </ScrollView>
     </>
   )

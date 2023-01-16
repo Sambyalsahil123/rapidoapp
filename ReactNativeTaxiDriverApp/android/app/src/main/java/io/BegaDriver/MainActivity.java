@@ -19,6 +19,22 @@ public class MainActivity extends ReactActivity {
         return "BegaDriver";
     }
 
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(null);
+  }
+
+
+
+    // protected void onCreate(Bundle savedInstanceState) {
+	// 	if (savedInstanceState != null) {
+	// 		savedInstanceState.remove("android:support:fragments");
+	// 		savedInstanceState.remove("android:fragments");
+	// 	}
+    //            super.onCreate(savedInstanceState);
+    // }
+  
+
     /**
     * Returns the instance of the {@link ReactActivityDelegate}. There the RootView is created and
     * you can specify the rendered you wish to use (Fabric or the older renderer).

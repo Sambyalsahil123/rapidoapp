@@ -4,6 +4,7 @@
 const functions = require("firebase-functions");
 
 const admin = require("firebase-admin");
+// const db = admin.firestore();
 
 admin.initializeApp();
 
@@ -118,8 +119,19 @@ exports.login = functions.https.onRequest(async (request, response) => {
     const user = await userRef
       .where("phoneNumber", "==", data.phoneNumber)
       .get();
+
     if (user.docs.length <= 0) {
-      const message = "user doesn't exist, please signup first";
+      const message = "User can't found, Please signup first";
+      throw new Error(message);
+    }
+
+    const userData = user.docs[0].data();
+    const notApproved = userData.IsApproved === false;
+
+    // functions.logger.log(userData, notApproved, "userData asdfasdfads");
+
+    if (notApproved) {
+      const message = "Your account is under review";
       throw new Error(message);
     }
 
@@ -142,6 +154,7 @@ exports.login = functions.https.onRequest(async (request, response) => {
       await OTPRef.add({
         phoneNumber: data.phoneNumber,
         otp: generatedOTP,
+        // timestamp: new Date(),
       });
 
       response.json({success: true});
@@ -150,3 +163,45 @@ exports.login = functions.https.onRequest(async (request, response) => {
     response.json({success: false, error: error.message || error});
   }
 });
+
+// ///DELETE OTP DATA FROM FIRESTORE AFTER 15 MINUTES
+
+// exports.deleteAfter15Minutes = functions.firestore
+//   .document("otpCollection")
+//   .onCreate(async (snap, context) => {
+//     // Set the document to be deleted 15 minutes after it is created
+
+//     // const deleteAfter = new Date(
+//     //   snap.createTime.toDate().getTime() + 15 * 60 * 1000,
+//     // );
+
+//     // Schedule the document to be deleted
+//     try {
+//       await db
+//         .runTransaction(async (transaction) => {
+//           const doc = await transaction.get(snap.ref);
+//           if (doc.exists) {
+//             transaction.delete(snap.ref);
+//           }
+//         });
+//       console.log(`Document ${context.params.docId} scheduled for deletion.`);
+//       return null;
+//     } catch (err) {
+//       console.error(`Error scheduling document for deletion: ${err}`);
+//       return null;
+//     }
+//   });
+
+                         // ///// OR
+
+// exports.deleteOldOtp = functions.pubsub.schedule("every 15 minutes").onRun((context) => {
+//   // Get a reference to the Firestore collection
+//   const collectionRef = admin.firestore().collection("otpCollection");
+
+//     // Create a date for 15 minutes ago
+//     const fifteenMinutesAgo = new Date();
+//     fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
+
+//     // Delete any documents with a timestamp earlier than 15 minutes ago
+//     return collectionRef.where("timestamp", "<", fifteenMinutesAgo).delete();
+//   });

@@ -119,7 +119,7 @@ export const ConfigProvider = ({ children }) => {
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carModel',
+        key: 'carName',
         placeholder: localized('Car Model'),
       },
       {
@@ -127,27 +127,34 @@ export const ConfigProvider = ({ children }) => {
         type: 'ascii-capable',
         editable: true,
         regex: regexForNames,
-        key: 'carPlate',
+        key: 'carNumber',
         placeholder: localized('Car License Plate'),
+      },
+      {
+        displayName: localized('Phone Number'),
+        type: 'phone-pad',
+        maxLength: 12,
+        editable: true,
+        regex: regexForPhoneNumber,
+        key: 'phoneNumber',
+        placeholder: 'Phone Number',
       },
       {
         displayName: localized('Aadhar Card'),
         type: 'numeric',
         secureTextEntry: false,
         editable: true,
+        maxLength: 12,
         regex: regexForAadhar,
         key: 'aadharCard',
         placeholder: 'Aadhar Card',
         autoCapitalize: 'none',
       },
-      {
-        displayName: localized('Phone Number'),
-        type: 'phone-pad',
-        editable: true,
-        regex: regexForPhoneNumber,
-        key: 'phoneNumber',
-        placeholder: 'Phone Number',
-      },
+      // {
+      //   displayName: localized('Verify Aadhar Card'),
+      //   type: 'custom',
+      //   key: 'verifyAadharCard',
+      // },
     ],
     editProfileFields: {
       sections: [
@@ -200,26 +207,19 @@ export const ConfigProvider = ({ children }) => {
             // },
           ],
         },
-        // {
-        //   title: localized('PRIVATE DETAILS'),
-        //   fields: [
-        //     // {
-        //     //   displayName: localized('E-mail Address'),
-        //     //   type: 'text',
-        //     //   editable: false,
-        //     //   key: 'email',
-        //     //   placeholder: 'Your email address',
-        //     // },
-        //     // {
-        //     //   displayName: localized('Phone Number'),
-        //     //   type: 'numeric',
-        //     //   editable: true,
-        //     //   regex: regexForPhoneNumber,
-        //     //   key: 'phone',
-        //     //   placeholder: 'Your phone number',
-        //     // },
-        //   ],
-        // },
+        {
+          title: localized('PRIVATE DETAILS'),
+          fields: [
+            {
+              displayName: localized('Phone Number'),
+              type: 'numeric',
+              editable: true,
+              regex: regexForPhoneNumber,
+              key: 'phone',
+              placeholder: 'Your phone number',
+            },
+          ],
+        },
       ],
     },
     userSettingsFields: {

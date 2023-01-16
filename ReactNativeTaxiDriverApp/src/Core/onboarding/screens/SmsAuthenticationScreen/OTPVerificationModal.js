@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
@@ -14,6 +15,8 @@ import dynamicStyles from './styles'
 import { useTheme } from 'dopenative'
 import axios from 'axios'
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
+import { useDispatch } from 'react-redux'
+import { setUserData } from '../../redux/auth'
 
 export const OTPVerificationModal = ({ inputFields }) => {
   const navigation = useNavigation()
@@ -26,6 +29,8 @@ export const OTPVerificationModal = ({ inputFields }) => {
   })
 
   const Customstyles = dynamicStyles(theme, appearance)
+
+  const dispatch = useDispatch()
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -48,27 +53,35 @@ export const OTPVerificationModal = ({ inputFields }) => {
 
     try {
       setLoading(true)
-     const res= await axios.post(confirmOTPUrl, {
+      const res = await axios.post(confirmOTPUrl, {
         ...inputFields,
         otp: Number(otp.trim()),
         phoneNumber: Number(restructuredPhoneNumber.trim()),
+        IsApproved: false,
       })
       // navigation?.navigate('MainStack', {})
       console.log(res.data.success, res.data)
       // setParameters({ isOTPInvalid: true })
+      if (res.data.success) {
+        // navigation?.navigate('MainStack', {})
+        Alert.alert(
+          '',
+          'Your registration is under process, please wait for 24 hours',
+        )
 
-      if(res.data.success){
-        navigation?.navigate('MainStack', {})
+        navigation.navigate('LoginStack', { screen: 'Welcome' })
+
+        console.log(inputFields, 'INPUTFIELD')
+
+        dispatch(setUserData({ user: inputFields }))
         return
         // navigation.navigate('LoginStack', {
         //   screen: 'Login',
         // })
-      }else{
-        console.log(res?.data?.error,"this is err");
+      } else {
+        console.log(res?.data?.error, 'this is err')
         throw new Error(res?.data?.error)
       }
-
-     
     } catch (error) {
       alert(error)
       setParameters({ isOTPInvalid: true })

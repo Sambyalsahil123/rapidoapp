@@ -30,6 +30,7 @@ const LoginScreen = props => {
     isPhoneNumberInvalid: false,
     isOTPInvalid: false,
   })
+
   // const [errorHandling, setErrorHandling] = useState({
   //   showError: false,
   //   errorMessage: false,
@@ -66,7 +67,7 @@ const LoginScreen = props => {
             Alert.alert(
               '',
               localized(response.data.error),
-              [{ text: localized('OK') }],
+              [{ text: localized('OK') }],  
               {
                 cancelable: false,
               },
@@ -151,6 +152,7 @@ const LoginScreen = props => {
         </TouchableOpacity>
         <Text style={styles.title}>{localized('Log In')}</Text>
         <TextInput
+          maxLength={12}
           style={styles.InputContainer}
           placeholder={localized('Phone Number')}
           keyboardType="phone-pad"

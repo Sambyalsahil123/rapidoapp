@@ -16,7 +16,11 @@ const IMDrawerMenu = props => {
   const styles = dynamicStyles(theme, appearance)
 
   const authManager = useAuth()
+
   const currentUser = useCurrentUser()
+
+
+
   const dispatch = useDispatch()
 
   const defaultProfilePhotoURL =
@@ -57,7 +61,7 @@ const IMDrawerMenu = props => {
       />
     ),
   )
-
+console.log(currentUser,"currentUser");
   const lowerMenu =
     menuItemsSettings.length == 0 ? null : (
       <View>
@@ -72,16 +76,16 @@ const IMDrawerMenu = props => {
           style={styles.imageContainer}
           source={{
             uri:
-              currentUser.photoURI ||
-              currentUser.profilePictureURL ||
+              currentUser?.photoURI ||
+              currentUser?.profilePictureURL ||
               defaultProfilePhotoURL,
           }}
         />
         <Text style={[styles.info, props.nameStyle]}>
-          {currentUser.firstName} {currentUser.lastName}
+          {currentUser?.firstName} {currentUser?.lastName}
         </Text>
         <Text style={[styles.email, props.emailStyle]}>
-          {currentUser.email}
+          {currentUser?.phoneNumber}
         </Text>
       </View>
       <View style={styles.content}>
