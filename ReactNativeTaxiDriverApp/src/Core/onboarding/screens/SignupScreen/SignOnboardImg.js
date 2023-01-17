@@ -1,23 +1,42 @@
-/////// EXPO IMG PICKER
+////REACT NATIVE IMAGE PICKER
 
+import ImagePicker from 'react-native-image-picker'
+import ActionSheet from 'react-native-actionsheet'
 import React, { useState, useRef } from 'react'
 import { View, StyleSheet, TouchableOpacity, Text, Modal } from 'react-native'
 import { Button } from 'react-native-elements'
-import ActionSheet from 'react-native-actionsheet'
-import * as ImagePicker from 'expo-image-picker'
 import FastImage from 'react-native-fast-image'
 
 const Image = FastImage
 
 const SignupOnboardImg = ({ singleImg, setSingleImg }) => {
-  const [btnType, setBtnType] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
-
   const actionSheet = useRef(null)
+  const [btnType, setBtnType] = useState(null)
 
   const showActionSheet = btnEvent => {
     actionSheet?.current?.show()
     setBtnType(btnEvent)
+  }
+  const pickImage = () => {
+    ImagePicker.launchImageLibrary(
+      {
+       quality: 0.5,
+        allowsEditing: true,
+        mediaType: 'photo',
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setSingleImg(response.uri)
+        }
+      },
+    )
   }
 
   const onActionDone = index => {
@@ -29,47 +48,26 @@ const SignupOnboardImg = ({ singleImg, setSingleImg }) => {
     }
   }
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
-    let result = await ImagePicker?.launchImageLibraryAsync({
-      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
+  const openCamera = () => {
+    ImagePicker.launchCamera(
+      {
+        quality: 0.5,
+        allowsEditing: true,
 
-    if (!result?.cancelled) {
-      switch (btnType) {
-        case 'img':
-          setSingleImg(result?.uri)
-          break
-        default:
-          break
-      }
-    }
-  }
-
-  const openCamera = async () => {
-    const { status } = await ImagePicker?.requestCameraPermissionsAsync()
-    if (status !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!')
-      return
-    }
-
-    let result = await ImagePicker?.launchCameraAsync({
-      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
-
-    if (!result?.cancelled) {
-      switch (btnType) {
-        case 'img':
-          setSingleImg(result.uri)
-          break
-        default:
-          break
-      }
-    }
+        mediaType: 'photo',
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setSingleImg(response.uri)
+        }
+      },
+    )
   }
 
   return (
@@ -168,4 +166,3 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
   },
 })
-

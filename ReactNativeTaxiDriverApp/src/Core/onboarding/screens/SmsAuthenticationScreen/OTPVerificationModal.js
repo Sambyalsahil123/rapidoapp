@@ -25,6 +25,7 @@ export const OTPVerificationModal = ({ inputFields }) => {
   const [loading, setLoading] = useState(false)
 
   const [parameters, setParameters] = useState({
+    // isOTPSent: false,
     isOTPInvalid: false,
   })
 
@@ -119,6 +120,15 @@ export const OTPVerificationModal = ({ inputFields }) => {
         {parameters.isOTPInvalid && (
           <Text style={styles.error}>Please Enter Valid OTP</Text>
         )}
+
+{/* 
+        <Button
+          containerStyle={styles.loginContainer}
+          style={styles.loginText}
+          onPress={() => onRegister()}>
+          {localized(!parameters.isOTPSent ? 'Send OTP' : 'Resend')}
+        </Button> */}
+
 
         <Button
           containerStyle={styles.submitButton}

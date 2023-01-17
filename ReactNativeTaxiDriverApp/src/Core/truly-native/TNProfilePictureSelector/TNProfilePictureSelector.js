@@ -8,10 +8,12 @@ import {
 } from 'react-native'
 import ActionSheet from 'react-native-actionsheet'
 import ImageView from 'react-native-image-view'
-import * as ImagePicker from 'expo-image-picker'
+import ImagePicker from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
 import { useTheme, useTranslations } from 'dopenative'
 import dynamicStyles from './styles'
+import { Permissions } from 'expo'
+
 const Image = FastImage
 
 const TNProfilePictureSelector = props => {
@@ -61,87 +63,138 @@ const TNProfilePictureSelector = props => {
     setProfilePictureURL(defaultProfilePhotoURL)
   }
 
-  const getPermissionAsync = async () => {
-    if (Platform.OS === 'ios') {
-      let permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync(false)
+  // const getPermissionAsync = async () => {
+  //   if (Platform.OS === 'ios') {
+  //     let permissionResult =
+  //       await ImagePicker.requestMediaLibraryPermissionsAsync(false)
 
-      if (permissionResult.granted === false) {
-        alert(
-          localized(
-            'Sorry, we need camera roll permissions to make this work.',
-          ),
-        )
-      }
-    }
-  }
+  //     if (permissionResult.granted === false) {
+  //       alert(
+  //         localized(
+  //           'Sorry, we need camera roll permissions to make this work.',
+  //         ),
+  //       )
+  //     }
+  //   }
+  // }
 
-  const pickImage = async () => {
-    const options = {
-      title: localized('Select photo'),
-      cancelButtonTitle: localized('Cancel'),
-      takePhotoButtonTitle: localized('Take Photo'),
-      chooseFromLibraryButtonTitle: localized('Choose from Library'),
-      maxWidth: 2000,
-      maxHeight: 2000,
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
+  const pickImage = () => {
+    ImagePicker.launchImageLibrary(
+      {
+        quality: 0.5,
+        allowsEditing: true,
+
+        mediaType: 'photo',
       },
-    }
-
-    await getPermissionAsync()
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
-
-    console.log(result)
-
-    if (!result.cancelled) {
-      // setProfilePictureURL(result.uri)
-
-      // props.setProfilePictureFile(result)
-
-      switch (btnType) {
-        case 'img':
-          // setSingleImg(result?.uri)
-          setProfilePictureURL(result.uri)
-          props.setProfilePictureFile(result)
-
-          break
-        default:
-          break
-      }
-    }
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setProfilePictureURL(response.uri)
+          props.setProfilePictureFile(response)
+        }
+      },
+    )
   }
 
   const openCamera = async () => {
-    const { status } = await ImagePicker?.requestCameraPermissionsAsync()
-    if (status !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!')
-      return
-    }
-
-    let result = await ImagePicker?.launchCameraAsync({
-      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
-
-    switch (btnType) {
-      case 'img':
-        // setSingleImg(result?.uri)
-        setProfilePictureURL(result.uri)
-        props.setProfilePictureFile(result)
-
-        break
-      default:
-        break
-    }
+    // const { status } = await Permissions.askAsync(Permissions.CAMERA)
+    // if (status !== 'granted') {
+    //   alert('Sorry, we need camera permissions to make this work!')
+    //   return
+    // }
+    ImagePicker.launchCamera(
+      {
+        quality: 0.5,
+        allowsEditing: true,
+        mediaType: 'photo',
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setProfilePictureURL(response.uri)
+          props.setProfilePictureFile(response)
+        }
+      },
+    )
   }
+  // const pickImage = async () => {
+  //   const options = {
+  //     title: localized('Select photo'),
+  //     cancelButtonTitle: localized('Cancel'),
+  //     takePhotoButtonTitle: localized('Take Photo'),
+  //     chooseFromLibraryButtonTitle: localized('Choose from Library'),
+  //     maxWidth: 2000,
+  //     maxHeight: 2000,
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       path: 'images',
+  //     },
+  //   }
+
+  //   // await getPermissionAsync()
+
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     quality: 0.5,
+  //     aspect: [1, 1],
+  //   })
+
+  //   console.log(result)
+
+  // if (!result.cancelled) {
+  //   // setProfilePictureURL(result.uri)
+
+  //   // props.setProfilePictureFile(result)
+
+  // switch (btnType) {
+  //   case 'img':
+  //     // setSingleImg(result?.uri)
+  //     setProfilePictureURL(result.uri)
+  //     props.setProfilePictureFile(result)
+
+  //     break
+  //   default:
+  //     break
+  // }
+  // }
+  // }
+
+  // const openCamera = async () => {
+  //   const { status } = await ImagePicker?.requestCameraPermissionsAsync()
+  //   if (status !== 'granted') {
+  //     alert('Sorry, we need camera permissions to make this work!')
+  //     return
+  //   }
+
+  //   // let result = await ImagePicker?.launchCameraAsync({
+  //   //   mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
+  //   //   allowsEditing: true,
+  //   //   quality: 0.5,
+  //   //   aspect: [1, 1],
+  //   // })
+
+  //   switch (btnType) {
+  //     case 'img':
+  //       // setSingleImg(result?.uri)
+  //       setProfilePictureURL(result.uri)
+  //       props.setProfilePictureFile(result)
+
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
 
   const closeButton = () => (
     <TouchableOpacity

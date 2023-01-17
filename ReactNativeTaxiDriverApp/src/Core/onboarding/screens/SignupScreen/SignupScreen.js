@@ -50,7 +50,7 @@ const SignupScreen = props => {
   })
 
   //UPLOAD IMAGES TO FIRESTORE
-
+  console.log(profilePictureFile, 'this is profile picture URL')
   const uploadDocs = () => {
     setLoading(true)
     const allData = {
@@ -97,8 +97,10 @@ const SignupScreen = props => {
             .ref(`Users Documents/${generatedFolderName}/${key}`)
             .getDownloadURL()
           stateObj[key] = url
+          console.log(allData, 'this is all data')
         } catch (error) {
           setLoading(false)
+          console.log(error, 'this is error')
           Alert.alert('', 'Something went wrong, please try again')
         }
       }
@@ -190,6 +192,37 @@ const SignupScreen = props => {
       ...prevFields,
       [key]: text,
     }))
+  }
+
+  const IsUserExist = async () => {
+    setLoading(true)
+    const phoneLength = inputFields.phoneNumber.length
+
+    const restructuredPhoneNumber = `${
+      phoneLength === 13
+        ? inputFields.phoneNumber
+        : '000' + inputFields.phoneNumber
+    }`.slice(3, 13)
+
+    const checkUserExist =
+      ' https://us-central1-bega-370917.cloudfunctions.net/isUserExists'
+
+    try {
+      const response = await axios.post(checkUserExist, {
+        phoneNumber: Number(restructuredPhoneNumber),
+      })
+      if (response?.data?.error) {
+        alert(response?.data?.error)
+        setLoading(false)
+      }
+      if (response?.data?.success) {
+        setModalVisible(true)
+        setLoading(false)
+      }
+    } catch (error) {
+      setLoading(false)
+      alert(error)
+    }
   }
 
   const renderInputField = (field, index) => {
@@ -320,7 +353,8 @@ const SignupScreen = props => {
                 localized,
               )
               if (areFieldsTrue) {
-                setModalVisible(true)
+                // setModalVisible(true)
+                IsUserExist()
               }
             }}>
             <Text style={{ marginTop: 10, marginRight: 25 }}>

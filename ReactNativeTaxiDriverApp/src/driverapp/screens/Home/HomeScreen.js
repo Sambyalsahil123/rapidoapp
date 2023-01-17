@@ -39,6 +39,7 @@ function HomeScreen(props) {
   const [routeId, setRouteId] = useState(null)
 
   const currentUser = useSelector(state => state.auth.user)
+  console.log(currentUser , "CURRENTTT USER")
 
   const dispatch = useDispatch()
 
@@ -115,7 +116,7 @@ function HomeScreen(props) {
   }
 
   useEffect(() => {
-    console.log('positionWatchID')
+    console.log('this is positionWatchID')
     return () => {
       //positionWatchID != null && Geolocation.clearWatch(positionWatchID);
     }
@@ -145,6 +146,7 @@ function HomeScreen(props) {
 
   const goOnline = () => {
     apiManager.current?.goOnline(currentUser)
+    console.log(currentUser,"currentuser");
   }
 
   const goOffline = () => {

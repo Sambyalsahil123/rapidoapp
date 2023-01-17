@@ -19,6 +19,26 @@ const OTPRef = database.collection("otpCollection");
 
 const userRef = database.collection("users");
 
+// Check if user already exists
+exports.isUserExists = functions.https.onRequest(async (request, response) => {
+  const data = request.body;
+
+  try {
+    const user = await userRef
+      .where("phoneNumber", "==", Number(data.phoneNumber))
+      .get();
+
+    if (user.docs.length) {
+      const message =
+        "User with this number is already exists please sign up with different number!";
+      throw new Error(message);
+    }
+    response.json({success: true});
+  } catch (error) {
+    response.json({success: false, error: error.message || error});
+  }
+});
+
 // // FOR SEND OTP
 exports.sendOTP = functions.https.onRequest(async (request, response) => {
   const generatedOTP = Math.floor(1000 + Math.random() * 9000);
@@ -30,7 +50,7 @@ exports.sendOTP = functions.https.onRequest(async (request, response) => {
       .where("phoneNumber", "==", Number(data.phoneNumber))
       .get();
 
-    if (user.docs.length > 0) {
+    if (user.docs.length) {
       const message =
         "User with this number is already exists please sign up with different number!";
       throw new Error(message);
@@ -68,6 +88,15 @@ exports.confirmOTP = functions.https.onRequest(async (request, response) => {
   const isFromLoginPage = data?.isFromLoginPage;
 
   try {
+    let userData;
+    let user;
+    if (isFromLoginPage) {
+      user = await userRef.where("phoneNumber", "==", data.phoneNumber)
+      .get();
+      userData = user.docs[0].data();
+    }
+
+
     const otpCollection = await OTPRef.where(
       "phoneNumber",
       "==",
@@ -89,10 +118,10 @@ exports.confirmOTP = functions.https.onRequest(async (request, response) => {
     if (otpCollection?.docs?.length > 0) {
       if (!isFromLoginPage) {
         await userRef.add({...data});
-        response.json({success: true});
+        response.json({success: true, userData});
         return;
       } else {
-        response.json({success: true});
+        response.json({success: true, userData});
         return;
       }
     } else {

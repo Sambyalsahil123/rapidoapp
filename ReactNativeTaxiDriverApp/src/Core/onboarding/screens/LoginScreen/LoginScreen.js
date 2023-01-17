@@ -15,8 +15,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
 import dynamicStyles from './styles'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
 import AsyncStorage from '@react-native-community/async-storage'
-import { useAuth } from '../../hooks/useAuth'
+// import { useAuth } from '../../hooks/useAuth'
+import { setUserData } from '../../redux/auth'
+
 
 const LoginScreen = props => {
   const { navigation } = props
@@ -37,7 +40,8 @@ const LoginScreen = props => {
   // })
 
   const styles = dynamicStyles(theme, appearance)
-  const authManager = useAuth()
+  // const authManager = useAuth()
+  const dispatch = useDispatch()
 
   const onPressLogin = async () => {
     const phoneLength = phoneNumber.length
@@ -67,13 +71,15 @@ const LoginScreen = props => {
             Alert.alert(
               '',
               localized(response.data.error),
-              [{ text: localized('OK') }],  
+              [{ text: localized('OK') }],
               {
                 cancelable: false,
               },
             )
             return
           } else if (response.data.success) {
+            // console.log(response.data.userData, 'DTATTATATTA')
+
             setLoading(false)
             setParameters({ isPhoneNumberInvalid: true })
             setParameters({ ...parameters, isOTPSent: true })
@@ -96,6 +102,7 @@ const LoginScreen = props => {
 
   const handleSubmit = async () => {
     setLoading(true)
+
     const confirmOTPUrl =
       'https://us-central1-bega-370917.cloudfunctions.net/confirmOTP'
 
@@ -119,8 +126,15 @@ const LoginScreen = props => {
       })
 
       if (response.data.success) {
+        const user = response.data.userData
+        // AsyncStorage.setItem('userData',JSON.stringify(response.data.userData) )
+
+        dispatch(setUserData({ user }))
         setLoading(false)
-        navigation?.navigate('MainStack')
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainStack', params: { user } }],
+        })
         return
       } else if (response.data.error) {
         Alert.alert(
@@ -138,6 +152,19 @@ const LoginScreen = props => {
       // alert(response.error.message || 'Wrong otp')
       alert(response.data.error)
     }
+
+    /// GET USER DATA FROM DB
+
+    // const GET_USER_DATA =
+    // 'https://us-central1-bega-370917.cloudfunctions.net/login'
+
+    // try {
+    //   const response = await axios.get(GET_USER_DATA);
+    //   console.log(response.data,"this is res");
+
+    // } catch (error) {
+    //   console.log(error,"this is error");
+    // }
   }
 
   return (

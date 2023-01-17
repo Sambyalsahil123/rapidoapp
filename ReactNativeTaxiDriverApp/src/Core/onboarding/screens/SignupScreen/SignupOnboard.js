@@ -9,17 +9,16 @@ import {
 } from 'react-native'
 import { Button } from 'react-native-elements'
 import ActionSheet from 'react-native-actionsheet'
-import * as ImagePicker from 'expo-image-picker'
+// import * as ImagePicker from 'expo-image-picker'
 import FastImage from 'react-native-fast-image'
+import ImagePicker from 'react-native-image-picker'
+import { Permissions } from 'expo'
 
 const Image = FastImage
 
 const SignupOnBoard = ({ image, setImage }) => {
-  // const { localized } = useTranslations()
   const [modalVisible, setModalVisible] = useState(false)
   const [modalVisible2, setModalVisible2] = useState(false)
-  // const { theme, appearance } = useTheme()
-  // const styless = dynamicStyles(theme, appearance)
   const [btnType, setBtnType] = useState(null)
   const actionSheet = useRef(null)
 
@@ -28,11 +27,10 @@ const SignupOnBoard = ({ image, setImage }) => {
     setBtnType(btnEvent)
   }
 
-  // const navigation = useNavigation()
   const onActionDone = index => {
     if (index == 0) {
       pickImage()
-    }
+    } 
     if (index == 1) {
       openCamera()
     }
@@ -41,51 +39,103 @@ const SignupOnBoard = ({ image, setImage }) => {
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
 
-    let result = await ImagePicker?.launchImageLibraryAsync({
-      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
+    // let result = await ImagePicker?.launchImageLibraryAsync({
+    //   mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
+    //   allowsEditing: true,
+    //   quality: 0.5,
+    // })
+    ImagePicker.launchImageLibrary(
+      {
+        quality: 0.5,
+        allowsEditing: true,
 
-    if (!result?.cancelled) {
-      switch (btnType) {
-        case 'frontBtn':
-          setImage(prev => ({ ...prev, frontImage: result?.uri }))
-          break
-        case 'backBtn':
-          setImage(prev => ({ ...prev, backImage: result?.uri }))
-          break
-        default:
-          break
-      }
-    }
+        mediaType: 'photo',
+      },
+      result => {
+        if (!result?.didCancel) {
+          switch (btnType) {
+            case 'frontBtn':
+              setImage(prev => ({ ...prev, frontImage: result?.uri }))
+              break
+            case 'backBtn':
+              setImage(prev => ({ ...prev, backImage: result?.uri }))
+              break
+            default:
+              break
+          }
+        }
+        // if (result.didCancel) {
+
+        //   console.log('User cancelled image picker')
+        // } else if (result.error) {
+        //   console.log('ImagePicker Error: ', result.error)
+        // } else if (response.customButton) {
+        //   console.log('User tapped custom button: ', result.customButton)
+        // } else {
+        //   setSingleImg(result.uri)
+        // }
+      },
+    )
   }
 
   const openCamera = async () => {
-    const { status } = await ImagePicker?.requestCameraPermissionsAsync()
-    if (status !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!')
-      return
-    }
+    // const { status } = await ImagePicker?.requestCameraPermissionsAsync()
+    // if (status !== 'granted') {
+    //   alert('Sorry, we need camera permissions to make this work!')
+    //   return
+    // }
+ 
+    // let result = await ImagePicker?.launchCameraAsync({
+    //   mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
+    //   allowsEditing: true,
+    //   quality: 0.5,
+    // })
 
-    let result = await ImagePicker?.launchCameraAsync({
-      mediaTypes: ImagePicker?.MediaTypeOptions?.Images,
-      allowsEditing: true,
-      quality: 0.5,
-    })
+    // if (!result?.cancelled) {
+    //   switch (btnType) {
+    //     case 'frontBtn':
+    //       setImage(prev => ({ ...prev, frontImage: result?.uri }))
+    //       break
+    //     case 'backBtn':
+    //       setImage(prev => ({ ...prev, backImage: result?.uri }))
+    //       break
+    //     default:
+    //       break
+    //   }
+    // }
 
-    if (!result?.cancelled) {
-      switch (btnType) {
-        case 'frontBtn':
-          setImage(prev => ({ ...prev, frontImage: result?.uri }))
-          break
-        case 'backBtn':
-          setImage(prev => ({ ...prev, backImage: result?.uri }))
-          break
-        default:
-          break
-      }
-    }
+    ImagePicker.launchCamera(
+      {
+        quality: 0.5,
+        allowsEditing: true,
+
+        mediaType: 'photo',
+      },
+      result => {
+        // if (response.didCancel) {
+        //   console.log('User cancelled image picker')
+        // } else if (response.error) {
+        //   console.log('ImagePicker Error: ', response.error)
+        // } else if (response.customButton) {
+        //   console.log('User tapped custom button: ', response.customButton)
+        // } else {
+        //   setSingleImg(response.uri)
+        // }
+
+        if (!result?.didCancel) {
+          switch (btnType) {
+            case 'frontBtn':
+              setImage(prev => ({ ...prev, frontImage: result?.uri }))
+              break
+            case 'backBtn':
+              setImage(prev => ({ ...prev, backImage: result?.uri }))
+              break
+            default:
+              break
+          }
+        }
+      },
+    )
   }
 
   return (

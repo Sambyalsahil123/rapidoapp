@@ -61,7 +61,11 @@ const IMDrawerMenu = props => {
       />
     ),
   )
+
+  
 console.log(currentUser,"currentUser");
+
+
   const lowerMenu =
     menuItemsSettings.length == 0 ? null : (
       <View>
