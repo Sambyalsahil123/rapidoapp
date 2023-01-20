@@ -93,7 +93,7 @@ exports.confirmOTP = functions.https.onRequest(async (request, response) => {
     if (isFromLoginPage) {
       user = await userRef.where("phoneNumber", "==", data.phoneNumber)
       .get();
-      userData = user.docs[0].data();
+      userData = {...user?.docs[0]?.data(), id: user?.docs[0]?.id};
     }
 
 

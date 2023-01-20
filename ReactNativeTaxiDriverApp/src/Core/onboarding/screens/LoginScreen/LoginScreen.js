@@ -20,7 +20,6 @@ import AsyncStorage from '@react-native-community/async-storage'
 // import { useAuth } from '../../hooks/useAuth'
 import { setUserData } from '../../redux/auth'
 
-
 const LoginScreen = props => {
   const { navigation } = props
   const { localized } = useTranslations()
@@ -102,7 +101,7 @@ const LoginScreen = props => {
 
   const handleSubmit = async () => {
     setLoading(true)
-
+    AsyncStorage.clear()
     const confirmOTPUrl =
       'https://us-central1-bega-370917.cloudfunctions.net/confirmOTP'
 
@@ -126,9 +125,9 @@ const LoginScreen = props => {
       })
 
       if (response.data.success) {
-        const user = response.data.userData
-        // AsyncStorage.setItem('userData',JSON.stringify(response.data.userData) )
-
+        const user = response?.data?.userData
+        AsyncStorage.setItem('userData', JSON.stringify(response.data.userData))
+        console.log(response.data.userData.id, 'newDATA')
         dispatch(setUserData({ user }))
         setLoading(false)
         navigation.reset({
@@ -149,22 +148,8 @@ const LoginScreen = props => {
       }
     } catch (error) {
       setLoading(false)
-      // alert(response.error.message || 'Wrong otp')
       alert(response.data.error)
     }
-
-    /// GET USER DATA FROM DB
-
-    // const GET_USER_DATA =
-    // 'https://us-central1-bega-370917.cloudfunctions.net/login'
-
-    // try {
-    //   const response = await axios.get(GET_USER_DATA);
-    //   console.log(response.data,"this is res");
-
-    // } catch (error) {
-    //   console.log(error,"this is error");
-    // }
   }
 
   return (
@@ -200,19 +185,6 @@ const LoginScreen = props => {
         ) : (
           ''
         )}
-        {/* 
-        {errorHandling.showError && (
-          <Text
-            style={{
-              color: 'red',
-              alignSelf: 'center',
-              marginTop: 5,
-              textAlign: 'center',
-              alignItems: 'center',
-            }}>
-            {errorHandling.errorMessage}
-          </Text>
-        )} */}
 
         <Button
           containerStyle={styles.loginContainer}
@@ -238,7 +210,6 @@ const LoginScreen = props => {
               maxLength={4}
               onChangeText={text => {
                 setOtp(text)
-                console.log(text, 'sdfasdfasdfasdf')
                 setParameters({ ...parameters, isOTPInvalid: false })
               }}
               placeholder="Enter OTP"

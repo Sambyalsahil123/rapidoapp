@@ -7,6 +7,7 @@ import { IMUserProfileComponent } from '../../Core/profile'
 import MenuIcon from '../../components/MenuIcon/MenuIcon'
 import { useAuth } from '../../Core/onboarding/hooks/useAuth'
 import { useConfig } from '../../config'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const ProfileScreen = () => {
   const { localized } = useTranslations()
@@ -40,7 +41,7 @@ const ProfileScreen = () => {
 
   const onAccountDetailsPress = () => {
     navigation.navigate('AccountDetails', {
-      form: config.editProfileFields,
+      form: config?.editProfileFields,
       screenTitle: localized('Edit Profile'),
     })
   }
@@ -67,6 +68,7 @@ const ProfileScreen = () => {
   const onLogout = () => {
     authManager?.logout(currentUser)
     dispatch(logout())
+    AsyncStorage.clear()
     navigation.reset({
       index: 0,
       routes: [{ name: 'LoadScreen' }],

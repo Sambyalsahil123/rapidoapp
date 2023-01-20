@@ -21,11 +21,7 @@ import { SignupOnBoard, SignOnBoardImg, dynamicStyles } from '../SignupScreen'
 import Img from './upload.png'
 import { OTPVerificationModal } from '../SmsAuthenticationScreen/OTPVerificationModal'
 import storage from '@react-native-firebase/storage'
-import {
-  checkFields,
-  sendAadharForVerification,
-  trimFields,
-} from '../../utils/signup'
+import { checkFields, trimFields } from '../../utils/signup'
 
 const SignupScreen = props => {
   const [modalVisible, setModalVisible] = useState(false)
@@ -49,8 +45,20 @@ const SignupScreen = props => {
     vehicleInsuranceImg: null,
   })
 
+  // GEN UNIQUE ID FOR USER
+  // function generateMongoId() {
+  //   var timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
+  //   return (
+  //     timestamp +
+  //     'xxxxxxxxxxxxxxxx'
+  //       .replace(/[x]/g, function () {
+  //         return ((Math.random() * 16) | 0).toString(16)
+  //       })
+  //       .toLowerCase()
+  //   )
+  // }
+
   //UPLOAD IMAGES TO FIRESTORE
-  console.log(profilePictureFile, 'this is profile picture URL')
   const uploadDocs = () => {
     setLoading(true)
     const allData = {
@@ -97,10 +105,8 @@ const SignupScreen = props => {
             .ref(`Users Documents/${generatedFolderName}/${key}`)
             .getDownloadURL()
           stateObj[key] = url
-          console.log(allData, 'this is all data')
         } catch (error) {
           setLoading(false)
-          console.log(error, 'this is error')
           Alert.alert('', 'Something went wrong, please try again')
         }
       }
@@ -121,10 +127,18 @@ const SignupScreen = props => {
 
     const userDetails = {
       ////// SEND USER SIGUP DATA IN DB
+      // id: generateMongoId(),
+      // id: generateMongoId(),
       profilePictureURL: documentUrls.profilePhoto,
       ...trimFields(inputFields),
       appIdentifier: config.appIdentifier,
       images: documentUrls,
+      isActive: false,
+      location: {
+        heading: 0,
+        latitude: 37.310212191697715,
+        longitude: -121.95864486694336,
+      },
     }
 
     if (userDetails.username) {
@@ -144,8 +158,6 @@ const SignupScreen = props => {
     }
 
     setStructuredData(userDetails)
-
-    // dispatch(setUserData({ user }))
 
     const otpEndPoint =
       'https://us-central1-bega-370917.cloudfunctions.net/sendOTP'

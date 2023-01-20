@@ -12,6 +12,7 @@ import { IMDismissButton } from '../../../truly-native'
 import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
 import { useAuth } from '../../hooks/useAuth'
 import useCurrentUser from '../../hooks/useCurrentUser'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const WelcomeScreen = props => {
   const { navigation } = props
@@ -29,10 +30,6 @@ const WelcomeScreen = props => {
   const authManager = useAuth()
 
   const { title, caption } = props
-
-  useEffect(() => {
-    tryToLoginFirst()
-  }, [])
 
   const handleInitialNotification = async () => {
     const userID = currentUser?.id || currentUser?.userID
@@ -79,6 +76,27 @@ const WelcomeScreen = props => {
         setIsLoading(false)
       })
   }
+
+  const getLocalUser = async () => {
+    console.log('HELLOOPOOOOO___')
+    AsyncStorage.getItem('userData').then(data => {
+      const user = JSON.parse(data)
+      console.log(user, 'user_____')
+      dispatch(setUserData({ user }))
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainStack', params: { user } }],
+        })
+      }
+      setIsLoading(false)
+      return
+    })
+  }
+
+  useEffect(() => {
+    getLocalUser()
+  }, [])
 
   const handleChatMessageType = (channelID, name) => {
     const channel = {

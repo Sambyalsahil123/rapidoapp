@@ -7,7 +7,7 @@ import { logout } from '../../../onboarding/redux/auth'
 import IMMenuButton from '../IMMenuButton/IMMenuButton'
 import { useAuth } from '../../../onboarding/hooks/useAuth'
 import { useCurrentUser } from '../../../onboarding'
-
+import AsyncStorage from '@react-native-community/async-storage'
 const IMDrawerMenu = props => {
   const { navigation, menuItems, menuItemsSettings } = props
 
@@ -29,6 +29,7 @@ const IMDrawerMenu = props => {
   const actionLowerMenu = action => {
     if (action == 'logout') {
       authManager?.logout(currentUser)
+      AsyncStorage.clear();
       dispatch(logout())
       navigation.navigate('LoadScreen')
       return
@@ -63,7 +64,6 @@ const IMDrawerMenu = props => {
   )
 
   
-console.log(currentUser,"currentUser");
 
 
   const lowerMenu =

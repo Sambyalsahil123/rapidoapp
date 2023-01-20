@@ -67,9 +67,9 @@ const DriverDrawerNavigator = () => {
       drawerContent={({ navigation }) => (
         <IMDrawerMenu
           navigation={navigation}
-          menuItems={config.drawerMenuConfig.driverDrawerConfig.upperMenu}
+          menuItems={config?.drawerMenuConfig?.driverDrawerConfig?.upperMenu}
           menuItemsSettings={
-            config.drawerMenuConfig.driverDrawerConfig.lowerMenu
+            config?.drawerMenuConfig?.driverDrawerConfig?.lowerMenu
           }
         />
       )}

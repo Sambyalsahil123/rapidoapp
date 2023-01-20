@@ -22,6 +22,9 @@ function IMFormComponent(props) {
     onFormChange(newFieldsDict)
   }
 
+
+  console.log(initialValuesDict , 'INININININI')
+  
   const renderSwitchField = (switchField, index) => {
     return (
       <View
@@ -85,6 +88,8 @@ function IMFormComponent(props) {
     }
   }
 
+
+  console.log(form , 'FORMRRRR_____')
   const renderSelectField = (selectField, index) => {
     const actionSheetRef = React.createRef()
     return (

@@ -72,8 +72,6 @@ export const OTPVerificationModal = ({ inputFields }) => {
 
         navigation.navigate('LoginStack', { screen: 'Welcome' })
 
-        console.log(inputFields, 'INPUTFIELD')
-
         dispatch(setUserData({ user: inputFields }))
         return
         // navigation.navigate('LoginStack', {
@@ -92,7 +90,12 @@ export const OTPVerificationModal = ({ inputFields }) => {
 
   return (
     <Modal animationType="slide" transparent={false}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('LoginStack', {
+            screen: 'Signup',
+          })
+        }>
         <Image
           style={Customstyles.backArrowStyle}
           source={theme.icons.backArrow}
@@ -121,14 +124,13 @@ export const OTPVerificationModal = ({ inputFields }) => {
           <Text style={styles.error}>Please Enter Valid OTP</Text>
         )}
 
-{/* 
+        {/* 
         <Button
           containerStyle={styles.loginContainer}
           style={styles.loginText}
           onPress={() => onRegister()}>
           {localized(!parameters.isOTPSent ? 'Send OTP' : 'Resend')}
         </Button> */}
-
 
         <Button
           containerStyle={styles.submitButton}

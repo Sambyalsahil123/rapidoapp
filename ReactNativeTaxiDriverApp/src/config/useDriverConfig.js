@@ -207,19 +207,19 @@ export const ConfigProvider = ({ children }) => {
             // },
           ],
         },
-        {
-          title: localized('PRIVATE DETAILS'),
-          fields: [
-            {
-              displayName: localized('Phone Number'),
-              type: 'numeric',
-              editable: true,
-              regex: regexForPhoneNumber,
-              key: 'phone',
-              placeholder: 'Your phone number',
-            },
-          ],
-        },
+        // {
+        //   title: localized('PRIVATE DETAILS'),
+        //   fields: [
+        //     {
+        //       displayName: localized('Phone Number'),
+        //       type: 'text',
+        //       editable: true,
+        //       regex: regexForPhoneNumber,
+        //       key: 'phoneNumber',
+        //       placeholder: 'Your phone number',
+        //     },
+        //   ],
+        // },
       ],
     },
     userSettingsFields: {

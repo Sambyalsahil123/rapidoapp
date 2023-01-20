@@ -20,6 +20,7 @@ export class DriverAPIManager {
   }
 
   subscribeToDriverDataUpdates = driver => {
+    // console.log(driver,driver.uid ,'this is drivwer')
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
@@ -28,7 +29,8 @@ export class DriverAPIManager {
     this.unsubscribeSnapshot = this.usersRef
       .doc(driver.id)
       .onSnapshot(this.onDriverUserDataUpdate, error => {
-        console.log(error)
+        console.log(error, 'this is error')
+        console.log(driver.id, 'iugfvweaydthgjvweuy')
       })
   }
 
@@ -45,10 +47,15 @@ export class DriverAPIManager {
   }
 
   goOnline = async driver => {
+  
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
-    this.usersRef.doc(driver.id).update({ isActive: true })
+    console.log(driver.id,"this is driver ID");
+    this.usersRef.doc(driver.id).update({ isActive: true }).then(data =>{
+
+    })
+
   }
 
   goOffline = async driver => {
@@ -221,13 +228,13 @@ export class DriverAPIManager {
     const docs = querySnapshot.docs
     if (docs?.length > 0) {
       const data = docs[0].data()
-      if (data.id) {
+      if (data?.id) {
         this.callback && this.callback(data)
       }
     } else {
       const data = querySnapshot.data()
-      if (data.id) {
-        this.callback && this.callback(data)
+      if (data?.id) {
+        this?.callback && this.callback(data)
       }
     }
   }
