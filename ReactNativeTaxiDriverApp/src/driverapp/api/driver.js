@@ -52,9 +52,7 @@ export class DriverAPIManager {
       return
     }
     console.log(driver.id,"this is driver ID");
-    this.usersRef.doc(driver.id).update({ isActive: true }).then(data =>{
-
-    })
+    this.usersRef.doc(driver.id).update({ isActive: true })
 
   }
 

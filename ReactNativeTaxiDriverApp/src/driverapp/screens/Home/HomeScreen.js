@@ -28,6 +28,8 @@ import { NewOrderRequestModal } from '../../components'
 import { getDirections } from '../../../Core/delivery/api/directions'
 import { OrderPreviewCard } from '../../components'
 import { useConfig } from '../../../config'
+import AsyncStorage from '@react-native-community/async-storage'
+import { firebase } from '@react-native-firebase/firestore'
 
 function HomeScreen(props) {
   const { navigation } = props
@@ -39,7 +41,6 @@ function HomeScreen(props) {
   const [routeId, setRouteId] = useState(null)
 
   const currentUser = useSelector(state => state.auth.user)
-  console.log(currentUser , "CURRENTTT USER")
 
   const dispatch = useDispatch()
 
@@ -52,6 +53,7 @@ function HomeScreen(props) {
 
   const positionWatchID = useRef(null)
   const apiManager = useRef(null)
+  const usersRef = firebase.firestore().collection('users')
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -71,6 +73,8 @@ function HomeScreen(props) {
 
     return apiManager.current?.unsubscribe
   }, [])
+
+  console.log(currentUser, "CURRENTLTGDGDSGSDGSD");
 
   useEffect(() => {
     if (!currentUser?.id) {
@@ -116,7 +120,7 @@ function HomeScreen(props) {
   }
 
   useEffect(() => {
-    console.log('this is positionWatchID')
+
     return () => {
       //positionWatchID != null && Geolocation.clearWatch(positionWatchID);
     }
@@ -145,8 +149,11 @@ function HomeScreen(props) {
   }, [routeId])
 
   const goOnline = () => {
+    // dispatch(setUserData({ user: upDatedUser }))
+
     apiManager.current?.goOnline(currentUser)
-    console.log(currentUser,"currentuser");
+    getCurrentUser()
+    console.log('Go online HOME screen current user', currentUser)
   }
 
   const goOffline = () => {
@@ -185,6 +192,12 @@ function HomeScreen(props) {
         deliveryDriverData.orderRequestData,
         currentUser,
       )
+  }
+  const getCurrentUser = async () => {
+    const upDatedUser = await usersRef.doc(currentUser.id).get()
+    console.log(upDatedUser._data, 'UPDdsfsdf')
+    dispatch(setUserData({ user: upDatedUser._data }))
+    saveUserLocally(upDatedUser._data)
   }
 
   const computePolylineCoordinates = useCallback(order => {
@@ -343,10 +356,18 @@ function HomeScreen(props) {
           longitude: coords?.longitude,
         }
         dispatch(setUserData({ user: { ...currentUser, location } }))
-        if (currentUser.inProgressOrderID) {
+        if (currentUser?.inProgressOrderID) {
           apiManager.current?.updateCarDrive(order, location)
         } else {
-          updateUser(currentUser.id, { location })
+          console.log(currentUser.id , )
+          updateUser(
+            currentUser.id,
+            { location },
+            currentUser,
+            saveUserLocally,
+            dispatch,
+            setUserData,
+          )
         }
 
         if (routeId) {
@@ -370,8 +391,8 @@ function HomeScreen(props) {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: localized('Instamobile'),
-          message: localized('Instamobile wants to access your location.'),
+          title: localized('BegaDriver'),
+          message: localized('BegaDriver wants to access your location.'),
         },
       )
 
@@ -410,7 +431,7 @@ function HomeScreen(props) {
       <View style={styles.container}>
         <MapView
           initialRegion={region}
-          showsUserLocation={isWaitingForOrders}
+          showsUserLocation={true}
           provider={Platform.OS === 'ios' ? null : PROVIDER_GOOGLE}
           style={styles.mapStyle}>
           {renderMapElements()}
@@ -445,3 +466,10 @@ HomeScreen.propTypes = {
 }
 
 export default HomeScreen
+
+const saveUserLocally = async user => {
+  if(user){
+  AsyncStorage.setItem('userData', JSON.stringify(user))
+
+  }
+}
