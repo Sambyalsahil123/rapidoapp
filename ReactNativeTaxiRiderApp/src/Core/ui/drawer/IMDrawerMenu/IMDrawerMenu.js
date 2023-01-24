@@ -81,7 +81,7 @@ const IMDrawerMenu = props => {
           {currentUser.firstName} {currentUser.lastName}
         </Text>
         <Text style={[styles.email, props.emailStyle]}>
-          {currentUser.email}
+          {currentUser.phoneNumber}
         </Text>
       </View>
       <View style={styles.content}>
@@ -91,7 +91,7 @@ const IMDrawerMenu = props => {
         </View>
         <View style={styles.footer}>
           <Text style={styles.textFooter}>
-            {localized('Made by Instamobile')}
+            {localized('Made by BegaRider')}  
           </Text>
         </View>
       </View>

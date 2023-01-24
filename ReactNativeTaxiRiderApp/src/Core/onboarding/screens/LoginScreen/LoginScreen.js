@@ -1,161 +1,144 @@
 import React, { useState } from 'react'
 import {
-  Alert,
   Image,
-  Keyboard,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  StyleSheet,
+  Alert,
 } from 'react-native'
 import Button from 'react-native-button'
-import appleAuth, {
-  AppleButton,
-} from '@invertase/react-native-apple-authentication'
-import IMGoogleSignInButton from '../../components/IMGoogleSignInButton/IMGoogleSignInButton'
-import { useDispatch } from 'react-redux'
+import { Button as LogInButton } from 'react-native-elements'
 import { useTheme, useTranslations } from 'dopenative'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
 import dynamicStyles from './styles'
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import AsyncStorage from '@react-native-community/async-storage'
 import { setUserData } from '../../redux/auth'
-import { localizedErrorMessage } from '../../api/ErrorCode'
-import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
-import { useAuth } from '../../hooks/useAuth'
 
 const LoginScreen = props => {
   const { navigation } = props
-  const authManager = useAuth()
-
-  const dispatch = useDispatch()
-
   const { localized } = useTranslations()
   const { theme, appearance } = useTheme()
-  const { config } = useOnboardingConfig()
   const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [otp, setOtp] = useState('')
+  const [parameters, setParameters] = useState({
+    isOTPSent: false,
+    isPhoneNumberInvalid: false,
+    isOTPInvalid: false,
+  })
+
+
+
   const styles = dynamicStyles(theme, appearance)
+  const dispatch = useDispatch()
 
-  const onPressLogin = () => {
-    setLoading(true)
-    authManager
-      .loginWithEmailAndPassword(
-        email && email.trim(),
-        password && password.trim(),
-        config,
-      )
-      .then(response => {
-        if (response?.user) {
-          const user = response.user
-          dispatch(setUserData({ user }))
-          Keyboard.dismiss()
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MainStack', params: { user } }],
+  const onPressLogin = async () => {
+    const phoneLength = phoneNumber.length
+
+    if (!(phoneLength > 13 || phoneLength < 10)) {
+      if (phoneLength === 10 || phoneLength === 13) {
+        const restructuredPhoneNumber = `${
+          phoneLength === 13 ? phoneNumber : '000' + phoneNumber
+        }`.slice(3, 13)
+
+        const loginAsCustomer =
+          'https://us-central1-bega-370917.cloudfunctions.net/loginAsCustomer'
+
+        try {
+          setLoading(true)
+          const response = await axios.post(loginAsCustomer, {
+            phoneNumber: Number(restructuredPhoneNumber.trim()),
           })
-        } else {
+
+          if (response.data.error) {
+            setLoading(false)
+            setParameters({ ...parameters, isOTPSent: false })
+           
+            Alert.alert(
+              '',
+              localized(response.data.error),
+              [{ text: localized('OK') }],
+              {
+                cancelable: false,
+              },
+            )
+            return
+          } else if (response.data.success) {
+            setLoading(false)
+            setParameters({ isPhoneNumberInvalid: true })
+            setParameters({ ...parameters, isOTPSent: true })
+            
+          }
+        } catch (error) {
           setLoading(false)
-          Alert.alert(
-            '',
-            localizedErrorMessage(response.error, localized),
-            [{ text: localized('OK') }],
-            {
-              cancelable: false,
-            },
-          )
+          alert(error)
+          return
         }
+        return
+      }
+    } else {
+      setLoading(false)
+      setParameters({ ...parameters, isPhoneNumberInvalid: true })
+    }
+  }
+
+  const handleSubmit = async () => {
+    setLoading(true)
+    AsyncStorage.clear()
+    const confirmOTPforCustomer =
+      'https://us-central1-bega-370917.cloudfunctions.net/confirmOTPforCustomer'
+
+    if (otp.length !== 4) {
+      setParameters({ ...parameters, isOTPInvalid: true })
+      setLoading(false)
+      return
+    }
+
+    const phoneLength = phoneNumber.length
+
+    const restructuredPhoneNumber = `${
+      phoneLength === 13 ? phoneNumber : '000' + phoneNumber
+    }`.slice(3, 13)
+
+    try {
+      const response = await axios.post(confirmOTPforCustomer, {
+        phoneNumber: Number(restructuredPhoneNumber.trim()),
+        otp: Number(otp.trim()),
+        isFromLoginPage: true,
       })
-  }
 
-  const onFBButtonPress = () => {
-    setLoading(true)
-    authManager.loginOrSignUpWithFacebook(config).then(response => {
-      if (response?.user) {
-        const user = response.user
+      if (response.data.success) {
+        const user = response?.data?.userData
+        // AsyncStorage.setItem('userData', JSON.stringify(response.data.userData))
+        // console.log(response.data.userData.id, 'newDATA')
         dispatch(setUserData({ user }))
-        Keyboard.dismiss()
+        setLoading(false)
         navigation.reset({
           index: 0,
           routes: [{ name: 'MainStack', params: { user } }],
         })
-      } else {
-        setLoading(false)
+        return
+      } else if (response.data.error) {
         Alert.alert(
           '',
-          localizedErrorMessage(response.error, localized),
+          localized(response.data.error),
           [{ text: localized('OK') }],
           {
             cancelable: false,
           },
         )
-      }
-    })
-  }
-
-  const onGoogleButtonPress = () => {
-    setLoading(true)
-    authManager.loginOrSignUpWithGoogle(config).then(response => {
-      if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainStack', params: { user } }],
-        })
-      } else {
         setLoading(false)
-        Alert.alert(
-          '',
-          localizedErrorMessage(response.error, localized),
-          [{ text: localized('OK') }],
-          {
-            cancelable: false,
-          },
-        )
       }
-    })
+    } catch (error) {
+      setLoading(false)
+      alert(response.data.error)
+    }
   }
-
-  const onAppleButtonPress = async () => {
-    setLoading(true)
-    authManager.loginOrSignUpWithApple(config).then(response => {
-      if (response?.user) {
-        const user = response.user
-        dispatch(setUserData({ user }))
-        Keyboard.dismiss()
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainStack', params: { user } }],
-        })
-      } else {
-        setLoading(false)
-        Alert.alert(
-          '',
-          localizedErrorMessage(response.error, localized),
-          [{ text: localized('OK') }],
-          {
-            cancelable: false,
-          },
-        )
-      }
-    })
-  }
-
-  const onForgotPassword = async () => {
-    navigation.push('ResetPassword', {
-      isResetPassword: true,
-    })
-  }
-
-  const appleButtonStyle = config.isAppleAuthEnabled
-    ? {
-        dark: AppleButton?.Style?.WHITE,
-        light: AppleButton?.Style?.BLACK,
-        'no-preference': AppleButton?.Style?.WHITE,
-      }
-    : {}
 
   return (
     <View style={styles.container}>
@@ -167,80 +150,128 @@ const LoginScreen = props => {
           onPress={() => navigation.goBack()}>
           <Image style={styles.backArrowStyle} source={theme.icons.backArrow} />
         </TouchableOpacity>
-        <Text style={styles.title}>{localized('Sign In')}</Text>
+        <Text style={styles.title}>{localized('Log In')}</Text>
         <TextInput
+          maxLength={12}
           style={styles.InputContainer}
-          placeholder={localized('E-mail')}
-          keyboardType="email-address"
+          placeholder={localized('Phone Number')}
+          keyboardType="phone-pad"
           placeholderTextColor="#aaaaaa"
-          onChangeText={text => setEmail(text)}
-          value={email}
+          onChangeText={text => {
+            setPhoneNumber(text)
+            setParameters({ ...parameters, isPhoneNumberInvalid: false })
+          }}
+          value={phoneNumber}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />
-        <TextInput
-          style={styles.InputContainer}
-          placeholderTextColor="#aaaaaa"
-          secureTextEntry
-          placeholder={localized('Password')}
-          onChangeText={text => setPassword(text)}
-          value={password}
-          underlineColorAndroid="transparent"
-          autoCapitalize="none"
-        />
-        {config.forgotPasswordEnabled && (
-          <View style={styles.forgotPasswordContainer}>
-            <Button
-              style={styles.forgotPasswordText}
-              onPress={() => onForgotPassword()}>
-              {localized('Forgot password?')}
-            </Button>
-          </View>
+
+        {parameters.isPhoneNumberInvalid ? (
+          <Text style={externalStyle.error}>
+            Please Enter Valid Phone Number
+          </Text>
+        ) : (
+          ''
         )}
+
         <Button
           containerStyle={styles.loginContainer}
           style={styles.loginText}
           onPress={() => onPressLogin()}>
-          {localized('Log In')}
+          {localized(!parameters.isOTPSent ? 'Send OTP' : 'Resend')}
         </Button>
-        {config.isFacebookAuthEnabled && (
-          <>
-            <Text style={styles.orTextStyle}> {localized('OR')}</Text>
-            <Button
-              containerStyle={styles.facebookContainer}
-              style={styles.facebookText}
-              onPress={() => onFBButtonPress()}>
-              {localized('Login With Facebook')}
-            </Button>
-          </>
-        )}
-        {config.isGoogleAuthEnabled && (
-          <IMGoogleSignInButton
-            containerStyle={styles.googleButtonStyle}
-            onPress={onGoogleButtonPress}
-          />
-        )}
-        {config.isAppleAuthEnabled && appleAuth.isSupported && (
-          <AppleButton
-            cornerRadius={25}
-            style={styles.appleButtonContainer}
-            buttonStyle={appleButtonStyle[appearance]}
-            buttonType={AppleButton.Type.SIGN_IN}
-            onPress={() => onAppleButtonPress()}
-          />
-        )}
-        {config.isSMSAuthEnabled && (
-          <Button
-            containerStyle={styles.phoneNumberContainer}
-            onPress={() => navigation.navigate('Sms', { isSigningUp: false })}>
-            {localized('Login with phone number')}
-          </Button>
-        )}
 
         {loading && <TNActivityIndicator />}
+
+        {parameters?.isOTPSent && (
+          <View style={externalStyle.viewContainer}>
+            <TextInput
+              style={{
+                ...externalStyle.textField,
+                borderColor: otp.length === 4 ? '#515352' : 'gray',
+                borderWidth: otp.length === 4 ? 2 : 1,
+                // borderColor:response.data.error? "red":gray
+              }}
+              autoFocus
+              value={otp}
+              keyboardType="number-pad"
+              maxLength={4}
+              onChangeText={text => {
+                setOtp(text)
+                setParameters({ ...parameters, isOTPInvalid: false })
+              }}
+              placeholder="Enter OTP"
+            />
+            {parameters.isOTPInvalid && (
+              <Text style={externalStyle.error}>Please Enter Valid OTP</Text>
+            )}
+            <LogInButton
+              containerStyle={externalStyle.submitButton}
+              buttonStyle={externalStyle.submitButtonStyle}
+              titleStyle={externalStyle.submitTitle}
+              title="Log In"
+              onPress={() => handleSubmit()}
+            />
+          </View>
+        )}
       </KeyboardAwareScrollView>
     </View>
   )
 }
 
 export default LoginScreen
+
+const externalStyle = StyleSheet.create({
+  viewContainer: {
+    padding: 20,
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    alignSelf: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  textField: {
+    width: '60%',
+    padding: 20,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    fontSize: 24,
+    letterSpacing: 4,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'gray',
+    textAlign: 'center',
+    color: 'gray',
+  },
+  submitButton: {
+    width: '40%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    borderRadius: 10,
+    height: 50,
+    backgroundColor: 'gray',
+  },
+  submitButtonStyle: {
+    backgroundColor: 'gray',
+  },
+  submitTitle: {
+    color: 'white',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: '100%',
+  },
+  error: {
+    padding: 10,
+    color: 'red',
+    textAlign: 'center',
+    alignSelf: 'center',
+    width: '100%',
+  },
+})

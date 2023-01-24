@@ -100,6 +100,7 @@ const hydrateChatFeedsForAllParticipants = async (
   )
 
   // if one2one chat then channel name will be other participant name
+  
   if (!channel?.admins) {
     feedItemTitleForSender = `${otherParticipants[0].firstName} ${otherParticipants[0].lastName}`
   }

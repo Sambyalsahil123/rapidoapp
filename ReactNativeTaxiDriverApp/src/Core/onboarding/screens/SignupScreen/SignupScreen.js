@@ -44,20 +44,6 @@ const SignupScreen = props => {
     rcImg: null,
     vehicleInsuranceImg: null,
   })
-
-  // GEN UNIQUE ID FOR USER
-  // function generateMongoId() {
-  //   var timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
-  //   return (
-  //     timestamp +
-  //     'xxxxxxxxxxxxxxxx'
-  //       .replace(/[x]/g, function () {
-  //         return ((Math.random() * 16) | 0).toString(16)
-  //       })
-  //       .toLowerCase()
-  //   )
-  // }
-
   //UPLOAD IMAGES TO FIRESTORE
   const uploadDocs = () => {
     setLoading(true)
@@ -127,8 +113,7 @@ const SignupScreen = props => {
 
     const userDetails = {
       ////// SEND USER SIGUP DATA IN DB
-      // id: generateMongoId(),
-      // id: generateMongoId(),
+   
       profilePictureURL: documentUrls.profilePhoto,
       ...trimFields(inputFields),
       appIdentifier: config.appIdentifier,
@@ -159,7 +144,7 @@ const SignupScreen = props => {
 
     setStructuredData(userDetails)
 
-    const otpEndPoint =
+    const SendOTP =
       'https://us-central1-bega-370917.cloudfunctions.net/sendOTP'
 
     Keyboard.dismiss()
@@ -177,7 +162,7 @@ const SignupScreen = props => {
     }`.slice(3, 13)
 
     try {
-      const response = await axios.post(otpEndPoint, {
+      const response = await axios.post(SendOTP, {
         phoneNumber: Number(restructuredPhoneNumber),
         IsApproved: false,
       })

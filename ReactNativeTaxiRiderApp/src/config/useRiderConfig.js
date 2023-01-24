@@ -22,7 +22,7 @@ export const ConfigProvider = ({ children }) => {
     forgotPasswordEnabled: true,
     appIdentifier: 'rn-taxi-app-android',
     onboardingConfig: {
-      welcomeTitle: localized('InstaTaxi'),
+      welcomeTitle: localized('Bega Rider'),
       welcomeCaption: localized(
         'Book a cab, track your ride and rate your driver.',
       ),
@@ -150,23 +150,13 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'Last Name',
       },
       {
-        displayName: localized('E-mail Address'),
-        type: 'email-address',
+        displayName: localized('Phone Number'),
+        type: 'phone-pad',
+        maxLength: 12,
         editable: true,
-        regex: regexForNames,
-        key: 'email',
-        placeholder: 'E-mail Address',
-        autoCapitalize: 'none',
-      },
-      {
-        displayName: localized('Password'),
-        type: 'default',
-        secureTextEntry: true,
-        editable: true,
-        regex: regexForNames,
-        key: 'password',
-        placeholder: 'Password',
-        autoCapitalize: 'none',
+        regex: regexForPhoneNumber,
+        key: 'phoneNumber',
+        placeholder: 'Phone Number',
       },
     ],
     editProfileFields: {
@@ -195,13 +185,6 @@ export const ConfigProvider = ({ children }) => {
         {
           title: localized('PRIVATE DETAILS'),
           fields: [
-            {
-              displayName: localized('E-mail Address'),
-              type: 'text',
-              editable: true,
-              key: 'email',
-              placeholder: 'Your email address',
-            },
             {
               displayName: localized('Phone Number'),
               type: 'text',

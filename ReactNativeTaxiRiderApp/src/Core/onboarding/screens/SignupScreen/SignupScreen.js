@@ -8,23 +8,24 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import Button from 'react-native-button'
+import axios from 'axios'
+import Button from 'react-native-button'  
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { useDispatch } from 'react-redux'
 import { useTheme, useTranslations } from 'dopenative'
 import dynamicStyles from './styles'
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
 import TNProfilePictureSelector from '../../../truly-native/TNProfilePictureSelector/TNProfilePictureSelector'
-import { setUserData } from '../../redux/auth'
-import { localizedErrorMessage } from '../../api/ErrorCode'
 import TermsOfUseView from '../../components/TermsOfUseView'
 import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
 import { useAuth } from '../../hooks/useAuth'
+import { OTPVerificationModal } from '../SmsAuthenticationScreen/OTPVerificationModal'
+import { checkFields, trimFields } from '../../utils/signup'
 
 const SignupScreen = props => {
   const { navigation } = props
   const authManager = useAuth()
-  const dispatch = useDispatch()
+  const [verificationModal, setVerificationModal] = useState(false)
+  const [structuredData, setStructuredData] = useState({})
 
   const { config } = useOnboardingConfig()
   const { localized } = useTranslations()
@@ -36,121 +37,65 @@ const SignupScreen = props => {
   const [profilePictureFile, setProfilePictureFile] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const validateEmail = text => {
-    let reg =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return reg.test(String(text).toLowerCase()) ? true : false
-  }
-
-  const validatePassword = text => {
-    let reg = /^(?=.*[A-Z])(?=.*[a-z])/
-    return reg.test(String(text)) ? true : false
-  }
-
-  const trimFields = fields => {
-    var trimmedFields = {}
-    Object.keys(fields).forEach(key => {
-      if (fields[key]) {
-        trimmedFields[key] = fields[key].trim()
-      }
-    })
-    return trimmedFields
-  }
-
   const onRegister = async () => {
-    const { error: usernameError } =
-      await authManager.validateUsernameFieldIfNeeded(inputFields, config)
-    if (usernameError) {
-      Alert.alert('', localized(usernameError), [{ text: localized('OK') }], {
-        cancelable: false,
-      })
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }))
+    const areFiedsTrue = checkFields(inputFields, profilePictureFile, localized)
+
+    if (!areFiedsTrue) {
       return
     }
-
-    if (!validateEmail(inputFields?.email?.trim())) {
-      Alert.alert(
-        '',
-        localized('Please enter a valid email address.'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      return
-    }
-
-    if (inputFields?.password?.trim() == '') {
-      Alert.alert(
-        '',
-        localized('Password cannot be empty.'),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }))
-      return
-    }
-
-    if (inputFields?.password?.trim()?.length < 6) {
-      Alert.alert(
-        '',
-        localized(
-          'Password is too short. Please use at least 6 characters for security reasons.',
-        ),
-        [{ text: localized('OK') }],
-        {
-          cancelable: false,
-        },
-      )
-      setInputFields(prevFields => ({
-        ...prevFields,
-        password: '',
-      }))
-      return
-    }
-
     setLoading(true)
 
     const userDetails = {
+      ////// SEND CUSTOMER DATA IN DB
       ...trimFields(inputFields),
-      photoFile: profilePictureFile,
+      profilePictureURL: profilePictureFile?.uri,
       appIdentifier: config.appIdentifier,
+      isActive: false,
     }
+
     if (userDetails.username) {
       userDetails.username = userDetails.username?.toLowerCase()
     }
 
-    authManager
-      .createAccountWithEmailAndPassword(userDetails, config)
-      .then(response => {
-        const user = response.user
-        if (user) {
-          dispatch(setUserData({ user }))
-          Keyboard.dismiss()
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MainStack', params: { user } }],
-          })
-        } else {
-          setLoading(false)
-          Alert.alert(
-            '',
-            localizedErrorMessage(response.error, localized),
-            [{ text: localized('OK') }],
-            {
-              cancelable: false,
-            },
-          )
-        }
+    setStructuredData(userDetails)
+
+    const sendOTPforCustomer =
+      'https://us-central1-bega-370917.cloudfunctions.net/sendOTPforCustomer'
+
+    Keyboard.dismiss()
+
+    const setValues = () => {
+      setLoading(false)
+      setVerificationModal(true)
+    }
+    const phoneLength = inputFields.phoneNumber.length
+
+    const restructuredPhoneNumber = `${
+      phoneLength === 13
+        ? inputFields.phoneNumber
+        : '000' + inputFields.phoneNumber
+    }`.slice(3, 13)
+
+    try {
+      const response = await axios.post(sendOTPforCustomer, {
+        phoneNumber: Number(restructuredPhoneNumber),
       })
+
+      if (response?.data?.success) {
+        setLoading(false)
+        return setValues()
+      }
+
+      if (response?.data?.error) {
+        alert(response?.data?.error)
+        setLoading(false)
+      }
+      setLoading(false)
+    } catch (error) {
+      alert('Something went wrong, please try again later')
+      setLoading(false)
+      return
+    }
   }
 
   const onChangeInputFields = (text, key) => {
@@ -163,6 +108,7 @@ const SignupScreen = props => {
   const renderInputField = (field, index) => {
     return (
       <TextInput
+        maxLength={field.maxLength}
         key={index?.toString()}
         style={styles.InputContainer}
         placeholder={field.placeholder}
@@ -177,7 +123,7 @@ const SignupScreen = props => {
     )
   }
 
-  const renderSignupWithEmail = () => {
+  const renderSignUpWithPhoneNumber = () => {
     return (
       <>
         {config.signupFields.map(renderInputField)}
@@ -185,43 +131,42 @@ const SignupScreen = props => {
           containerStyle={styles.signupContainer}
           style={styles.signupText}
           onPress={() => onRegister()}>
-          {localized('Sign Up')}
+          {localized('Send OTP')}
         </Button>
       </>
     )
   }
 
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollView
-        style={{ flex: 1, width: '100%' }}
-        keyboardShouldPersistTaps="always">
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image style={styles.backArrowStyle} source={theme.icons.backArrow} />
-        </TouchableOpacity>
-        <Text style={styles.title}>{localized('Create new account')}</Text>
-        <TNProfilePictureSelector
-          setProfilePictureFile={setProfilePictureFile}
-        />
-        {renderSignupWithEmail()}
-        {config.isSMSAuthEnabled && (
-          <>
-            <Text style={styles.orTextStyle}>{localized('OR')}</Text>
-            <Button
-              containerStyle={styles.PhoneNumberContainer}
-              onPress={() => navigation.navigate('Sms', { isSigningUp: true })}>
-              {localized('Sign up with phone number')}
-            </Button>
-          </>
-        )}
-        <TermsOfUseView
-          tosLink={config.tosLink}
-          privacyPolicyLink={config.privacyPolicyLink}
-          style={styles.tos}
-        />
-      </KeyboardAwareScrollView>
-      {loading && <TNActivityIndicator />}
-    </View>
+    <>
+      {verificationModal && (
+        <OTPVerificationModal inputFields={structuredData} />
+      )}
+      <View style={styles.container}>
+        <KeyboardAwareScrollView
+          style={{ flex: 1, width: '100%' }}
+          keyboardShouldPersistTaps="always">
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image
+              style={styles.backArrowStyle}
+              source={theme.icons.backArrow}
+            />
+          </TouchableOpacity>
+          <Text style={styles.title}>{localized('Create new account')}</Text>
+          <TNProfilePictureSelector
+            setProfilePictureFile={setProfilePictureFile}
+          />
+          {renderSignUpWithPhoneNumber()}
+
+          <TermsOfUseView
+            tosLink={config.tosLink}
+            privacyPolicyLink={config.privacyPolicyLink}
+            style={styles.tos}
+          />
+        </KeyboardAwareScrollView>
+        {loading && <TNActivityIndicator />}
+      </View>
+    </>
   )
 }
 

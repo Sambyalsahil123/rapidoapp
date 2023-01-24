@@ -8,10 +8,11 @@ import {
 } from 'react-native'
 import ActionSheet from 'react-native-actionsheet'
 import ImageView from 'react-native-image-view'
-import * as ImagePicker from 'expo-image-picker'
+import ImagePicker from 'react-native-image-picker'
 import FastImage from 'react-native-fast-image'
 import { useTheme, useTranslations } from 'dopenative'
 import dynamicStyles from './styles'
+import { Permissions } from 'expo'
 
 const Image = FastImage
 
@@ -32,6 +33,7 @@ const TNProfilePictureSelector = props => {
   const { localized } = useTranslations()
   const { theme, appearance } = useTheme()
   const styles = dynamicStyles(theme, appearance)
+  const [btnType, setBtnType] = useState(null)
 
   const handleProfilePictureClick = url => {
     if (url) {
@@ -61,50 +63,69 @@ const TNProfilePictureSelector = props => {
     setProfilePictureURL(defaultProfilePhotoURL)
   }
 
-  const getPermissionAsync = async () => {
-    if (Platform.OS === 'ios') {
-      let permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync(false)
+  // const getPermissionAsync = async () => {
+  //   if (Platform.OS === 'ios') {
+  //     let permissionResult =
+  //       await ImagePicker.requestMediaLibraryPermissionsAsync(false)
 
-      if (permissionResult.granted === false) {
-        alert(
-          localized(
-            'Sorry, we need camera roll permissions to make this work.',
-          ),
-        )
-      }
-    }
+  //     if (permissionResult.granted === false) {
+  //       alert(
+  //         localized(
+  //           'Sorry, we need camera roll permissions to make this work.',
+  //         ),
+  //       )
+  //     }
+  //   }
+  // }
+
+  const pickImage = () => {
+    ImagePicker.launchImageLibrary(
+      {
+        quality: 0.5,
+        allowsEditing: true,
+
+        mediaType: 'photo',
+      },
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setProfilePictureURL(response.uri)
+          props.setProfilePictureFile(response)
+        }
+      },
+    )
   }
 
-  const onPressAddPhotoBtn = async () => {
-    const options = {
-      title: localized('Select photo'),
-      cancelButtonTitle: localized('Cancel'),
-      takePhotoButtonTitle: localized('Take Photo'),
-      chooseFromLibraryButtonTitle: localized('Choose from Library'),
-      maxWidth: 2000,
-      maxHeight: 2000,
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
+  const openCamera = async () => {
+    // const { status } = await Permissions.askAsync(Permissions.CAMERA)
+    // if (status !== 'granted') {
+    //   alert('Sorry, we need camera permissions to make this work!')
+    //   return
+    // }
+    ImagePicker.launchCamera(
+      {
+        quality: 0.5,
+        allowsEditing: true,
+        mediaType: 'photo',
       },
-    }
-
-    await getPermissionAsync()
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      // allowsEditing: true,
-      // aspect: [4, 3],
-      // quality: 1,
-    })
-
-    console.log(result)
-
-    if (!result.cancelled) {
-      setProfilePictureURL(result.uri)
-      props.setProfilePictureFile(result)
-    }
+      response => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker')
+        } else if (response.error) {
+          console.log('ImagePicker Error: ', response.error)
+        } else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton)
+        } else {
+          setProfilePictureURL(response.uri)
+          props.setProfilePictureFile(response)
+        }
+      },
+    )
   }
 
   const closeButton = () => (
@@ -115,21 +136,19 @@ const TNProfilePictureSelector = props => {
     </TouchableOpacity>
   )
 
-  const showActionSheet = index => {
-    setSelectedPhotoIndex(index)
+  const showActionSheet = btnEvent => {
+    setSelectedPhotoIndex(btnEvent)
     actionSheet.current.show()
+    setBtnType(btnEvent)
   }
 
   const onActionDone = index => {
     if (index == 0) {
-      onPressAddPhotoBtn()
+      pickImage()
     }
-    if (index == 2) {
-      // Remove button
-      if (profilePictureURL) {
-        setProfilePictureURL(null)
-        props.setProfilePictureFile(null)
-      }
+
+    if (index == 1) {
+      openCamera()
     }
   }
 
@@ -151,21 +170,20 @@ const TNProfilePictureSelector = props => {
           />
         </TouchableHighlight>
 
-        <TouchableOpacity onPress={showActionSheet} style={styles.addButton}>
+        <TouchableOpacity
+          name="img"
+          onPress={() => showActionSheet('img')}
+          style={styles.addButton}>
           <Image style={styles.cameraIcon} source={theme.icons.cameraFilled} />
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <ActionSheet
           ref={actionSheet}
-          title={localized('Confirm action')}
-          options={[
-            localized('Change Profile Photo'),
-            localized('Cancel'),
-            localized('Remove Profile Photo'),
-          ]}
-          cancelButtonIndex={1}
-          destructiveButtonIndex={2}
+          title={localized("Please check that the image aren't blurred.")}
+          options={['Gallery', 'Camera', 'Cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
           onPress={index => {
             onActionDone(index)
           }}

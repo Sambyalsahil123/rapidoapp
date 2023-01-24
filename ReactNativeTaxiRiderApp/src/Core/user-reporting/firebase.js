@@ -2,7 +2,7 @@ import { firebase } from '@react-native-firebase/firestore'
 import { getUnixTimeStamp } from '../helpers/timeFormat'
 
 const abuseDBRef = firebase.firestore().collection('reports')
-const usersDBRef = firebase.firestore().collection('users')
+const usersDBRef = firebase.firestore().collection('customers')
 
 export const markAbuse = (outBoundID, toUserID, abuseType) => {
   if (outBoundID == toUserID) {

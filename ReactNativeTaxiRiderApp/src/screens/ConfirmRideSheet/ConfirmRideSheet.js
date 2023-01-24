@@ -152,7 +152,7 @@ const ConfirmRideSheet = props => {
           snapPoints: [height, height],
           index: 0,
         }),
-      )
+      )               
     },
     [],
   )

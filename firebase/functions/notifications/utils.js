@@ -8,7 +8,7 @@ const { fetchUser, updateUser } = userClient
 const sendPushNotification = async (
   toUserID,
   titleStr,
-  contentStr,
+  contentStr,             
   type,
   metadata = {},
 ) => {
@@ -19,7 +19,7 @@ const sendPushNotification = async (
   if (!pushToken) {
     return null
   }
-
+  
   await saveNotificationsToDB(toUser, titleStr, contentStr, type, metadata)
 
   console.log(

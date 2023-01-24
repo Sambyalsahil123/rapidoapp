@@ -2,11 +2,13 @@ import { firebase } from '../../Core/api/firebase/config'
 
 const tripRef = firebase.firestore().collection('taxi_trips')
 const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
-const usersRef = firebase.firestore().collection('users')
+const usersRef = firebase.firestore().collection('customers')
 
 const createTrip = trip => {
+  console.log(trip, 'THIS IS TRIP DATA >>> CREATE_TRIP')
   return new Promise(resolve => {
     const tripId = tripRef.doc().id
+    console.log(tripId , 'tripid')
     tripRef
       .doc(tripId)
       .set({ ...trip, id: tripId }, { merge: true })
@@ -19,6 +21,7 @@ const createTrip = trip => {
 }
 
 const updateTrip = (tripId, trip) => {
+  console.log(trip, tripId, 'THIS IS TRIP ID OR DATA >>>> UPDATETRIP')
   return new Promise(resolve => {
     if (tripId && trip) {
       return tripRef
@@ -34,6 +37,8 @@ const updateTrip = (tripId, trip) => {
 }
 
 const cancelTrip = trip => {
+  console.log(cancelTrip, 'TRIP_CANCEL')
+
   if (trip?.id) {
     updateTrip(trip.id, { status: 'passenger_cancelled' })
   }
@@ -51,6 +56,7 @@ const cancelTrip = trip => {
 }
 
 const getTrip = tripId => {
+  console.log(tripId, 'this is getTrip')
   return new Promise(resolve => {
     if (tripId) {
       return tripRef
@@ -66,6 +72,8 @@ const getTrip = tripId => {
 }
 
 const getCarCategories = () => {
+  console.log('getCArCategories')
+
   return new Promise(resolve => {
     return carCategoriesRef
       .get()
@@ -78,6 +86,12 @@ const getCarCategories = () => {
 }
 
 const setCarCategories = (carCategoryId, category) => {
+  console.log(
+    carCategoryId,
+    '>>>>>> THis is carCategoryId',
+    category,
+    '<<<<category',
+  )
   return new Promise(resolve => {
     return carCategoriesRef
       .doc(carCategoryId)
@@ -89,6 +103,7 @@ const setCarCategories = (carCategoryId, category) => {
 }
 
 const subscribeTrip = (tripId, callback) => {
+  console.log(tripId, 'THIS IS TRIPID ', callback, 'this is callback')
   if (tripId) {
     return tripRef.doc(tripId).onSnapshot(doc => {
       const trip = doc.data()
@@ -100,6 +115,7 @@ const subscribeTrip = (tripId, callback) => {
 }
 
 const subscribeTripHistory = (userId, callback) => {
+  console.log(userId, 'userId', callback, 'callback')
   if (!userId) {
     return
   }

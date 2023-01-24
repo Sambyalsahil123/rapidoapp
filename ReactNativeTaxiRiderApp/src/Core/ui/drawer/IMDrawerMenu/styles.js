@@ -21,6 +21,8 @@ const dynamicStyles = (theme, appearance) => {
       fontWeight: 'bold',
       marginLeft: '10%',
       paddingTop: 7,
+      marginTop:20,
+      fontSize:16
     },
     email: {
       color: Platform.OS === 'ios' ? colorSet.primaryText : 'white',
@@ -28,6 +30,8 @@ const dynamicStyles = (theme, appearance) => {
       fontWeight: 'normal',
       marginTop: 5,
       marginLeft: '10%',
+      fontSize:16
+
     },
     imageContainer: {
       height: 80,
