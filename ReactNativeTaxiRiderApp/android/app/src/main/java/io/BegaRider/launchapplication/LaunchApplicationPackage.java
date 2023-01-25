@@ -1,4 +1,4 @@
-package io.instamobile.launchapplication;
+package com.company.begataxi.launchapplication;
 
 import java.util.Arrays;
 import java.util.Collections;

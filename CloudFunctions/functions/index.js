@@ -4,11 +4,12 @@
 const functions = require("firebase-functions");
 
 const admin = require("firebase-admin");
+const collectionsUtils = require("../../CloudFunctions/functions/core/collections");
 
+const {getDoc} = collectionsUtils;
 // const db = admin.firestore();
 
 admin.initializeApp();
-
 const axios = require("axios");
 
 const FAST_2_SMS_KEY =
@@ -19,6 +20,8 @@ const database = admin.firestore();
 const OTPRef = database.collection("otpCollection");
 
 const userRef = database.collection("users");
+
+const notificationsRef = database.collection("notifications");
 
 // Check if user already exists
 exports.isUserExists = functions.https.onRequest(async (request, response) => {
@@ -418,3 +421,19 @@ exports.loginAsCustomer = functions.https.onRequest(
 //     // Delete any documents with a timestamp earlier than 15 minutes ago
 //     return collectionRef.where("timestamp", "<", fifteenMinutesAgo).delete();
 //   });
+
+exports.updateNotification = functions.https.onCall(async (data, context) => {
+  const {notificationID, userID} = data;
+  console.log(`Updating notifcation ${JSON.stringify(data)} `);
+  if (notificationID) {
+    const doc = await getDoc(
+      notificationsRef.doc(userID),
+      "notifications",
+      notificationID,
+    );
+    console.log(doc);
+    if (doc?.ref) {
+      doc.ref.set({seen: true}, {merge: true});
+    }
+  }
+});

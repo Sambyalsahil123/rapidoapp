@@ -14,14 +14,14 @@ import { ConfigProvider } from './config'
 import { AuthProvider } from './Core/onboarding/hooks/useAuth'
 import { ProfileAuthProvider } from './Core/profile/hooks/useProfileAuth'
 import { authManager } from './Core/onboarding/api'
-import InstamobileTheme from './theme'
+import BegaRiderTheme from './theme'
 import stripeConfig from './stripeConfig'
 
 navigator.geolocation = require('@react-native-community/geolocation')
 const store = configureStore()
 
 const App = () => {
-  const theme = extendTheme(InstamobileTheme)
+  const theme = extendTheme(BegaRiderTheme)
 
   useEffect(() => {
     enableScreens()

@@ -23,34 +23,34 @@
 		7086F01F4D484989A6239279 /* Oswald-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2BC6DB39BDB14378ADB1F6B2 /* Oswald-Medium.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8A1CA211932448ED8E230115 /* Oswald-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F16BF3D6E4D69877A04DC /* Oswald-SemiBold.ttf */; };
-		9B6BE46569240D1B586FBECC /* libPods-Instamobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 92DB5E2CEC3DEE8ED9EFC456 /* libPods-Instamobile.a */; };
+		9B6BE46569240D1B586FBECC /* libPods-BegaRider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 92DB5E2CEC3DEE8ED9EFC456 /* libPods-BegaRider.a */; };
 		B4818F04837E4A0B9B6890CE /* FallingSkyBd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 70F0D84F5CB24AF99E9D9319 /* FallingSkyBd.otf */; };
 		C9F14267D5B047DBB34B8ED6 /* Oswald-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCDB49421367432583505890 /* Oswald-Light.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0555C103EFBD2D64B7C1B2B1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Instamobile/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		0555C103EFBD2D64B7C1B2B1 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-BegaRider/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		0A2C8F4A04F44644B59F0A4A /* FallingSky.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FallingSky.otf; path = ../src/assets/fonts/FallingSky.otf; sourceTree = "<group>"; };
 		0D1F16BF3D6E4D69877A04DC /* Oswald-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Oswald-SemiBold.ttf"; path = "../src/assets/fonts/Oswald-SemiBold.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Instamobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Instamobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Instamobile/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = Instamobile/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Instamobile/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Instamobile/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Instamobile/main.m; sourceTree = "<group>"; };
-		171D2709276E6AC2009996E7 /* SwiftHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftHeader.swift; path = Instamobile/SwiftHeader.swift; sourceTree = "<group>"; };
-		171D270B276E6B2D009996E7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Instamobile/GoogleService-Info.plist"; sourceTree = "<group>"; };
-		171D270D276EE35E009996E7 /* Instamobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Instamobile.entitlements; path = Instamobile/Instamobile.entitlements; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* BegaRider.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BegaRider.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = BegaRider/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.mm; path = BegaRider/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BegaRider/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BegaRider/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = BegaRider/main.m; sourceTree = "<group>"; };
+		171D2709276E6AC2009996E7 /* SwiftHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SwiftHeader.swift; path = BegaRider/SwiftHeader.swift; sourceTree = "<group>"; };
+		171D270B276E6B2D009996E7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "BegaRider/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		171D270D276EE35E009996E7 /* BegaRider.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BegaRider.entitlements; path = BegaRider/BegaRider.entitlements; sourceTree = "<group>"; };
 		2BC6DB39BDB14378ADB1F6B2 /* Oswald-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Oswald-Medium.ttf"; path = "../src/assets/fonts/Oswald-Medium.ttf"; sourceTree = "<group>"; };
 		6761D3BD27A2A6C30080B7FC /* Oswald-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Oswald-Bold.ttf"; path = "../src/assets/fonts/Oswald-Bold.ttf"; sourceTree = "<group>"; };
 		6761D3BF27A2A6F90080B7FC /* Oswald-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Oswald-Regular.ttf"; path = "../src/assets/fonts/Oswald-Regular.ttf"; sourceTree = "<group>"; };
-		6A5D5FAC1EC14A5064D597DC /* Pods-Instamobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instamobile.debug.xcconfig"; path = "Target Support Files/Pods-Instamobile/Pods-Instamobile.debug.xcconfig"; sourceTree = "<group>"; };
+		6A5D5FAC1EC14A5064D597DC /* Pods-BegaRider.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BegaRider.debug.xcconfig"; path = "Target Support Files/Pods-BegaRider/Pods-BegaRider.debug.xcconfig"; sourceTree = "<group>"; };
 		70F0D84F5CB24AF99E9D9319 /* FallingSkyBd.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FallingSkyBd.otf; path = ../src/assets/fonts/FallingSkyBd.otf; sourceTree = "<group>"; };
-		7963A337BFD88CD7EC52A938 /* Pods-Instamobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Instamobile.release.xcconfig"; path = "Target Support Files/Pods-Instamobile/Pods-Instamobile.release.xcconfig"; sourceTree = "<group>"; };
+		7963A337BFD88CD7EC52A938 /* Pods-BegaRider.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BegaRider.release.xcconfig"; path = "Target Support Files/Pods-BegaRider/Pods-BegaRider.release.xcconfig"; sourceTree = "<group>"; };
 		7F37DBF458374A33B5EF1195 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		8117B7BF09F8421C9910D4D8 /* Oswald-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Oswald-ExtraLight.ttf"; path = "../src/assets/fonts/Oswald-ExtraLight.ttf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Instamobile/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		92DB5E2CEC3DEE8ED9EFC456 /* libPods-Instamobile.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Instamobile.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BegaRider/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		92DB5E2CEC3DEE8ED9EFC456 /* libPods-BegaRider.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BegaRider.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCDB49421367432583505890 /* Oswald-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Oswald-Light.ttf"; path = "../src/assets/fonts/Oswald-Light.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FB85B1D9C2EC4C439E958DBF /* FallingSkyCond.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FallingSkyCond.otf; path = ../src/assets/fonts/FallingSkyCond.otf; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B6BE46569240D1B586FBECC /* libPods-Instamobile.a in Frameworks */,
+				9B6BE46569240D1B586FBECC /* libPods-BegaRider.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,8 +71,8 @@
 		052BCCE14A45A2824C0BA500 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6A5D5FAC1EC14A5064D597DC /* Pods-Instamobile.debug.xcconfig */,
-				7963A337BFD88CD7EC52A938 /* Pods-Instamobile.release.xcconfig */,
+				6A5D5FAC1EC14A5064D597DC /* Pods-BegaRider.debug.xcconfig */,
+				7963A337BFD88CD7EC52A938 /* Pods-BegaRider.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -89,10 +89,10 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		13B07FAE1A68108700A75B9A /* Instamobile */ = {
+		13B07FAE1A68108700A75B9A /* BegaRider */ = {
 			isa = PBXGroup;
 			children = (
-				171D270D276EE35E009996E7 /* Instamobile.entitlements */,
+				171D270D276EE35E009996E7 /* BegaRider.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -102,22 +102,22 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				171D2709276E6AC2009996E7 /* SwiftHeader.swift */,
 			);
-			name = Instamobile;
+			name = BegaRider;
 			sourceTree = "<group>";
 		};
-		1445840A27082775939A2780 /* Instamobile */ = {
+		1445840A27082775939A2780 /* BegaRider */ = {
 			isa = PBXGroup;
 			children = (
 				0555C103EFBD2D64B7C1B2B1 /* ExpoModulesProvider.swift */,
 			);
-			name = Instamobile;
+			name = BegaRider;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				92DB5E2CEC3DEE8ED9EFC456 /* libPods-Instamobile.a */,
+				92DB5E2CEC3DEE8ED9EFC456 /* libPods-BegaRider.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -144,7 +144,7 @@
 			children = (
 				6761D3BF27A2A6F90080B7FC /* Oswald-Regular.ttf */,
 				6761D3BD27A2A6C30080B7FC /* Oswald-Bold.ttf */,
-				13B07FAE1A68108700A75B9A /* Instamobile */,
+				13B07FAE1A68108700A75B9A /* BegaRider */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
@@ -161,7 +161,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Instamobile.app */,
+				13B07F961A680F5B00A75B9A /* BegaRider.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -169,7 +169,7 @@
 		DEE2D651B857C7E02E04E6F7 /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				1445840A27082775939A2780 /* Instamobile */,
+				1445840A27082775939A2780 /* BegaRider */,
 			);
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
@@ -177,9 +177,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* Instamobile */ = {
+		13B07F861A680F5B00A75B9A /* BegaRider */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Instamobile" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BegaRider" */;
 			buildPhases = (
 				38E2757CA3EFDC33EA39470A /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -195,9 +195,9 @@
 			);
 			dependencies = (
 			);
-			name = Instamobile;
-			productName = Instamobile;
-			productReference = 13B07F961A680F5B00A75B9A /* Instamobile.app */;
+			name = BegaRider;
+			productName = BegaRider;
+			productReference = 13B07F961A680F5B00A75B9A /* BegaRider.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -213,7 +213,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Instamobile" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BegaRider" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -226,7 +226,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* Instamobile */,
+				13B07F861A680F5B00A75B9A /* BegaRider */,
 			);
 		};
 /* End PBXProject section */
@@ -276,15 +276,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2B1895964621437A1236E26D /* [CP-User] [RNFB] Core Configuration */ = {
@@ -315,7 +315,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Instamobile-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BegaRider-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -328,15 +328,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Instamobile/Pods-Instamobile-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BegaRider/Pods-BegaRider-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -377,15 +377,15 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6A5D5FAC1EC14A5064D597DC /* Pods-Instamobile.debug.xcconfig */;
+			baseConfigurationReference = 6A5D5FAC1EC14A5064D597DC /* Pods-BegaRider.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Instamobile/Instamobile.entitlements;
+				CODE_SIGN_ENTITLEMENTS = BegaRider/BegaRider.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = Instamobile/Info.plist;
+				INFOPLIST_FILE = BegaRider/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -398,8 +398,8 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zestgeek.instamobile;
-				PRODUCT_NAME = Instamobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zestgeek.BegaRider;
+				PRODUCT_NAME = BegaRider;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -409,14 +409,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7963A337BFD88CD7EC52A938 /* Pods-Instamobile.release.xcconfig */;
+			baseConfigurationReference = 7963A337BFD88CD7EC52A938 /* Pods-BegaRider.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Instamobile/Instamobile.entitlements;
+				CODE_SIGN_ENTITLEMENTS = BegaRider/BegaRider.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8NF62W5GZ5;
-				INFOPLIST_FILE = Instamobile/Info.plist;
+				INFOPLIST_FILE = BegaRider/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,8 +429,8 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zestgeek.instamobile;
-				PRODUCT_NAME = Instamobile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zestgeek.BegaRider;
+				PRODUCT_NAME = BegaRider;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -565,7 +565,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Instamobile" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BegaRider" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -574,7 +574,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Instamobile" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BegaRider" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

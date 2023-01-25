@@ -1,4 +1,4 @@
-package io.instamobile.videoplayer;
+package com.company.begataxi.videoplayer;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -2,7 +2,7 @@ import { firebase } from '../../Core/api/firebase/config'
 
 const tripRef = firebase.firestore().collection('taxi_trips')
 const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
-const usersRef = firebase.firestore().collection('users')
+const usersRef = firebase.firestore().collection('customers')
 
 const createTrip = trip => {
   return new Promise(resolve => {
@@ -104,7 +104,7 @@ const subscribeTripHistory = (userId, callback) => {
     return
   }
   return tripRef
-    .where('passenger.id', '==', userId) 
+    .where('passenger.id', '==', userId)
     .where('status', '==', 'trip_completed')
     .onSnapshot(snapshot => {
       const data = snapshot?.docs.map(doc => doc.data())

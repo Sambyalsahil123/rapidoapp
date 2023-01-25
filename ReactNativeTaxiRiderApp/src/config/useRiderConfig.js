@@ -112,7 +112,7 @@ export const ConfigProvider = ({ children }) => {
         },
       ],
     },
-    tosLink: 'https://www.instamobile.io/eula-instachatty/',
+    tosLink: 'https://www.BegaRider.io/eula-instachatty/',
     isUsernameFieldEnabled: false,
     smsSignupFields: [
       {
@@ -248,7 +248,7 @@ export const ConfigProvider = ({ children }) => {
             },
             {
               displayName: localized('E-mail us'),
-              value: 'florian@instamobile.io',
+              value: 'florian@BegaRider.io',
               type: 'text',
               editable: false,
               key: 'email',

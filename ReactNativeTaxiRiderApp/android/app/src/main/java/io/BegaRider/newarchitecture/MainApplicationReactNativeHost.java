@@ -1,4 +1,4 @@
-package io.instamobile.newarchitecture;
+package com.company.begataxi.newarchitecture;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import com.facebook.react.PackageList;
@@ -18,9 +18,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import io.instamobile.BuildConfig;
-import io.instamobile.newarchitecture.components.MainComponentsRegistry;
-import io.instamobile.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.company.begataxi.BuildConfig;
+import com.company.begataxi.newarchitecture.components.MainComponentsRegistry;
+import com.company.begataxi.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 /**

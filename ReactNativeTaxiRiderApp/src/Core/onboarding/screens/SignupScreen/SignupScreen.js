@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native'
 import axios from 'axios'
-import Button from 'react-native-button'  
+import Button from 'react-native-button'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useTheme, useTranslations } from 'dopenative'
 import dynamicStyles from './styles'
@@ -50,7 +50,6 @@ const SignupScreen = props => {
       ...trimFields(inputFields),
       profilePictureURL: profilePictureFile?.uri,
       appIdentifier: config.appIdentifier,
-      isActive: false,
     }
 
     if (userDetails.username) {

@@ -4,7 +4,7 @@ const functions = require('firebase-functions')
 
 const notificationsRef = db.collection('notifications')
 
-const collectionsUtils = require('../core/collections')
+const collectionsUtils = require('../../../CloudFunctions/functions/core/collections')
 const { getList, getDoc } = collectionsUtils
 
 exports.listNotifications = functions.https.onCall(async (data, context) => {

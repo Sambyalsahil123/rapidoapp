@@ -5,18 +5,32 @@ const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
 const usersRef = firebase.firestore().collection('customers')
 
 const createTrip = trip => {
-  console.log(trip, 'THIS IS TRIP DATA >>> CREATE_TRIP')
+  console.log(trip, 'this is trip DATA')
   return new Promise(resolve => {
     const tripId = tripRef.doc().id
-    console.log(tripId , 'tripid')
+    // const tripId = "FNFxkdSKQwJs9c5dgpd5"
+    let _trip = {}
+    Object.keys(trip).map(key => {
+      if (trip  [key]) {
+        Object.assign(_trip, { [key]: trip[key] })
+      }
+    })
+    console.log(tripId, 'TRIP ID ')
     tripRef
       .doc(tripId)
-      .set({ ...trip, id: tripId }, { merge: true })
-      .then(() => {
+      .set({ ..._trip, id: tripId }, { merge: true })
+      .then(res => {
+        console.log(res, '<<<<<<resresres')
         resolve(tripId)
-        usersRef.doc(trip.passenger.id).update({ inProgressOrderID: tripId })
+        usersRef
+          .doc(_trip?.passenger?.id || '')
+          .update({ inProgressOrderID: tripId })
       })
-      .catch(() => resolve())
+      .catch(err => {
+        console.log(err, '<<<<<<errerrerr')
+
+        resolve()
+      })
   })
 }
 

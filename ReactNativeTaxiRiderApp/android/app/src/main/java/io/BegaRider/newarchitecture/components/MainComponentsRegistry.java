@@ -1,4 +1,4 @@
-package io.instamobile.newarchitecture.components;
+package com.company.begataxi.newarchitecture.components;
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;
 import com.facebook.react.fabric.ComponentFactory;
