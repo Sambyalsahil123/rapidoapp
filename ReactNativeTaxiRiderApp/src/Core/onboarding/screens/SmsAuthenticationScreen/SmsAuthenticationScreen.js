@@ -58,7 +58,7 @@ const SmsAuthenticationScreen = props => {
   const [isPhoneVisible, setIsPhoneVisible] = useState(
     !isConfirmSignUpCode && !isConfirmResetPasswordCode,
   )
-  const [phoneNumber, setPhoneNumber] = useState(false)
+  const [contactNumber, setPhoneNumber] = useState(false)
   const [countriesPickerData, setCountriesPickerData] = useState(null)
   const [verificationId, setVerificationId] = useState(null)
   const [profilePictureFile, setProfilePictureFile] = useState(null)
@@ -202,7 +202,7 @@ const SmsAuthenticationScreen = props => {
   const signUpWithPhoneNumber = smsCode => {
     const userDetails = {
       ...trimFields(inputFields),
-      phone: phoneNumber?.trim(),
+      phone: contactNumber?.trim(),
       photoFile: profilePictureFile,
     }
     authManager

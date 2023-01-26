@@ -4,9 +4,9 @@
 const functions = require("firebase-functions");
 
 const admin = require("firebase-admin");
-const collectionsUtils = require("../../CloudFunctions/functions/core/collections");
+// const collectionsUtils = require("../../CloudFunctions/functions/core/collections");
 
-const {getDoc} = collectionsUtils;
+// const {getDoc} = collectionsUtils;
 // const db = admin.firestore();
 
 admin.initializeApp();
@@ -21,7 +21,7 @@ const OTPRef = database.collection("otpCollection");
 
 const userRef = database.collection("users");
 
-const notificationsRef = database.collection("notifications");
+// const notificationsRef = database.collection("notifications");
 
 // Check if user already exists
 exports.isUserExists = functions.https.onRequest(async (request, response) => {
@@ -196,7 +196,7 @@ exports.login = functions.https.onRequest(async (request, response) => {
 });
 // ///////// FOR CUSTOMER ONBOARDING
 
-const customerRef = database.collection("customers");
+const customerRef = database.collection("users");
 
 // Check if user already exists
 exports.isCustomerExists = functions.https.onRequest(
@@ -205,7 +205,7 @@ exports.isCustomerExists = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("phoneNumber", "==", Number(data.phoneNumber))
+        .where("contactNumber", "==", Number(data.contactNumber))
         .get();
 
       if (user.docs.length) {
@@ -229,7 +229,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("phoneNumber", "==", Number(data.phoneNumber))
+        .where("contactNumber", "==", Number(data.contactNumber))
         .get();
 
       if (user.docs.length) {
@@ -243,7 +243,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
         {
           variables_values: generatedOTP,
           route: "otp",
-          numbers: `${data.phoneNumber}`,
+          numbers: `${data.contactNumber}`,
         },
         {
           headers: {
@@ -254,7 +254,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
       );
 
       await OTPRef.add({
-        phoneNumber: data.phoneNumber,
+        contactNumber: data.contactNumber,
         otp: generatedOTP,
       });
       response.json({success: true});
@@ -276,28 +276,19 @@ exports.confirmOTPforCustomer = functions.https.onRequest(
       let user;
       if (isFromLoginPage) {
         user = await customerRef
-          .where("phoneNumber", "==", data.phoneNumber)
+          .where("contactNumber", "==", data.contactNumber)
           .get();
         userData = {...user?.docs[0]?.data(), id: user?.docs[0]?.id};
       }
 
       const otpCollection = await OTPRef.where(
-        "phoneNumber",
+        "contactNumber",
         "==",
-        data.phoneNumber,
+        data.contactNumber,
       )
         .where("otp", "==", data.otp)
         .get();
 
-      // functions.logger.log(
-      //   "new",
-      //   data,
-      //   typeof data.phoneNumber,
-      //   typeof data.otp,
-      //   otpCollection.docs,
-      //   otpCollection.docs.length,
-      // );
-      // functions.logger.log("new22======>", data.phoneNumber, data.phoneNumber);
 
       if (otpCollection?.docs?.length > 0) {
         if (!isFromLoginPage) {
@@ -332,7 +323,7 @@ exports.loginAsCustomer = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("phoneNumber", "==", data.phoneNumber)
+        .where("contactNumber", "==", data.contactNumber)
         .get();
 
       if (user.docs.length <= 0) {
@@ -356,7 +347,7 @@ exports.loginAsCustomer = functions.https.onRequest(
           {
             variables_values: generatedOTP,
             route: "otp",
-            numbers: `${data.phoneNumber}`,
+            numbers: `${data.contactNumber}`,
           },
           {
             headers: {
@@ -367,7 +358,7 @@ exports.loginAsCustomer = functions.https.onRequest(
         );
 
         await OTPRef.add({
-          phoneNumber: data.phoneNumber,
+          contactNumber: data.contactNumber,
           otp: generatedOTP,
           // timestamp: new Date(),
         });
@@ -422,18 +413,18 @@ exports.loginAsCustomer = functions.https.onRequest(
 //     return collectionRef.where("timestamp", "<", fifteenMinutesAgo).delete();
 //   });
 
-exports.updateNotification = functions.https.onCall(async (data, context) => {
-  const {notificationID, userID} = data;
-  console.log(`Updating notifcation ${JSON.stringify(data)} `);
-  if (notificationID) {
-    const doc = await getDoc(
-      notificationsRef.doc(userID),
-      "notifications",
-      notificationID,
-    );
-    console.log(doc);
-    if (doc?.ref) {
-      doc.ref.set({seen: true}, {merge: true});
-    }
-  }
-});
+// exports.updateNotification = functions.https.onCall(async (data, context) => {
+//   const {notificationID, userID} = data;
+//   console.log(`Updating notifcation ${JSON.stringify(data)} `);
+//   if (notificationID) {
+//     const doc = await getDoc(
+//       notificationsRef.doc(userID),
+//       "notifications",
+//       notificationID,
+//     );
+//     console.log(doc);
+//     if (doc?.ref) {
+//       doc.ref.set({seen: true}, {merge: true});
+//     }
+//   }
+// });

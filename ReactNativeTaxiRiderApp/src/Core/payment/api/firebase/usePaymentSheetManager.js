@@ -60,8 +60,8 @@ const usePaymentSheetManager = appConfig => {
       //     type: 'final',
       //   },
       // ],
-      requiredShippingAddressFields: ['emailAddress', 'phoneNumber'],
-      requiredBillingContactFields: ['phoneNumber', 'name'],
+      requiredShippingAddressFields: ['emailAddress', 'contactNumber'],
+      requiredBillingContactFields: ['contactNumber', 'name'],
     }
   }
 

@@ -24,7 +24,7 @@ const LoginScreen = props => {
   const { localized } = useTranslations()
   const { theme, appearance } = useTheme()
   const [loading, setLoading] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const [contactNumber, setPhoneNumber] = useState('')
   const [otp, setOtp] = useState('')
   const [parameters, setParameters] = useState({
     isOTPSent: false,
@@ -38,12 +38,12 @@ const LoginScreen = props => {
   const dispatch = useDispatch()
 
   const onPressLogin = async () => {
-    const phoneLength = phoneNumber.length
+    const phoneLength = contactNumber.length
 
     if (!(phoneLength > 13 || phoneLength < 10)) {
       if (phoneLength === 10 || phoneLength === 13) {
         const restructuredPhoneNumber = `${
-          phoneLength === 13 ? phoneNumber : '000' + phoneNumber
+          phoneLength === 13 ? contactNumber : '000' + contactNumber
         }`.slice(3, 13)
 
         const loginAsCustomer =
@@ -52,7 +52,7 @@ const LoginScreen = props => {
         try {
           setLoading(true)
           const response = await axios.post(loginAsCustomer, {
-            phoneNumber: Number(restructuredPhoneNumber.trim()),
+            contactNumber: Number(restructuredPhoneNumber.trim()),
           })
 
           if (response.data.error) {
@@ -99,15 +99,15 @@ const LoginScreen = props => {
       return
     }
 
-    const phoneLength = phoneNumber.length
+    const phoneLength = contactNumber.length
 
     const restructuredPhoneNumber = `${
-      phoneLength === 13 ? phoneNumber : '000' + phoneNumber
+      phoneLength === 13 ? contactNumber : '000' + contactNumber
     }`.slice(3, 13)
 
     try {
       const response = await axios.post(confirmOTPforCustomer, {
-        phoneNumber: Number(restructuredPhoneNumber.trim()),
+        contactNumber: Number(restructuredPhoneNumber.trim()),
         otp: Number(otp.trim()),
         isFromLoginPage: true,
       })
@@ -161,7 +161,7 @@ const LoginScreen = props => {
             setPhoneNumber(text)
             setParameters({ ...parameters, isPhoneNumberInvalid: false })
           }}
-          value={phoneNumber}
+          value={contactNumber}
           underlineColorAndroid="transparent"
           autoCapitalize="none"
         />

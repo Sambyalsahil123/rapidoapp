@@ -48,7 +48,7 @@ const signInWithCredential = (authManager, credential, appIdentifier) => {
       .then(response => {
         const isNewUser = response.additionalUserInfo.isNewUser
         const { first_name, last_name } = response.additionalUserInfo.profile
-        const { uid, email, phoneNumber, photoURL } = response.user
+        const { uid, email, contactNumber, photoURL } = response.user
         const defaultProfilePhotoURL =
           'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
 
@@ -59,7 +59,7 @@ const signInWithCredential = (authManager, credential, appIdentifier) => {
             email: email || '',
             firstName: first_name || '',
             lastName: last_name || '',
-            phone: phoneNumber || '',
+            phone: contactNumber || '',
             profilePictureURL: photoURL || defaultProfilePhotoURL,
             userID: uid,
             appIdentifier,
@@ -295,11 +295,11 @@ export const retrieveUserByPhone = phone => {
   })
 }
 
-export const sendSMSToPhoneNumber = phoneNumber => {
+export const sendSMSToPhoneNumber = contactNumber => {
   return new Promise(function (resolve, _reject) {
     firebase
       .auth()
-      .signInWithPhoneNumber(phoneNumber)
+      .signInWithPhoneNumber(contactNumber)
       .then(function (confirmationResult) {
         // SMS sent. Prompt user to type the code from the message, then sign the
         // user in with confirmationResult.confirm(code).

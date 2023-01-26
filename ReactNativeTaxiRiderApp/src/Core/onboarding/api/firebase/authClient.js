@@ -5,7 +5,7 @@ import { updateUser } from '../../../users'
 import { ErrorCode } from '../ErrorCode'
 import { getUnixTimeStamp } from '../../../helpers/timeFormat'
 
-const usersRef = firestore().collection('customers')
+const usersRef = firestore().collection('users')
 
 const handleUserFromAuthStateChanged = (user, resolve) => {
   if (user) {
@@ -182,7 +182,7 @@ const signInWithCredential = (credential, appIdentifier, socialAuthType) => {
         const isNewUser = response.additionalUserInfo.isNewUser
         const { first_name, last_name, family_name, given_name } =
           response.additionalUserInfo.profile
-        const { uid, email, phoneNumber, photoURL } = response.user
+        const { uid, email, contactNumber, photoURL } = response.user
         const defaultProfilePhotoURL =
           'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
 
@@ -193,7 +193,7 @@ const signInWithCredential = (credential, appIdentifier, socialAuthType) => {
             email: email || '',
             firstName: first_name || given_name || socialAuthType || '',
             lastName: last_name || family_name || 'User',
-            phone: phoneNumber || '',
+            phone: contactNumber || '',
             profilePictureURL: photoURL || defaultProfilePhotoURL,
             userID: uid,
             appIdentifier,
@@ -300,10 +300,10 @@ export const retrieveUserByPhone = phone => {
   })
 }
 
-export const sendSMSToPhoneNumber = phoneNumber => {
+export const sendSMSToPhoneNumber = contactNumber => {
   return new Promise(function (resolve, _reject) {
     auth()
-      .signInWithPhoneNumber(phoneNumber)
+      .signInWithPhoneNumber(contactNumber)
       .then(function (confirmationResult) {
         // SMS sent. Prompt user to type the code from the message, then sign the
         // user in with confirmationResult.confirm(code).

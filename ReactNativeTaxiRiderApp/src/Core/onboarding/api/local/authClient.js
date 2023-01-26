@@ -188,10 +188,10 @@ export const onVerificationChanged = phone => {
 /**
  * Send SMS to phone number
  *
- * @param {String} phoneNumber the user's phone number
+ * @param {String} contactNumber the user's phone number
  * @param {object} captchaVerifier this is used for captcha verification
  */
-export const sendSMSToPhoneNumber = (phoneNumber, captchaVerifier) => {
+export const sendSMSToPhoneNumber = (contactNumber, captchaVerifier) => {
   // return a promise
   return new Promise(function (resolve, _reject) {
     // send sms to user

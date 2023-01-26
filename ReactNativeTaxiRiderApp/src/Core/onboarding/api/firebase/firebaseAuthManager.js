@@ -278,8 +278,8 @@ const loginOrSignUpWithFacebook = appConfig => {
   })
 }
 
-const sendSMSToPhoneNumber = phoneNumber => {
-  return authAPI.sendSMSToPhoneNumber(phoneNumber)
+const sendSMSToPhoneNumber = contactNumber => {
+  return authAPI.sendSMSToPhoneNumber(contactNumber)
 }
 
 const onVerification = phone => {

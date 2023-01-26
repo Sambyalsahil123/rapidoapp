@@ -74,8 +74,6 @@ function HomeScreen(props) {
     return apiManager.current?.unsubscribe
   }, [])
 
-  console.log(currentUser, "CURRENTLTGDGDSGSDGSD");
-
   useEffect(() => {
     if (!currentUser?.id) {
       return
@@ -93,6 +91,9 @@ function HomeScreen(props) {
   const onDriverUpdate = data => {
     const orderRequestData = data?.orderRequestData
     const inProgressOrderID = data?.inProgressOrderID
+
+    console.log(data, 'THIS IS DATA ONDRIVERDATA')
+
     setDeliveryDriverData({ orderRequestData, inProgressOrderID })
     if (!orderRequestData && !inProgressOrderID && data.isActive === true) {
       // Driver has no in-progress order, so they can go offline => enable button, show user location on map
@@ -120,7 +121,6 @@ function HomeScreen(props) {
   }
 
   useEffect(() => {
-
     return () => {
       //positionWatchID != null && Geolocation.clearWatch(positionWatchID);
     }
@@ -133,6 +133,8 @@ function HomeScreen(props) {
   }, [deliveryDriverData])
 
   useEffect(() => {
+
+    console.log(order?.status, '>>>>>>>>> THIS IS NEW ORDER STATUS')
     if (order && order?.status !== 'passenger_cancelled') {
       computePolylineCoordinates(order)
     } else {
@@ -144,6 +146,8 @@ function HomeScreen(props) {
   }, [order?.status])
 
   useEffect(() => {
+    console.log(positionWatchID, 'this is positionWatchID')
+
     Geolocation.clearWatch(positionWatchID.current)
     trackDriverLocation()
   }, [routeId])
@@ -178,6 +182,7 @@ function HomeScreen(props) {
   }
 
   const onAcceptNewOrder = () => {
+    console.log('this is onAcceptNewOrder ')
     deliveryDriverData?.orderRequestData &&
       apiManager.current?.accept(
         deliveryDriverData.orderRequestData,
@@ -186,6 +191,7 @@ function HomeScreen(props) {
   }
 
   const onRejectNewOrder = () => {
+    console.log('this is onRejectNewOrder ')
     deliveryDriverData
     deliveryDriverData?.orderRequestData &&
       apiManager.current?.reject(
@@ -194,8 +200,9 @@ function HomeScreen(props) {
       )
   }
   const getCurrentUser = async () => {
+    console.log('this is getCurrentUser')
     const upDatedUser = await usersRef.doc(currentUser.id).get()
-    console.log(upDatedUser._data, 'UPDdsfsdf')
+    console.log(upDatedUser._data, 'this is UPDATE USER')
     dispatch(setUserData({ user: upDatedUser._data }))
     saveUserLocally(upDatedUser._data)
   }
@@ -210,7 +217,7 @@ function HomeScreen(props) {
     const dropoff = order.dropoff
 
     if (order.status === 'driver_accepted' && pickup && driver) {
-      // Driver has been allocated, and they're driving to pick up the order from the pickup location
+      // Driver has been allocated, and they're driving to pick up the order from the pickup
       const sourceCoordinate = {
         latitude: driver.location?.latitude,
         longitude: driver.location?.longitude,
@@ -236,6 +243,11 @@ function HomeScreen(props) {
     }
 
     if (order.status === 'trip_started' && pickup && driver) {
+      console.log(
+        order.pickup,
+        order.status,
+        'THISSSSSSSSSSSSSSSSSSSS.>>>>>>>>>>>>>>>>',
+      )
       // Driver is heading to dropoff
       const sourceCoordinate = {
         latitude: driver.location?.latitude,
@@ -359,7 +371,7 @@ function HomeScreen(props) {
         if (currentUser?.inProgressOrderID) {
           apiManager.current?.updateCarDrive(order, location)
         } else {
-          console.log(currentUser.id , )
+          console.log(currentUser.id)
           updateUser(
             currentUser.id,
             { location },
@@ -468,8 +480,7 @@ HomeScreen.propTypes = {
 export default HomeScreen
 
 const saveUserLocally = async user => {
-  if(user){
-  AsyncStorage.setItem('userData', JSON.stringify(user))
-
+  if (user) {
+    AsyncStorage.setItem('userData', JSON.stringify(user))
   }
 }

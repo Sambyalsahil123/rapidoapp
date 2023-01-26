@@ -2,7 +2,7 @@ import { firebase } from '../../Core/api/firebase/config'
 
 const tripRef = firebase.firestore().collection('taxi_trips')
 const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
-const usersRef = firebase.firestore().collection('customers')
+const usersRef = firebase.firestore().collection('users')
 
 const createTrip = trip => {
   console.log(trip, 'this is trip DATA')

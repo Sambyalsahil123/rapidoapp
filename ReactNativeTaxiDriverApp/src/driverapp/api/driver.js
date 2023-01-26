@@ -20,7 +20,7 @@ export class DriverAPIManager {
   }
 
   subscribeToDriverDataUpdates = driver => {
-    // console.log(driver,driver.uid ,'this is drivwer')
+    console.log(driver, driver.id, 'this is driver')
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
@@ -38,7 +38,7 @@ export class DriverAPIManager {
     if (!orderID || orderID.length == 0) {
       return
     }
-
+    console.log(orderID, 'this is oderID')
     this.unsubscribeOrder = this.tripsRef
       .doc(orderID)
       .onSnapshot(this.onOrderDataUpdate, error => {
@@ -47,13 +47,11 @@ export class DriverAPIManager {
   }
 
   goOnline = async driver => {
-  
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
-    console.log(driver.id,"this is driver ID");
+    console.log(driver.id, 'this is driver ID')
     this.usersRef.doc(driver.id).update({ isActive: true })
-
   }
 
   goOffline = async driver => {
@@ -240,6 +238,7 @@ export class DriverAPIManager {
   onOrderDataUpdate = querySnapshot => {
     const docs = querySnapshot.docs
     if (docs?.length > 0) {
+      console.log(docs, 'DOC____SDFDSFD__', docs[0], '<<<<<<<<<<<<<<<<<')
       this.orderUpdatesCallback && this.orderUpdatesCallback(docs[0].data())
     } else {
       this.orderUpdatesCallback &&
