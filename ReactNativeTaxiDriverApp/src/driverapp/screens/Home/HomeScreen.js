@@ -41,7 +41,7 @@ function HomeScreen(props) {
   const [routeId, setRouteId] = useState(null)
 
   const currentUser = useSelector(state => state.auth.user)
-
+                                                
   const dispatch = useDispatch()
 
   const { localized } = useTranslations()

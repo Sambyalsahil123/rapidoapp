@@ -99,12 +99,12 @@ const ConfirmRideSheet = props => {
   }
 
   const onTripUpdate = trip => {
-    if (!hasDriverCoordinates && trip.carDrive) {
+    if (!hasDriverCoordinates && trip?.carDrive) {
       dispatch(
         setTripCoordinates({
-          carDrive: trip.carDrive,
-          pickup: trip.pickup,
-          dropoff: trip.dropoff,
+          carDrive: trip?.carDrive,
+          pickup: trip?.pickup,
+          dropoff: trip?.dropoff,
         }),
       )
     }

@@ -25,7 +25,7 @@ export default function TripMarkers({ fitToCoordinates }) {
     if (
       !tripCoordinates?.routeId ||
       !tripCoordinates.routeCoordinates ||
-      !tripCoordinates.carDrive
+      !tripCoordinates?.carDrive
     ) {
       return
     }
@@ -34,7 +34,7 @@ export default function TripMarkers({ fitToCoordinates }) {
       return
     }
     trackCarDrive()
-  }, [tripCoordinates?.routeId, tripCoordinates.carDrive])
+  }, [tripCoordinates?.routeId, tripCoordinates?.carDrive])
 
   const drawPolyline = () => {
     setCoordinates(tripCoordinates.routeCoordinates)
@@ -63,7 +63,7 @@ export default function TripMarkers({ fitToCoordinates }) {
     if (coordinates?.length > 0) {
       return coordinates[0]
     }
-    return tripCoordinates.carDrive
+    return tripCoordinates?.carDrive
   }
 
   const getDestinationCoordinate = () => {
@@ -74,7 +74,7 @@ export default function TripMarkers({ fitToCoordinates }) {
     return tripStarted ? tripCoordinates?.dropoff : tripCoordinates.pickup
   }
 
-  if (!tripCoordinates.carDrive) {
+  if (!tripCoordinates?.carDrive) {
     return null
   }
 

@@ -21,7 +21,7 @@ export default function CarMarkers() {
   return cars.map(car => {
     return (
       <AnimatedMarker
-        key={`${tripCoordinates.carDrive?.latitude}`}
+        key={`${tripCoordinates?.carDrive?.latitude}`}
         newCoordinate={{
           latitude: car?.latitude,
           longitude: car?.longitude,
