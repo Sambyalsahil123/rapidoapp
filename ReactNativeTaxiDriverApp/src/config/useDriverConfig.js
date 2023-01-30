@@ -140,6 +140,15 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'Phone Number',
       },
       {
+        displayName: localized('Car Type'),
+        type: 'select',
+        options: ['uber_x', 'comfort', 'uber_xl', 'none'],
+        displayOptions: ['TaxiX', 'Comfort', 'TaxiXL', 'None'],
+        editable: true,
+        key: 'carType',
+        placeholder: 'Car Type',
+      },
+      {
         displayName: localized('Aadhar Card'),
         type: 'numeric',
         secureTextEntry: false,

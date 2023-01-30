@@ -5,7 +5,6 @@ const functions = require("firebase-functions");
 
 const admin = require("firebase-admin");
 // const collectionsUtils = require("../../CloudFunctions/functions/core/collections");
-
 // const {getDoc} = collectionsUtils;
 // const db = admin.firestore();
 
