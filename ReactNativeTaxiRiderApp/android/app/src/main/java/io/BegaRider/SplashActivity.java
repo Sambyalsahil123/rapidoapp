@@ -1,4 +1,4 @@
-package com.company.begataxi;
+package com.bega.rider;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.company.begataxi.launchapplication;
+package com.bega.rider.launchapplication;
 
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -44,7 +44,7 @@ public class LaunchApplicationModule extends ReactContextBaseJavaModule {
     kl.disableKeyguard();
 
   //  Intent dialogIntent = new Intent(getReactApplicationContext(), MainActivity.class);
-    Intent dialogIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage("com.company.begataxi");
+    Intent dialogIntent = getReactApplicationContext().getPackageManager().getLaunchIntentForPackage("com.bega.rider");
 
     dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
     dialogIntent.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED +

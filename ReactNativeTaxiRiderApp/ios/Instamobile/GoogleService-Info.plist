@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.company.begataxi.rn.ios</string>
+	<string>com.bega.rider.rn.ios</string>
 	<key>PROJECT_ID</key>
 	<string>development-69cdc</string>
 	<key>STORAGE_BUCKET</key>

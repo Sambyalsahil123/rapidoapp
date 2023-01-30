@@ -1,4 +1,4 @@
-package com.company.begataxi.videoplayer;
+package com.bega.rider.videoplayer;
 
 import android.app.Activity;
 import android.content.Intent;

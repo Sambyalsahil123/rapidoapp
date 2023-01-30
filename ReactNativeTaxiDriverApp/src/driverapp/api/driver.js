@@ -20,7 +20,11 @@ export class DriverAPIManager {
   }
 
   subscribeToDriverDataUpdates = driver => {
-    console.log(driver, driver.id, 'this is driver in subscribeToDriverDataUpdates')
+    console.log(
+      driver,
+      driver.id,
+      'this is driver in subscribeToDriverDataUpdates',
+    )
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
@@ -29,7 +33,7 @@ export class DriverAPIManager {
     this.unsubscribeSnapshot = this.usersRef
       .doc(driver.id)
       .onSnapshot(this.onDriverUserDataUpdate, error => {
-        console.log(error, 'this is error')
+        console.log(error, 'this is firebase error error')
         console.log(driver.id, 'this is Driver ID')
       })
   }
@@ -42,10 +46,10 @@ export class DriverAPIManager {
     this.unsubscribeOrder = this.tripsRef
       .doc(orderID)
       .onSnapshot(this.onOrderDataUpdate, error => {
-        console.log(error)
+        console.log(error, 'err in subscribeToOrder ')
       })
   }
-    
+
   goOnline = async driver => {
     if (!driver || !driver.id || driver.id.length == 0) {
       return

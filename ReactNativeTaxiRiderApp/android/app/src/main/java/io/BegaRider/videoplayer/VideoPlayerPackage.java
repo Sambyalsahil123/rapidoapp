@@ -1,4 +1,4 @@
-package com.company.begataxi.videoplayer;
+package com.bega.rider.videoplayer;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;

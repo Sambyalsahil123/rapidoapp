@@ -1,4 +1,4 @@
-package com.company.begataxi.newarchitecture;
+package com.bega.rider.newarchitecture;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import com.facebook.react.PackageList;
@@ -18,9 +18,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.company.begataxi.BuildConfig;
-import com.company.begataxi.newarchitecture.components.MainComponentsRegistry;
-import com.company.begataxi.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.bega.rider.BuildConfig;
+import com.bega.rider.newarchitecture.components.MainComponentsRegistry;
+import com.bega.rider.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 /**

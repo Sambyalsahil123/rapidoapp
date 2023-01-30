@@ -115,7 +115,7 @@ exports.confirmOTP = functions.https.onRequest(async (request, response) => {
     //   otpCollection.docs.length,
     // );
     // functions.logger.log("new22======>", data.phoneNumber, data.phoneNumber);
-
+    console.log("HELLO");
     if (otpCollection?.docs?.length > 0) {
       if (!isFromLoginPage) {
         await userRef.add({...data});
@@ -287,7 +287,6 @@ exports.confirmOTPforCustomer = functions.https.onRequest(
       )
         .where("otp", "==", data.otp)
         .get();
-
 
       if (otpCollection?.docs?.length > 0) {
         if (!isFromLoginPage) {

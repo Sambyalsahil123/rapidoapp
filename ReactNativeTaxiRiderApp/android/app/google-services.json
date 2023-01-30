@@ -8,9 +8,38 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:133359035367:android:5a8f2f362df1f851689342",
+        "android_client_info": {
+          "package_name": "com.bega.rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "133359035367-cmdcao31ukqmucnbkpfl0ng3ti1ha8eg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxMD0q9gMZsL8McxZbGHmjTgN94UIWF0U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "133359035367-cmdcao31ukqmucnbkpfl0ng3ti1ha8eg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:133359035367:android:5cca53acad3560a6689342",
         "android_client_info": {
-          "package_name": "com.company.begataxi"
+          "package_name": "com.bega.rider"
         }
       },
       "oauth_client": [

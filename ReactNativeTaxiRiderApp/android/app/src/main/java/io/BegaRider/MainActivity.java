@@ -1,4 +1,4 @@
-package com.company.begataxi;
+package com.bega.rider;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

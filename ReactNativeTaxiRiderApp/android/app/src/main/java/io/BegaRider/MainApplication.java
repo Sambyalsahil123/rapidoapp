@@ -1,4 +1,4 @@
-package com.company.begataxi;
+package com.bega.rider;
 
 
 import android.app.Application;
@@ -26,8 +26,8 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.react.ReactApplication;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
-import com.company.begataxi.launchapplication.LaunchApplicationPackage;;
-import com.company.begataxi.videoplayer.VideoPlayerPackage;
+import com.bega.rider.launchapplication.LaunchApplicationPackage;;
+import com.bega.rider.videoplayer.VideoPlayerPackage;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

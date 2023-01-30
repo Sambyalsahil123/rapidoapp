@@ -1,4 +1,4 @@
-package com.company.begataxi.launchapplication;
+package com.bega.rider.launchapplication;
 
 import java.util.Arrays;
 import java.util.Collections;
