@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore'
 import { getUnixTimeStamp } from '../../../helpers/timeFormat'
 
-const usersRef = firestore().collection('users')
+const usersRef = firestore().collection('customers')
 
 export const updateUser = async (userID, newData) => {
   const dataWithOnlineStatus = {

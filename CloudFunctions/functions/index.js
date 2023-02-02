@@ -195,7 +195,7 @@ exports.login = functions.https.onRequest(async (request, response) => {
 });
 // ///////// FOR CUSTOMER ONBOARDING
 
-const customerRef = database.collection("users");
+const customerRef = database.collection("customers");
 
 // Check if user already exists
 exports.isCustomerExists = functions.https.onRequest(

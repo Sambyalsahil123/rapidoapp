@@ -5,7 +5,7 @@ import { updateUser } from '../../../users'
 import { ErrorCode } from '../ErrorCode'
 import { getUnixTimeStamp } from '../../../helpers/timeFormat'
 
-const usersRef = firestore().collection('users')
+const usersRef = firestore().collection('customers')
 
 const handleUserFromAuthStateChanged = (user, resolve) => {
   if (user) {

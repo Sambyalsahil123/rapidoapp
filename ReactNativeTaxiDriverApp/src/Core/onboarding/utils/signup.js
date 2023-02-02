@@ -7,6 +7,7 @@ export const checkFields = (inputFields, profilePictureFile, localized) => {
       inputFields?.carName &&
       inputFields?.carNumber &&
       inputFields?.lastName &&
+      inputFields?.carType &&
       inputFields?.firstName
     )
   ) {
