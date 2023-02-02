@@ -67,17 +67,17 @@ const SignupScreen = props => {
       setLoading(false)
       setVerificationModal(true)
     }
-    const phoneLength = inputFields.contactNumber.length
+    const phoneLength = inputFields.phoneNumber.length
 
     const restructuredPhoneNumber = `${
       phoneLength === 13
-        ? inputFields.contactNumber
-        : '000' + inputFields.contactNumber
+        ? inputFields.phoneNumber
+        : '000' + inputFields.phoneNumber
     }`.slice(3, 13)
 
     try {
       const response = await axios.post(sendOTPforCustomer, {
-        contactNumber: Number(restructuredPhoneNumber),
+        phoneNumber: Number(restructuredPhoneNumber),
       })
 
       if (response?.data?.success) {

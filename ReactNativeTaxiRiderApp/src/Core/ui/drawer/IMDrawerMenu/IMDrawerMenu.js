@@ -81,7 +81,7 @@ const IMDrawerMenu = props => {
           {currentUser.firstName} {currentUser.lastName}
         </Text>
         <Text style={[styles.email, props.emailStyle]}>
-          {currentUser.contactNumber}
+          {currentUser.phoneNumber}
         </Text>
       </View>
       <View style={styles.content}>

@@ -43,11 +43,11 @@ export const OTPVerificationModal = ({ inputFields }) => {
       setLoading(false)
       return
     }
-    const phoneLength = inputFields?.contactNumber?.length
+    const phoneLength = inputFields?.phoneNumber?.length
     const restructuredPhoneNumber = `${
       phoneLength === 13
-        ? inputFields.contactNumber
-        : '000' + inputFields?.contactNumber
+        ? inputFields.phoneNumber
+        : '000' + inputFields?.phoneNumber
     }`.slice(3, 13)
 
     try {
@@ -55,7 +55,7 @@ export const OTPVerificationModal = ({ inputFields }) => {
       const res = await axios.post(confirmOTPforCustomer, {
         ...inputFields,
         otp: Number(otp.trim()),
-        contactNumber: Number(restructuredPhoneNumber.trim()),
+        phoneNumber: Number(restructuredPhoneNumber.trim()),
       })
       
       console.log(res.data.success, res.data)

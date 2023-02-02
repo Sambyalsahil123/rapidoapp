@@ -3,34 +3,67 @@ import { firebase } from '../../Core/api/firebase/config'
 const tripRef = firebase.firestore().collection('taxi_trips')
 const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
 const usersRef = firebase.firestore().collection('customers')
+const driversRef = firebase.firestore().collection('users')
 
-const createTrip = trip => {
-  console.log(trip, 'this is trip DATA')
+// const createTrip = async trip => {
+//   console.log(trip, 'this is trip DATA')
+//   return new Promise(resolve => {
+//     const tripId = tripRef.doc().id
+//     // const tripId = "FNFxkdSKQwJs9c5dgpd5"
+//     let _trip = {}
+//     Object.keys(trip).map(key => {
+//       if (trip  [key]) {
+//         Object.assign(_trip, { [key]: trip[key] })
+//       }
+//     })
+//     console.log(tripId, 'TRIP ID ')
+//     console.log(driversRef, 'driversRefdriversRef')
+//     // tripRef
+//     //   .doc(tripId)
+//     //   .set({ ..._trip, id: tripId }, { merge: true })
+//     //   .then(res => {
+//     //     console.log(res, '<<<<<<resresres')
+//     //     resolve(tripId)
+//     //     usersRef
+//     //       .doc(_trip?.passenger?.id || '')
+//     //       .update({ inProgressOrderID: tripId })
+//     //   })
+//     //   .catch(err => {
+//     //     console.log(err, '<<<<<<errerrerr')
+
+//     //     resolve()
+//     //   })
+//     tripRef
+//     .doc(tripId)
+//     .set({ ..._trip, id: tripId }, { merge: true })
+//     .then(res => {
+//       console.log(res, '<<<<<<resresres')
+//       console.log(_trip,"=->>>>>>_trip")
+//       resolve(tripId)
+//       usersRef
+//         .doc(_trip?.passenger?.id || '')
+//         .update({ inProgressOrderID: tripId })
+//     })
+//     .catch(err => {
+//       console.log(err, '<<<<<<errerrerr')
+
+//       resolve()
+//     })
+//   })
+// }
+
+const createTrip = async trip => {
+  console.log(trip,"=+->>>>trip")
   return new Promise(resolve => {
     const tripId = tripRef.doc().id
-    // const tripId = "FNFxkdSKQwJs9c5dgpd5"
-    let _trip = {}
-    Object.keys(trip).map(key => {
-      if (trip  [key]) {
-        Object.assign(_trip, { [key]: trip[key] })
-      }
-    })
-    console.log(tripId, 'TRIP ID ')
-    tripRef
-      .doc(tripId)
-      .set({ ..._trip, id: tripId }, { merge: true })
-      .then(res => {
-        console.log(res, '<<<<<<resresres')
+    console.log(tripId,"=>>>>tripidd")
+    tripRef.doc(tripId).set({ ...trip, id: tripId }, { merge: true })
+      .then(() => {
+        console.log("resesee")
         resolve(tripId)
-        usersRef
-          .doc(_trip?.passenger?.id || '')
-          .update({ inProgressOrderID: tripId })
+        driversRef.doc(trip.passenger.id).update({ inProgressOrderID: tripId })
       })
-      .catch(err => {
-        console.log(err, '<<<<<<errerrerr')
-
-        resolve()
-      })
+      .catch(() => resolve())
   })
 }
 
@@ -145,13 +178,16 @@ const subscribeTripHistory = (userId, callback) => {
 }
 
 const subscribeCars = callback => {
+  console.log("subscribeCars???????????");
   return usersRef
     .where('role', '==', 'driver')
     .where('inProgressOrderID', '==', null)
     .onSnapshot(snapshot => {
+      console.log(snapshot,"this is snapshot");
       const cars = snapshot?.docs.map(doc => {
         const data = doc.data()
         const driver = data?.location
+        console.log(driver,"driverdriverdriverdriverdriverdriverdriver");
         return { ...driver, carType: data?.carType }
       })
       callback(cars)

@@ -155,7 +155,7 @@ export const ConfigProvider = ({ children }) => {
         maxLength: 12,
         editable: true,
         regex: regexForPhoneNumber,
-        key: 'contactNumber',
+        key: 'phoneNumber',
         placeholder: 'Phone Number',
       },
     ],

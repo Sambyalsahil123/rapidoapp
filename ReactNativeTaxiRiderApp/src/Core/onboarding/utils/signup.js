@@ -15,7 +15,7 @@ export const checkFields = (inputFields, profilePictureFile, localized) => {
   }
 
 
-  if (!validatePhoneNumber(inputFields?.contactNumber?.trim())) {
+  if (!validatePhoneNumber(inputFields?.phoneNumber?.trim())) {
     Alert.alert(
       '',
       localized('Please enter a valid  Phone Number.'),

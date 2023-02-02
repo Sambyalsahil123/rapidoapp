@@ -18,8 +18,8 @@ export default function IMRichTextView(props) {
     await Linking.openURL(`mailto:${email}`)
   }
 
-  const onPhonePress = async (contactNumber, matchIndex) => {
-    await Linking.openURL(`tel:${contactNumber}`)
+  const onPhonePress = async (phoneNumber, matchIndex) => {
+    await Linking.openURL(`tel:${phoneNumber}`)
   }
 
   const onUrlPress = async (url, matchIndex) => {

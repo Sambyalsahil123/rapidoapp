@@ -24,9 +24,9 @@ export default function IMDeliveryView({ navigation, order, style }) {
   }
 
   const onCallButtonPress = () => {
-    const contactNumber = order.driver && order.driver.phone
-    if (contactNumber) {
-      Linking.openURL(`tel:${contactNumber}`)
+    const phoneNumber = order.driver && order.driver.phone
+    if (phoneNumber) {
+      Linking.openURL(`tel:${phoneNumber}`)
     }
   }
 

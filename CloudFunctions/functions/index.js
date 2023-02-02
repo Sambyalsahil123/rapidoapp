@@ -204,7 +204,7 @@ exports.isCustomerExists = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("contactNumber", "==", Number(data.contactNumber))
+        .where("phoneNumber", "==", Number(data.phoneNumber))
         .get();
 
       if (user.docs.length) {
@@ -228,7 +228,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("contactNumber", "==", Number(data.contactNumber))
+        .where("phoneNumber", "==", Number(data.phoneNumber))
         .get();
 
       if (user.docs.length) {
@@ -242,7 +242,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
         {
           variables_values: generatedOTP,
           route: "otp",
-          numbers: `${data.contactNumber}`,
+          numbers: `${data.phoneNumber}`,
         },
         {
           headers: {
@@ -253,7 +253,7 @@ exports.sendOTPforCustomer = functions.https.onRequest(
       );
 
       await OTPRef.add({
-        contactNumber: data.contactNumber,
+        phoneNumber: data.phoneNumber,
         otp: generatedOTP,
       });
       response.json({success: true});
@@ -275,15 +275,15 @@ exports.confirmOTPforCustomer = functions.https.onRequest(
       let user;
       if (isFromLoginPage) {
         user = await customerRef
-          .where("contactNumber", "==", data.contactNumber)
+          .where("phoneNumber", "==", data.phoneNumber)
           .get();
         userData = {...user?.docs[0]?.data(), id: user?.docs[0]?.id};
       }
 
       const otpCollection = await OTPRef.where(
-        "contactNumber",
+        "phoneNumber",
         "==",
-        data.contactNumber,
+        data.phoneNumber,
       )
         .where("otp", "==", data.otp)
         .get();
@@ -321,7 +321,7 @@ exports.loginAsCustomer = functions.https.onRequest(
 
     try {
       const user = await customerRef
-        .where("contactNumber", "==", data.contactNumber)
+        .where("phoneNumber", "==", data.phoneNumber)
         .get();
 
       if (user.docs.length <= 0) {
@@ -345,7 +345,7 @@ exports.loginAsCustomer = functions.https.onRequest(
           {
             variables_values: generatedOTP,
             route: "otp",
-            numbers: `${data.contactNumber}`,
+            numbers: `${data.phoneNumber}`,
           },
           {
             headers: {
@@ -356,7 +356,7 @@ exports.loginAsCustomer = functions.https.onRequest(
         );
 
         await OTPRef.add({
-          contactNumber: data.contactNumber,
+          phoneNumber: data.phoneNumber,
           otp: generatedOTP,
           // timestamp: new Date(),
         });
