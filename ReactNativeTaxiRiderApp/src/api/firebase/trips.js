@@ -18,37 +18,22 @@ const driversRef = firebase.firestore().collection('users')
 //     })
 //     console.log(tripId, 'TRIP ID ')
 //     console.log(driversRef, 'driversRefdriversRef')
-//     // tripRef
-//     //   .doc(tripId)
-//     //   .set({ ..._trip, id: tripId }, { merge: true })
-//     //   .then(res => {
-//     //     console.log(res, '<<<<<<resresres')
-//     //     resolve(tripId)
-//     //     usersRef
-//     //       .doc(_trip?.passenger?.id || '')
-//     //       .update({ inProgressOrderID: tripId })
-//     //   })
-//     //   .catch(err => {
-//     //     console.log(err, '<<<<<<errerrerr')
-
-//     //     resolve()
-//     //   })
 //     tripRef
-//     .doc(tripId)
-//     .set({ ..._trip, id: tripId }, { merge: true })
-//     .then(res => {
-//       console.log(res, '<<<<<<resresres')
-//       console.log(_trip,"=->>>>>>_trip")
-//       resolve(tripId)
-//       usersRef
-//         .doc(_trip?.passenger?.id || '')
-//         .update({ inProgressOrderID: tripId })
-//     })
-//     .catch(err => {
-//       console.log(err, '<<<<<<errerrerr')
+//       .doc(tripId)
+//       .set({ ..._trip, id: tripId }, { merge: true })
+//       .then(res => {
+//         console.log(res, '<<<<<<resresres')
+//         resolve(tripId)
+//         usersRef
+//           .doc(_trip?.passenger?.id || '')
+//           .update({ inProgressOrderID: tripId })
+//       })
+//       .catch(err => {
+//         console.log(err, '<<<<<<errerrerr')
 
-//       resolve()
-//     })
+//         resolve()
+//       })
+   
 //   })
 // }
 
@@ -58,12 +43,18 @@ const createTrip = async trip => {
     const tripId = tripRef.doc().id
     console.log(tripId,"=>>>>tripidd")
     tripRef.doc(tripId).set({ ...trip, id: tripId }, { merge: true })
-      .then(() => {
-        console.log("resesee")
-        resolve(tripId)
-        driversRef.doc(trip.passenger.id).update({ inProgressOrderID: tripId })
-      })
-      .catch(() => resolve())
+    .then(res => {
+      console.log(res, '<<<<<<resresres')
+      resolve(tripId)
+      driversRef
+        .doc(trip?.passenger?.id || '')
+        .update({ inProgressOrderID: tripId })
+    })
+    .catch(err => {
+      console.log(err, '<<<<<<errerrerr')
+
+      resolve()
+    })
   })
 }
 

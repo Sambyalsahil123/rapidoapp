@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { useTheme, useTranslations } from 'dopenative'
@@ -36,7 +36,7 @@ const OrderPreviewCard = ({ order, driver, onMessagePress }) => {
       : localized('Heading to ') + order?.dropoff?.title
   const address =
     order.status === 'driver_accepted' ? order?.dropoff?.title : ''
-
+  console.log(headlineText, '<<<<<<<< THISSSSSSSSSSS ISSSSS headlineText')
   useEffect(() => {
     apiManager.current = new DriverAPIManager(config)
   }, [])

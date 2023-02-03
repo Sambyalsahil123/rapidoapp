@@ -41,7 +41,6 @@ function HomeScreen(props) {
   const [routeId, setRouteId] = useState(null)
 
   const currentUser = useSelector(state => state.auth.user)
-                                                
   const dispatch = useDispatch()
 
   const { localized } = useTranslations()
@@ -54,6 +53,7 @@ function HomeScreen(props) {
   const positionWatchID = useRef(null)
   const apiManager = useRef(null)
   const usersRef = firebase.firestore().collection('users')
+  const customersRef = firebase.firestore().collection('cstomers')
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -71,6 +71,10 @@ function HomeScreen(props) {
   useEffect(() => {
     apiManager.current = new DriverAPIManager(config, onDriverUpdate, setOrder)
 
+    console.log(
+      apiManager.current,
+      'apiManager.currentapiManager.currentapiManager.currentapiManager.currentapiManager.current',
+    )
     return apiManager.current?.unsubscribe
   }, [])
 
@@ -89,12 +93,14 @@ function HomeScreen(props) {
   }, [currentUser?.id])
 
   const onDriverUpdate = data => {
+    console.log('JHIHIHIHOIHIH')
     const orderRequestData = data?.orderRequestData
     const inProgressOrderID = data?.inProgressOrderID
 
-    console.log(data, 'THIS IS DATA ONDRIVERDATA')
+    console.log(data, 'DATATATDATDATATDTADTATDATDADTATDATDTTAT')
 
     setDeliveryDriverData({ orderRequestData, inProgressOrderID })
+
     if (!orderRequestData && !inProgressOrderID && data.isActive === true) {
       // Driver has no in-progress order, so they can go offline => enable button, show user location on map
       setIsWaitingForOrders(true)
@@ -133,7 +139,6 @@ function HomeScreen(props) {
   }, [deliveryDriverData])
 
   useEffect(() => {
-
     console.log(order?.status, '>>>>>>>>> THIS IS NEW ORDER STATUS')
     if (order && order?.status !== 'passenger_cancelled') {
       computePolylineCoordinates(order)
@@ -286,12 +291,16 @@ function HomeScreen(props) {
     if (!order || routeCoordinates.length < 2 || isWaitingForOrders) {
       return null
     }
+    console.log(
+      order,
+      'orderorderorderorderorderorderorderorderorderorderorder',
+    )
     return (
       <>
         <Polyline coordinates={routeCoordinates} strokeWidth={5} />
         {order.driver !== undefined && (
           <Marker
-            title={order.driver.firstName}
+            title={order.driver?.firstName}
             coordinate={routeCoordinates[0]}
             style={styles.marker}>
             <Image
