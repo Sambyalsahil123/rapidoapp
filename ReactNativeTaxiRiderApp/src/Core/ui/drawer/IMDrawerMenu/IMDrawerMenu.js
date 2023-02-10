@@ -75,7 +75,7 @@ const IMDrawerMenu = props => {
           source={{
             uri:
               currentUser?.photoURI ||
-              currentUser?.profilePictureURL ||
+              currentUser?.profilePictureFile?.uri ||
               defaultProfilePhotoURL,
           }}
         />

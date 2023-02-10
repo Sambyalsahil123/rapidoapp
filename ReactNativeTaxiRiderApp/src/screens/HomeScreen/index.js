@@ -60,8 +60,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     const unsubscribePaymentMethods =
-      paymentMethodDataManager.current.subscribePaymentMethods(
-        currentUser.id,
+      paymentMethodDataManager?.current.subscribePaymentMethods(
+        currentUser?.id,
         setPaymentMethods,
       )
     fetchCarCategories()
@@ -107,7 +107,7 @@ const HomeScreen = () => {
   }
 
   const fetchCurrentTripIfAny = () => {
-    tripsAPIManager.getTrip(currentUser.inProgressOrderID).then(trip => {
+    tripsAPIManager?.getTrip(currentUser?.inProgressOrderID).then(trip => {
       const tripStatus = {
         driver_accepted: 'driver_accepted',
         driver_rejected: 'driver_rejected',
@@ -116,7 +116,7 @@ const HomeScreen = () => {
       }
       if (trip) {
         if (tripStatus[trip.status] === 'awaiting_driver') {
-          navigation.navigate('ConfirmRideSheet', { currentTripId: trip.id })
+          navigation.navigate('ConfirmRideSheet', { currentTripId: trip?.id })
           return
         }
         if (

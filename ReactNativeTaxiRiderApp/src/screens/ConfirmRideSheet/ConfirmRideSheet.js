@@ -85,11 +85,11 @@ const ConfirmRideSheet = props => {
       priceRange,
       carDrive: {
         heading: 0,
-        latitude: 30.7090961,
-        longitude: 76.6953196,
+        latitude: 30.7090977,
+        longitude: 76.6953247,
       },
     }
-   
+
     tripId.current = await tripsAPIManager.createTrip(newTrip)
     if (tripId.current) {
       subscribeTripCoordinates()

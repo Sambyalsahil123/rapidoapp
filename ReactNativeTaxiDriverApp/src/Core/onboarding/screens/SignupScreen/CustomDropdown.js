@@ -33,7 +33,10 @@ const CustomDropdown = ({
       <TouchableOpacity
         style={style}
         onPress={() => setShowOptions(!showOptions)}>
-        <Text style={styles.selectedOptionText}>
+        <Text
+          style={
+            selectedOption ? styles.selectedText : styles.selectedOptionText
+          }>
           {selectedOption
             ? displayOptions[options.indexOf(selectedOption)]
             : placeholder}
@@ -59,11 +62,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   selectedOptionText: {
-    width:"20%",
+    width:"100%",
     color: '#aaaaaa',
-    fontSize: 12,
-    marginTop: 12,
-    marginRight: '83%',
+    marginTop: 10,
+  },
+  selectedText: {
+    width:"100%",
+    color: 'rgba(0,0,0,0.7)',
+    marginTop: 10,
   },
   optionsContainer: {
     marginLeft: '10%',
