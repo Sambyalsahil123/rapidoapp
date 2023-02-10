@@ -90,7 +90,7 @@ export default function WalletScreen(props) {
 
   const onRemoveFromPaymentMethods = method => {
     paymentMethodDataManager.current.deleteFromUserPaymentMethods(method.id)
-    if (method.key === currentUser.defaultPaymentKey) {
+    if (method.key === currentUser?.defaultPaymentKey) {
       const newSelectedPayment = paymentMethods[0]
       dispatch(setSelectedPaymentMethod(paymentMethods[0]))
       updateUser(currentUser.id, {

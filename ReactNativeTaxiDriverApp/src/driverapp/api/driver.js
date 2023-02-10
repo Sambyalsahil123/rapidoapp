@@ -2,6 +2,7 @@ import uuid from 'uuidv4'
 import { firebase } from '../../Core/api/firebase/config'
 import { getRideActualPrice, getDistanceRadius } from '../../utils'
 import { chargeStripeCustomer } from '../../Core/payment/api'
+import { firebase as fb } from '@react-native-firebase/firestore'
 
 export class DriverAPIManager {
   constructor(
@@ -51,18 +52,37 @@ export class DriverAPIManager {
   }
 
   goOnline = async driver => {
-    if (!driver || !driver.id || driver.id.length == 0) {
+
+    console.log(driver.id,"this is driver?>>>>?>?>?>?>?>?>?>??")
+    if (!driver || !driver.id ) {
       return
     }
-    console.log(driver.id, 'this is driver ID GO ONLINE')
-    this.usersRef.doc(driver.id).update({ isActive: true })
+
+    console.log(driver.id, 'DRIVER_ID')
+
+    let updatedData
+    const callback = this.callback
+    // const userRef = this.usersRef
+    this.usersRef.doc(driver.id).update({ isActive: true, id : driver.id }).then(() => {
+      callback()
+    })
+
+    // const firebaseData = this.usersRef.doc(driver.id).get()
+    // updatedData = { ...firebaseData.data(), id: firebaseData.id }
+    // console.log(updatedData, 'DATA____!@#')
+    // this.callback(updatedData)
+
+    // this.callback && this.callback && this.callback('isOnline')
   }
 
   goOffline = async driver => {
     if (!driver || !driver.id || driver.id.length == 0) {
       return
     }
-    this.usersRef.doc(driver.id).update({ isActive: false })
+    const callback = this.callback
+    this.usersRef.doc(driver.id).update({ isActive: false }).then(() => {
+      callback()
+    })
   }
 
   unsubscribe = () => {

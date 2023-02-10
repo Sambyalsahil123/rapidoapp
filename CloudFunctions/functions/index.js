@@ -11,6 +11,8 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const axios = require("axios");
 
+const trip = require("./trips/trip");
+exports.tripDispatch = trip.dispatch;
 const FAST_2_SMS_KEY =
   "LoyxFDqUBuRn2IVhfAN4HWpPgkibO3KcrlsdJeQTGm790z8CtvmlYVW6voSe7bpKuLJ31RZdhIfH5MyF";
 
@@ -115,7 +117,7 @@ exports.confirmOTP = functions.https.onRequest(async (request, response) => {
     //   otpCollection.docs.length,
     // );
     // functions.logger.log("new22======>", data.phoneNumber, data.phoneNumber);
-    console.log("HELLO");
+    console.log(userData, "HELLO WORLD");
     if (otpCollection?.docs?.length > 0) {
       if (!isFromLoginPage) {
         await userRef.add({...data});
@@ -294,6 +296,11 @@ exports.confirmOTPforCustomer = functions.https.onRequest(
           response.json({success: true, userData});
           return;
         } else {
+          console.log(userData, "USERRRRRRRRRR");
+          functions.logger.log(
+            userData,
+            "THIS IS USER______DATA________",
+          );
           response.json({success: true, userData});
           return;
         }
@@ -427,7 +434,6 @@ exports.loginAsCustomer = functions.https.onRequest(
 //   }
 // });
 
-
 // ////////////?
 
 // const admin = require("firebase-admin");
@@ -469,9 +475,7 @@ exports.loginAsCustomer = functions.https.onRequest(
 // const imageProcessing = require("./core/imageProcessing");
 // exports.generateThumbnail = imageProcessing.generateThumbnail;
 
-
 // // Create and Deploy Your First Cloud Functions
-
 
 // https://firebase.google.com/docs/functions/write-firebase-functions
 // exports.helloWorld = functions.https.onRequest((request, response) => {

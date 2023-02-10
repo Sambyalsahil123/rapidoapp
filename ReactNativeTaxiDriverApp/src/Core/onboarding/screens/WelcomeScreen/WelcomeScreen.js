@@ -13,6 +13,7 @@ import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
 import { useAuth } from '../../hooks/useAuth'
 import useCurrentUser from '../../hooks/useCurrentUser'
 import AsyncStorage from '@react-native-community/async-storage'
+import { firebase } from '@react-native-firebase/firestore'
 
 const WelcomeScreen = props => {
   const { navigation } = props
@@ -30,6 +31,7 @@ const WelcomeScreen = props => {
   const authManager = useAuth()
 
   const { title, caption } = props
+  const usersRef = firebase.firestore().collection('users')
 
   const handleInitialNotification = async () => {
     const userID = currentUser?.id || currentUser?.userID
@@ -50,48 +52,75 @@ const WelcomeScreen = props => {
     }
   }
 
-  const tryToLoginFirst = async () => {
-    authManager
-      .retrievePersistedAuthUser(config)
-      .then(response => {
-        if (response?.user) {
-          const user = response.user
-          dispatch(
-            setUserData({
-              user: response.user,
-            }),
-          )
-          Keyboard.dismiss()
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MainStack', params: { user } }],
-          })
-          handleInitialNotification()
-          return
-        }
-        setIsLoading(false)
+  // const tryToLoginFirst = async () => {
+  //   authManager
+  //     .retrievePersistedAuthUser(config)
+  //     .then(response => {
+  //       if (response?.user) {
+  //         const user = response.user
+  //         dispatch(
+  //           setUserData({
+  //             user: response.user,
+  //           }),
+  //         )
+  //         Keyboard.dismiss()
+  //         navigation.reset({
+  //           index: 0,
+  //           routes: [{ name: 'MainStack', params: { user } }],
+  //         })
+  //         handleInitialNotification()
+  //         return
+  //       }
+  //       setIsLoading(false)
+  //     })
+  //     .catch(error => {
+  //       console.log(error)
+  //       setIsLoading(false)
+  //     })
+  // }
+  const getUserInfo = async userId => {
+    const userID = JSON.parse(userId)
+    if(userID){
+      const userData = await usersRef.doc(userID).get()
+      const user = { ...userData.data(), id: userData.id }
+      dispatch(setUserData({ user }))
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainStack', params: { user } }],
       })
-      .catch(error => {
-        console.log(error)
-        setIsLoading(false)
-      })
+    }
+
+    setIsLoading(false)
   }
 
   const getLocalUser = async () => {
     console.log('HELLOOPOOOOO___')
-    AsyncStorage.getItem('userData').then(data => {
-      const user = JSON.parse(data)
-      console.log(user, 'user_____')
-      dispatch(setUserData({ user }))
-      if (user) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainStack', params: { user } }],
-        })
-      }
-      setIsLoading(false)
-      return
-    })
+    const upDatedUser = await usersRef.doc(currentUser.id).get()
+    await AsyncStorage.getItem('userID').then(userId => getUserInfo(userId))
+    // const userId = "gJpzv3ssueFaXPwJj5g8"
+    // if(userId){
+    //    const userData = await usersRef.doc(userId).get()
+    //    console.log(userData.data() , userData.id,"USERDAT_A")
+
+    // }
+    // else {
+    //   setIsLoading(false);
+    // }
+    // .then(data => {
+    //   const user = JSON.parse(data)
+
+    //   console.log(user, 'user_____')
+    //   dispatch(setUserData({ user }))
+    //   if (user) {
+    //     navigation.reset({
+    //       index: 0,
+    //       routes: [{ name: 'MainStack', params: { user } }],
+    //     })
+    //   }
+    //   setIsLoading(false)
+    //   return
+    // }
+    // )
   }
 
   useEffect(() => {

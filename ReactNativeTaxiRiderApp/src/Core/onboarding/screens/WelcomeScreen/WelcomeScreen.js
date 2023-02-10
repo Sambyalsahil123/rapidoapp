@@ -12,6 +12,7 @@ import { IMDismissButton } from '../../../truly-native'
 import { useOnboardingConfig } from '../../hooks/useOnboardingConfig'
 import { useAuth } from '../../hooks/useAuth'
 import useCurrentUser from '../../hooks/useCurrentUser'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const WelcomeScreen = props => {
   const { navigation } = props
@@ -29,10 +30,6 @@ const WelcomeScreen = props => {
   const authManager = useAuth()
 
   const { title, caption } = props
-
-  useEffect(() => {
-    tryToLoginFirst()
-  }, [])
 
   const handleInitialNotification = async () => {
     const userID = currentUser?.id || currentUser?.userID
@@ -53,32 +50,49 @@ const WelcomeScreen = props => {
     }
   }
 
-  const tryToLoginFirst = async () => {
-    authManager
-      .retrievePersistedAuthUser(config)
-      .then(response => {
-        if (response?.user) {
-          const user = response.user
-          dispatch(
-            setUserData({
-              user: response.user,
-            }),
-          )
-          Keyboard.dismiss()
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MainStack', params: { user } }],
-          })
-          handleInitialNotification()
-          return
-        }
-        setIsLoading(false)
-      })
-      .catch(error => {
-        console.log(error)
-        setIsLoading(false)
-      })
+  // const tryToLoginFirst = async () => {
+  //   authManager
+  //     .retrievePersistedAuthUser(config)
+  //     .then(response => {
+  //       if (response?.user) {
+  //         const user = response.user
+  //         dispatch(
+  //           setUserData({
+  //             user: response.user,
+  //           }),
+  //         )
+  //         Keyboard.dismiss()
+  //         navigation.reset({
+  //           index: 0,
+  //           routes: [{ name: 'MainStack', params: { user } }],
+  //         })
+  //         handleInitialNotification()
+  //         return
+  //       }
+  //       setIsLoading(false)
+  //     })
+  //     .catch(error => {
+  //       console.log(error)
+  //       setIsLoading(false)
+  //     })
+  // }
+  const getLocalUser = async () => {
+    await AsyncStorage.getItem('customerData').then(data => {
+      const user = JSON.parse(data)
+      dispatch(setUserData({ user }))
+      if (user) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainStack', params: { user } }],
+        })
+      }
+      setIsLoading(false)
+      return
+    })
   }
+  useEffect(() => {
+    getLocalUser()
+  }, [])
 
   const handleChatMessageType = (channelID, name) => {
     const channel = {

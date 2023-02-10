@@ -80,11 +80,16 @@ const ConfirmRideSheet = props => {
       dropoff: destination,
       passenger: currentUser,
       status: 'awaiting_driver',
-      carType: ride?.type,
+      carType: 'comfort',
       ride,
       priceRange,
+      carDrive: {
+        heading: 0,
+        latitude: 30.7090961,
+        longitude: 76.6953196,
+      },
     }
-
+   
     tripId.current = await tripsAPIManager.createTrip(newTrip)
     if (tripId.current) {
       subscribeTripCoordinates()
@@ -99,7 +104,7 @@ const ConfirmRideSheet = props => {
   }
 
   const onTripUpdate = trip => {
-    if (!hasDriverCoordinates && trip?.carDrive) {
+    if (!hasDriverCoordinates && true) {
       dispatch(
         setTripCoordinates({
           carDrive: trip?.carDrive,
@@ -152,7 +157,7 @@ const ConfirmRideSheet = props => {
           snapPoints: [height, height],
           index: 0,
         }),
-      )               
+      )
     },
     [],
   )

@@ -81,7 +81,7 @@ export default function TripSheet(props) {
 
   useEffect(() => {
     onPaymentMethodChange()
-  }, [currentUser.defaultPaymentKey])
+  }, [currentUser?.defaultPaymentKey])
 
   useEffect(() => {
     onDestinationChange()

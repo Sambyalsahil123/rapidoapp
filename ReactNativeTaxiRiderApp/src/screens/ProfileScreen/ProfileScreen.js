@@ -7,6 +7,7 @@ import { IMUserProfileComponent } from '../../Core/profile'
 import MenuIcon from '../../components/MenuIcon/MenuIcon'
 import { useAuth } from '../../Core/onboarding/hooks/useAuth'
 import { useConfig } from '../../config'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const ProfileScreen = () => {
   const { localized } = useTranslations()
@@ -66,6 +67,7 @@ const ProfileScreen = () => {
 
   const onLogout = () => {
     authManager?.logout(currentUser)
+    AsyncStorage.clear()
     dispatch(logout())
     navigation.reset({
       index: 0,

@@ -27,10 +27,10 @@ const IMDrawerMenu = props => {
     'https://www.iosapptemplates.com/wp-content/uploads/2019/06/empty-avatar.jpg'
 
   const actionLowerMenu = action => {
-    if (action == 'logout') {
+    if (action == 'logout') { 
       authManager?.logout(currentUser)
       AsyncStorage.clear();
-      dispatch(logout())
+      // dispatch(logout())
       navigation.navigate('LoadScreen')
       return
     }

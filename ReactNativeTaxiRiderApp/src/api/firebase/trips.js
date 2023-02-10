@@ -5,58 +5,56 @@ const carCategoriesRef = firebase.firestore().collection('taxi_car_categories')
 const usersRef = firebase.firestore().collection('customers')
 const driversRef = firebase.firestore().collection('users')
 
-// const createTrip = async trip => {
-//   console.log(trip, 'this is trip DATA')
-//   return new Promise(resolve => {
-//     const tripId = tripRef.doc().id
-//     // const tripId = "FNFxkdSKQwJs9c5dgpd5"
-//     let _trip = {}
-//     Object.keys(trip).map(key => {
-//       if (trip  [key]) {
-//         Object.assign(_trip, { [key]: trip[key] })
-//       }
-//     })
-//     console.log(tripId, 'TRIP ID ')
-//     console.log(driversRef, 'driversRefdriversRef')
-//     tripRef
-//       .doc(tripId)
-//       .set({ ..._trip, id: tripId }, { merge: true })
-//       .then(res => {
-//         console.log(res, '<<<<<<resresres')
-//         resolve(tripId)
-//         usersRef
-//           .doc(_trip?.passenger?.id || '')
-//           .update({ inProgressOrderID: tripId })
-//       })
-//       .catch(err => {
-//         console.log(err, '<<<<<<errerrerr')
-
-//         resolve()
-//       })
-   
-//   })
-// }
-
 const createTrip = async trip => {
-  console.log(trip,"=+->>>>trip")
+  console.log(trip, 'this is trip DATA')
   return new Promise(resolve => {
     const tripId = tripRef.doc().id
-    console.log(tripId,"=>>>>tripidd")
-    tripRef.doc(tripId).set({ ...trip, id: tripId }, { merge: true })
-    .then(res => {
-      console.log(res, '<<<<<<resresres')
-      resolve(tripId)
-      driversRef
-        .doc(trip?.passenger?.id || '')
-        .update({ inProgressOrderID: tripId })
+    // const tripId = "FNFxkdSKQwJs9c5dgpd5"
+    let _trip = {}
+    Object.keys(trip).map(key => {
+      if (trip  [key]) {
+        Object.assign(_trip, { [key]: trip[key] })
+      }
     })
-    .catch(err => {
-      console.log(err, '<<<<<<errerrerr')
+    tripRef
+      .doc(tripId)
+      .set({ ..._trip, id: tripId }, { merge: true })
+      .then(res => {
+        console.log(res, '<<<<<<resresres')
+        resolve(tripId)
+        usersRef
+          .doc(_trip?.passenger?.id || '')
+          .update({ inProgressOrderID: tripId })
+      })
+      .catch(err => {
+        console.log(err, '<<<<<<errerrerr')
 
-      resolve()
-    })
+        resolve()
+      })
+   
   })
 }
+
+// const createTrip = async trip => {
+//   console.log(trip,"=+->>>>trip")
+//   return new Promise(resolve => {
+//     const tripId = tripRef.doc().id
+//     console.log(tripId,"=>>>>tripidd")
+//     tripRef.doc(tripId).set({ ...trip, id: tripId }, { merge: true })
+//     .then(res => {
+//       console.log(res, '<<<<<<resresres')
+//       resolve(tripId)
+//       driversRef
+//         .doc(trip?.passenger?.id || '')
+//         .update({ inProgressOrderID: tripId })
+//     })
+//     .catch(err => {
+//       console.log(err, '<<<<<<errerrerr')
+
+//       resolve()
+//     })
+//   })
+// }
 
 const updateTrip = (tripId, trip) => {
   console.log(trip, tripId, 'THIS IS TRIP ID OR DATA >>>> UPDATETRIP')
@@ -94,7 +92,7 @@ const cancelTrip = trip => {
 }
 
 const getTrip = tripId => {
-  console.log(tripId, 'this is getTrip')
+  console.log(tripId, '<==========this is getTrip')
   return new Promise(resolve => {
     if (tripId) {
       return tripRef
@@ -126,28 +124,26 @@ const getCarCategories = () => {
 const setCarCategories = (carCategoryId, category) => {
   console.log(
     carCategoryId,
-    '>>>>>> THis is carCategoryId',
+    '>>>>>> THis is carCategoryId11',
     category,
-    '<<<<category',
+    '<<<<category22',
   )
-  return new Promise(resolve => {
-    return carCategoriesRef
+  return new Promise(async resolve => {
+    await carCategoriesRef
       .doc(carCategoryId)
       .set(category)
-      .then(() => {
-        resolve(carCategoryId)
-      })
+    resolve(carCategoryId)
   })
 }
 
 const subscribeTrip = (tripId, callback) => {
-  console.log(tripId, 'THIS IS TRIPID ', callback, 'this is callback')
+  console.log(tripId, 'THIS IS TRIPID11', callback, 'this is callback112323233')
   if (tripId) {
-    return tripRef.doc(tripId).onSnapshot(doc => {
+    const docRes =  tripRef.doc(tripId).onSnapshot(doc => {
       const trip = doc.data()
-
-      return callback(trip)
+    return callback(trip)
     })
+    return docRes
   }
   return
 }
@@ -170,38 +166,33 @@ const subscribeTripHistory = (userId, callback) => {
 
 const subscribeCars = callback => {
   console.log("subscribeCars???????????");
-  return usersRef
-    .where('role', '==', 'driver')
-    .where('inProgressOrderID', '==', null)
+  return driversRef
+    // .where('role', '==', 'driver')
+    // .where('inProgressOrderID', '==', null)
     .onSnapshot(snapshot => {
-      console.log(snapshot,"this is snapshot");
       const cars = snapshot?.docs.map(doc => {
         const data = doc.data()
         const driver = data?.location
-        console.log(driver,"driverdriverdriverdriverdriverdriverdriver");
         return { ...driver, carType: data?.carType }
       })
       callback(cars)
     })
 }
 
-const rateDriver = (driverId, newRating) => {
-  return usersRef
+const rateDriver = async (driverId, newRating) => {
+  const doc = await usersRef
     .doc(driverId)
     .get()
-    .then(doc => {
-      const user = doc.data()
-      const ratings = user?.ratings ?? 0
-      const ratingsCount = user?.ratingsCount ?? 0
-      const totalNRatings = ratingsCount + 1
-      const ratingsSum = Math.floor(ratings * ratingsCount) + newRating
-      const calRatings = ratingsSum / totalNRatings
-
-      usersRef.doc(driverId).update({
-        ratingsCount: firebase.firestore.FieldValue.increment(1),
-        ratings: Number(calRatings?.toFixed(2)),
-      })
-    })
+  const user = doc.data()
+  const ratings = user?.ratings ?? 0
+  const ratingsCount = user?.ratingsCount ?? 0
+  const totalNRatings = ratingsCount + 1
+  const ratingsSum = Math.floor(ratings * ratingsCount) + newRating
+  const calRatings = ratingsSum / totalNRatings
+  usersRef.doc(driverId).update({
+    ratingsCount: firebase.firestore.FieldValue.increment(1),
+    ratings: Number(calRatings?.toFixed(2)),
+  })
 }
 
 export default {

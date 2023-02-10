@@ -7,6 +7,7 @@ import { logout } from '../../../onboarding/redux/auth'
 import IMMenuButton from '../IMMenuButton/IMMenuButton'
 import { useAuth } from '../../../onboarding/hooks/useAuth'
 import { useCurrentUser } from '../../../onboarding'
+import AsyncStorage from '@react-native-community/async-storage'
 
 const IMDrawerMenu = props => {
   const { navigation, menuItems, menuItemsSettings } = props
@@ -25,6 +26,7 @@ const IMDrawerMenu = props => {
   const actionLowerMenu = action => {
     if (action == 'logout') {
       authManager?.logout(currentUser)
+      AsyncStorage.clear()
       dispatch(logout())
       navigation.navigate('LoadScreen')
       return
@@ -72,16 +74,16 @@ const IMDrawerMenu = props => {
           style={styles.imageContainer}
           source={{
             uri:
-              currentUser.photoURI ||
-              currentUser.profilePictureURL ||
+              currentUser?.photoURI ||
+              currentUser?.profilePictureURL ||
               defaultProfilePhotoURL,
           }}
         />
         <Text style={[styles.info, props.nameStyle]}>
-          {currentUser.firstName} {currentUser.lastName}
+          {currentUser?.firstName} {currentUser?.lastName}
         </Text>
         <Text style={[styles.email, props.emailStyle]}>
-          {currentUser.phoneNumber}
+          {currentUser?.phoneNumber}
         </Text>
       </View>
       <View style={styles.content}>
@@ -91,7 +93,7 @@ const IMDrawerMenu = props => {
         </View>
         <View style={styles.footer}>
           <Text style={styles.textFooter}>
-            {localized('Made by BegaRider')}  
+            {localized('Made by BegaRider')}
           </Text>
         </View>
       </View>

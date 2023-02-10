@@ -190,7 +190,7 @@ export const ConfigProvider = ({ children }) => {
               type: 'text',
               editable: true,
               regex: regexForPhoneNumber,
-              key: 'phone',
+              key: 'phoneNumber',
               placeholder: 'Your phone number',
             },
           ],

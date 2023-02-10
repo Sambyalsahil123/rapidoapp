@@ -41,7 +41,7 @@ const HomeScreen = () => {
 
   const hasTrip =
     !!tripCoordinates.carDrive || bottomSheetKey === 'confirm_ride'
-  const defaultPaymentKey = currentUser.defaultPaymentKey
+  const defaultPaymentKey = currentUser?.defaultPaymentKey
 
   const paymentMethodDataManager = useRef(new PaymentAPIManager(config))
   const unsubscribeCars = useRef()

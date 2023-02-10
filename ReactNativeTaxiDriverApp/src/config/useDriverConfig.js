@@ -115,6 +115,15 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'Last Name',
       },
       {
+        displayName: localized('CAR TYPE'),
+        type: 'select',
+        options: ['uber_x', 'comfort', 'uber_xl'],
+        displayOptions: ['TaxiX', 'Comfort', 'TaxiXL'],
+        editable: true,
+        key: 'carType',
+        placeholder: 'CAR TYPE',
+      },
+      {
         displayName: localized('Car Model'),
         type: 'ascii-capable',
         editable: true,
@@ -139,15 +148,7 @@ export const ConfigProvider = ({ children }) => {
         key: 'phoneNumber',
         placeholder: 'Phone Number',
       },
-      {
-        displayName: localized('Car Type'),
-        type: 'select',
-        options: ['uber_x', 'comfort', 'uber_xl', 'none'],
-        displayOptions: ['TaxiX', 'Comfort', 'TaxiXL', 'None'],
-        editable: true,
-        key: 'carType',
-        placeholder: 'Car Type',
-      },
+
       {
         displayName: localized('Aadhar Card'),
         type: 'numeric',
@@ -159,11 +160,6 @@ export const ConfigProvider = ({ children }) => {
         placeholder: 'Aadhar Card',
         autoCapitalize: 'none',
       },
-      // {
-      //   displayName: localized('Verify Aadhar Card'),
-      //   type: 'custom',
-      //   key: 'verifyAadharCard',
-      // },
     ],
     editProfileFields: {
       sections: [

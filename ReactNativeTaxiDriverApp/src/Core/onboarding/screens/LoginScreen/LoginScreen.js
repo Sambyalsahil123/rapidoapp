@@ -126,7 +126,7 @@ const LoginScreen = props => {
 
       if (response.data.success) {
         const user = response?.data?.userData
-        AsyncStorage.setItem('userData', JSON.stringify(response.data.userData))
+        AsyncStorage.setItem('userID', JSON.stringify(response.data.userData.id))
         console.log(response.data.userData.id, 'newDATA')
         dispatch(setUserData({ user }))
         setLoading(false)

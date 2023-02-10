@@ -22,6 +22,7 @@ import Img from './upload.png'
 import { OTPVerificationModal } from '../SmsAuthenticationScreen/OTPVerificationModal'
 import storage from '@react-native-firebase/storage'
 import { checkFields, trimFields } from '../../utils/signup'
+import CustomDropdown from './CustomDropdown'
 
 const SignupScreen = props => {
   const [modalVisible, setModalVisible] = useState(false)
@@ -113,7 +114,7 @@ const SignupScreen = props => {
 
     const userDetails = {
       ////// SEND USER SIGUP DATA IN DB
-   
+
       profilePictureURL: documentUrls.profilePhoto,
       ...trimFields(inputFields),
       appIdentifier: config.appIdentifier,
@@ -144,8 +145,7 @@ const SignupScreen = props => {
 
     setStructuredData(userDetails)
 
-    const SendOTP =
-      'https://us-central1-bega-370917.cloudfunctions.net/sendOTP'
+    const SendOTP = 'https://us-central1-bega-370917.cloudfunctions.net/sendOTP'
 
     Keyboard.dismiss()
 
@@ -222,22 +222,52 @@ const SignupScreen = props => {
     }
   }
 
+  // const renderInputField = (field, index) => {
+  //   return (
+  //     <>
+  //       <TextInput
+  //         maxLength={field.maxLength}
+  //         key={index?.toString()}
+  //         style={styles.InputContainer}
+  //         placeholder={field.placeholder}
+  //         placeholderTextColor="#aaaaaa"
+  //         secureTextEntry={field.secureTextEntry}
+  //         onChangeText={text => onChangeInputFields(text, field.key)}
+  //         value={inputFields[field.key]}
+  //         keyboardType={field.type}
+  //         underlineColorAndroid="transparent"
+  //         autoCapitalize={field.autoCapitalize}
+  //       />
+  //     </>
+  //   )
+  // }
+
   const renderInputField = (field, index) => {
     return (
       <>
-        <TextInput
-          maxLength={field.maxLength}
-          key={index?.toString()}
-          style={styles.InputContainer}
-          placeholder={field.placeholder}
-          placeholderTextColor="#aaaaaa"
-          secureTextEntry={field.secureTextEntry}
-          onChangeText={text => onChangeInputFields(text, field.key)}
-          value={inputFields[field.key]}
-          keyboardType={field.type}
-          underlineColorAndroid="transparent"
-          autoCapitalize={field.autoCapitalize}
-        />
+        {field.type === 'select' ? (
+          <CustomDropdown
+            placeholder={field.placeholder}
+            options={field.options}
+            style={styles.InputContainer}
+            displayOptions={field.displayOptions}
+            onSelectOption={option => onChangeInputFields(option, field.key)}
+          />
+        ) : (
+          <TextInput
+            maxLength={field.maxLength}
+            key={index?.toString()}
+            style={styles.InputContainer}
+            placeholder={field.placeholder}
+            placeholderTextColor="#aaaaaa"
+            secureTextEntry={field.secureTextEntry}
+            onChangeText={text => onChangeInputFields(text, field.key)}
+            value={inputFields[field.key]}
+            keyboardType={field.type}
+            underlineColorAndroid="transparent"
+            autoCapitalize={field.autoCapitalize}
+          />
+        )}
       </>
     )
   }

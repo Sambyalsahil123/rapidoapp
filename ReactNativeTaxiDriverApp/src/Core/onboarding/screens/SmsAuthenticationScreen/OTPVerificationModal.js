@@ -17,12 +17,13 @@ import axios from 'axios'
 import TNActivityIndicator from '../../../truly-native/TNActivityIndicator'
 import { useDispatch } from 'react-redux'
 import { setUserData } from '../../redux/auth'
-
+import { firebase } from '@react-native-firebase/firestore'
 export const OTPVerificationModal = ({ inputFields }) => {
   const navigation = useNavigation()
   const [otp, setOtp] = useState('')
   const { theme, appearance } = useTheme()
   const [loading, setLoading] = useState(false)
+  const usersRef = firebase.firestore().collection('users')
 
   const [parameters, setParameters] = useState({
     // isOTPSent: false,
@@ -54,11 +55,18 @@ export const OTPVerificationModal = ({ inputFields }) => {
 
     try {
       setLoading(true)
+      
       const res = await axios.post(confirmOTPUrl, {
         ...inputFields,
         otp: Number(otp.trim()),
         phoneNumber: Number(restructuredPhoneNumber.trim()),
         IsApproved: false,
+        isActive: false,
+        location: {
+          heading: 0,
+          latitude: 37.310212191697715,
+          longitude: -121.95864486694336,
+        },
       })
       // navigation?.navigate('MainStack', {})
       console.log(res.data.success, res.data)
@@ -70,6 +78,10 @@ export const OTPVerificationModal = ({ inputFields }) => {
           'Your registration is under process, please wait for 24 hours',
         )
 
+        const upDatedUser = await usersRef.doc().get()
+
+        // console.log(upDatedUser._data, 'this is UPDATE USER')
+        // dispatch(setUserData({ user: upDatedUser._data }))
         navigation.navigate('LoginStack', { screen: 'Welcome' })
 
         dispatch(setUserData({ user: inputFields }))

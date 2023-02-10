@@ -70,11 +70,6 @@ function HomeScreen(props) {
 
   useEffect(() => {
     apiManager.current = new DriverAPIManager(config, onDriverUpdate, setOrder)
-
-    console.log(
-      apiManager.current,
-      'apiManager.currentapiManager.currentapiManager.currentapiManager.currentapiManager.current',
-    )
     return apiManager.current?.unsubscribe
   }, [])
 
@@ -92,12 +87,14 @@ function HomeScreen(props) {
     })
   }, [currentUser?.id])
 
-  const onDriverUpdate = data => {
-    console.log('JHIHIHIHOIHIH')
+  const onDriverUpdate = async () => {
+    // let _data = data
+    const upDatedUser = await usersRef.doc(currentUser.id).get()
+    console.log(upDatedUser, 'UPDATED_USER')
+    const data = { ...upDatedUser.data(), id: upDatedUser.id }
     const orderRequestData = data?.orderRequestData
     const inProgressOrderID = data?.inProgressOrderID
-
-    console.log(data, 'DATATATDATDATATDTADTATDATDADTATDATDTTAT')
+    dispatch(setUserData({ user: data }))
 
     setDeliveryDriverData({ orderRequestData, inProgressOrderID })
 
@@ -123,8 +120,25 @@ function HomeScreen(props) {
         headerRight: null,
       })
     }
-    dispatch(setUserData({ user: data }))
   }
+
+  useEffect(() => {
+    if (currentUser.isActive) {
+      const { orderRequestData, inProgressOrderID, isActive } = currentUser
+      if (!orderRequestData && !inProgressOrderID && isActive === true) {
+        navigation.setOptions({
+          headerRight: () => (
+            <TouchableOpacity style={styles.logoutButton} onPress={goOffline}>
+              <Image
+                source={require('../../../assets/icons/shutdown.png')}
+                style={styles.logoutButtonImage}
+              />
+            </TouchableOpacity>
+          ),
+        })
+      }
+    }
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -136,10 +150,9 @@ function HomeScreen(props) {
     if (deliveryDriverData && deliveryDriverData.inProgressOrderID) {
       apiManager.current?.subscribeToOrder(deliveryDriverData.inProgressOrderID)
     }
-  }, [deliveryDriverData])
+  }, [])
 
   useEffect(() => {
-    console.log(order?.status, '>>>>>>>>> THIS IS NEW ORDER STATUS')
     if (order && order?.status !== 'passenger_cancelled') {
       computePolylineCoordinates(order)
     } else {
@@ -151,18 +164,14 @@ function HomeScreen(props) {
   }, [order?.status])
 
   useEffect(() => {
-    console.log(positionWatchID, 'this is positionWatchID')
-
     Geolocation.clearWatch(positionWatchID.current)
     trackDriverLocation()
   }, [routeId])
 
   const goOnline = () => {
-    // dispatch(setUserData({ user: upDatedUser }))
-
+    dispatch(setUserData({ user: { ...currentUser, isActive: true } }))
     apiManager.current?.goOnline(currentUser)
-    getCurrentUser()
-    console.log('Go online HOME screen current user', currentUser)
+    // getCurrentUser()
   }
 
   const goOffline = () => {
@@ -187,7 +196,6 @@ function HomeScreen(props) {
   }
 
   const onAcceptNewOrder = () => {
-    console.log('this is onAcceptNewOrder ')
     deliveryDriverData?.orderRequestData &&
       apiManager.current?.accept(
         deliveryDriverData.orderRequestData,
@@ -196,7 +204,6 @@ function HomeScreen(props) {
   }
 
   const onRejectNewOrder = () => {
-    console.log('this is onRejectNewOrder ')
     deliveryDriverData
     deliveryDriverData?.orderRequestData &&
       apiManager.current?.reject(
@@ -205,9 +212,7 @@ function HomeScreen(props) {
       )
   }
   const getCurrentUser = async () => {
-    console.log('this is getCurrentUser')
     const upDatedUser = await usersRef.doc(currentUser.id).get()
-    console.log(upDatedUser._data, 'this is UPDATE USER')
     dispatch(setUserData({ user: upDatedUser._data }))
     saveUserLocally(upDatedUser._data)
   }
@@ -248,11 +253,6 @@ function HomeScreen(props) {
     }
 
     if (order.status === 'trip_started' && pickup && driver) {
-      console.log(
-        order.pickup,
-        order.status,
-        'THISSSSSSSSSSSSSSSSSSSS.>>>>>>>>>>>>>>>>',
-      )
       // Driver is heading to dropoff
       const sourceCoordinate = {
         latitude: driver.location?.latitude,
@@ -291,10 +291,6 @@ function HomeScreen(props) {
     if (!order || routeCoordinates.length < 2 || isWaitingForOrders) {
       return null
     }
-    console.log(
-      order,
-      'orderorderorderorderorderorderorderorderorderorderorder',
-    )
     return (
       <>
         <Polyline coordinates={routeCoordinates} strokeWidth={5} />
@@ -345,7 +341,6 @@ function HomeScreen(props) {
 
       return
     }
-    console.log('updatePolyline2')
     const firstPoint = routeCoordinates[0]
     const distance = getDistance(
       firstPoint.latitude,
@@ -357,11 +352,7 @@ function HomeScreen(props) {
       const routeCoordinatesCopy = [...routeCoordinates]
       routeCoordinatesCopy.splice(0, 1)
       setRouteCoordinates(routeCoordinatesCopy)
-
-      console.log('removed ')
     } else if (distance > 2) {
-      console.log('updatePolyline3')
-
       // we need to reroute since driver took a wrong turn
       computePolylineCoordinates(order)
     }
@@ -380,12 +371,11 @@ function HomeScreen(props) {
         if (currentUser?.inProgressOrderID) {
           apiManager.current?.updateCarDrive(order, location)
         } else {
-          console.log(currentUser.id)
           updateUser(
             currentUser.id,
             { location },
             currentUser,
-            saveUserLocally,
+            // saveUserLocally,
             dispatch,
             setUserData,
           )
@@ -477,7 +467,7 @@ function HomeScreen(props) {
   }
 
   return null
-}
+}   
 
 HomeScreen.propTypes = {
   user: PropTypes.shape(),
